@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+      .parent {
+        display: grid;
+        grid-template-columns: 250px repeat(4, 1fr);
+        grid-template-rows: 50px repeat(4, 1fr);
+        grid-column-gap: 0px;
+        grid-row-gap: 0px;
+        max-height: 100vh;
+      }
+
+      .div1 {
+        grid-area: 1 / 1 / 2 / 6;
+        background-color: blue;
+      }
+      .div2 {
+        grid-area: 2 / 1 / 6 / 2;
+        background-color: red;
+        min-height: auto;
+      }
+      .div3 {
+        grid-area: 2 / 2 / 6 / 6;
+        background-color: green;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="parent">
+      <div class="div1">
+        DIV 1
+      </div>
+      <div class="div2">
+        <div>dsdsdsdsdsd</div>
+        <div>dsdsdsdsdsd</div>
+        <div>dsdsdsdsdsd</div>
+        <div>dsdsdsdsdsd</div>
+        <div>dsdsdsdsdsd</div>
+        <div>dsdsdsdsdsd</div>
+      </div>
+      <div class="div3">
+        DIV 3
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+Requirements and Responsibilities for POS and Inventory Management System
+
+System Requirements
+
+
+
+
+Liblaray and Frameworks Used in the Project
+```
+1. Bootstrap
