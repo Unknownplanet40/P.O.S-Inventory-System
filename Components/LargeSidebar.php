@@ -13,12 +13,12 @@
   } else if (isset($_SESSION['Role']) && $_SESSION['Role'] == 'Staff') {
     echo 'Operator';
   } else {
-    echo 'User';
+    echo 'Undefined';
   }?></p>
   <hr />
   <ul class="nav nav-pills flex-column mb-auto">
     <li class="nav-item">
-      <a href="#" class="nav-link custom-active shadow border" aria-current="page">
+      <a <?php echo (basename($_SERVER['PHP_SELF']) == "Dashboard.php") ? 'class="nav-link custom-active shadow border"' : "href='../Dashboard.php'"; ?> class="nav-link custom-active shadow border" aria-current="page">
         <svg class="bi pe-none me-2" width="16" height="16">
           <use xlink:href="#home" />
         </svg>
@@ -26,7 +26,7 @@
       </a>
     </li>
     <li>
-      <a href="#" class="nav-link link-body-emphasis">
+      <a <?php echo (basename($_SERVER['PHP_SELF']) == "POS.php") ? 'class="nav-link custom-active shadow border"' : "href='./POS Module/POS.php'"; ?> class="nav-link link-body-emphasis">
         <svg class="bi pe-none me-2" width="16" height="16">
           <use xlink:href="#speedometer2" />
         </svg>
@@ -34,7 +34,7 @@
       </a>
     </li>
     <li>
-      <a href="#" class="nav-link link-body-emphasis">
+      <a href="#" class="nav-link link-body-emphasis" style="cursor: hands;">
         <svg class="bi pe-none me-2" width="16" height="16">
           <use xlink:href="#table" />
         </svg>
@@ -100,3 +100,9 @@
   </div>
 </div>
 <div style="height: 100vh;"></div>
+
+<script>
+  document.getElementById('Pos').addEventListener('click', function () {
+    window.location.href = '../Components/POS%20Module/POS.php';
+  });
+</script>

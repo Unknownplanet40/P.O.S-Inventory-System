@@ -10,7 +10,15 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="This is a Sidebar for Dashboard" />
     <meta name="author" content="Ryan James Capadocia, Jeric Dayandante, James Matthew Veloria" />
-    <?php require_once '../assets/sidebarCSS.php'; ?>
+    <link rel="stylesheet" href="../Style/Bootstrap-css/bootstrap.css" />
+    <link rel="stylesheet" href="../Style/Sidebar.css" />
+    <?php include_once '../Style/Custom.php'; ?>
+
+    <script defer src="../Script/Bootstrap-js/bootstrap.bundle.js"></script>
+    <script defer src="../Script/sidebars.js"></script>
+    <script defer src="../Script/chart.umd.js"></script>
+    <script defer src="../Script/DashChart.js"></script>
+
     <Script>
         // cover whole page it the window is resized to mobile size
         window.addEventListener('resize', function () {
@@ -24,7 +32,7 @@ session_start();
             }
         });
     </Script>
-    <title>Document</title>
+    <title>Dashboard</title>
 </head>
 
 <body>
@@ -44,17 +52,40 @@ session_start();
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 border border-2 border-dark">
-                        low products
+                    <div class="col-md-4">
+                        <div class="card border border-2 border-warning" style="min-width: 300px;">
+                            <div class="card-body">
+                                <h5 class="card-title">Low Stock</h5>
+                                <ol class="list-group list-group-numbered">
+                                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                                        <div class="ms-2 me-auto">
+                                            <div class="fw-bold">Subheading</div>
+                                            Content for list item
+                                        </div>
+                                        <span class="badge bg-primary rounded-pill">14</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                                        <div class="ms-2 me-auto">
+                                            <div class="fw-bold">Subheading</div>
+                                            Content for list item
+                                        </div>
+                                        <span class="badge bg-primary rounded-pill">14</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                                        <div class="ms-2 me-auto">
+                                            <div class="fw-bold">Subheading</div>
+                                            Content for list item
+                                        </div>
+                                        <span class="badge bg-primary rounded-pill">14</span>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 </body>
-
-<?php require_once '../assets/sidebarJS.php'; ?>
-<script src="../Script/chart.umd.js"></script>
-<script src="../Script/DashChart.js"></script>
 
 </html>

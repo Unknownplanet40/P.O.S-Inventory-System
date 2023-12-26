@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['Role'] = $row['Role'];
 
             header("Location: ../Dashboard.php");
-            
+
         } else if ($firstResult->num_rows > 0 && $secondResult->num_rows == 0) {
             $error = "Invalid password.";
         } else {
@@ -72,7 +72,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="login-wrapper">
                     <h2 class="login-title">Log in</h2>
                     <form action="<?php $_SERVER["PHP_SELF"] ?>" method="POST" class="form login-form">
-                        <p class="form-text text-center" id="reminder">Please Input Username and Password</p>
                         <div class="form-group">
                             <label for="email" class="sr-only" hidden>Username</label>
                             <input type="text" name="email" id="email" class="form-control" placeholder="Username">
@@ -91,6 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <a href="#!" class="forgot-password-link">Password?</a>
                         </div>
                     </form>
+                    <p class="form-text text-center" id="reminder">Please Input Username and Password</p>
                     <p class="mute-text text-center text-danger" id="error">
                         <?php if (isset($error))
                             echo $error; ?>&nbsp
@@ -102,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         // remove content of error message after 5 seconds
                         setTimeout(() => {
                             document.getElementById('error').innerHTML = "&nbsp";
-                        }, 5000);
+                        }, 3500);
 
 
                         // disable login button if username or password is empty
@@ -128,7 +128,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         document.getElementById('password').addEventListener('keyup', checkInputFields);
 
                     </script>
-                    <p class="text-center text-muted mt-5 mb-0">Username: admin | Password: admin123</p>
                 </div>
             </div>
         </div>

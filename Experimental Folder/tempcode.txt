@@ -1,0 +1,107 @@
+<!-- <div class="col" id="cardbox">
+                                                        <div id="itemcard"
+                                                            class="card h-100 shadow border border-warning">
+                                                            <img src="../../assets/TestDeter.jpg"
+                                                                class="card-img-top p-2" alt="..."
+                                                                style="height: 128px; object-fit: contain;">
+                                                            <div class="card-body">
+                                                                <h5 class="card-title" id="itemname">Detegent</h5>
+                                                                <small class="card-text text-muted">&#8369; 60.00 |
+                                                                    120ml</small>
+                                                                <div class="text-center mx-4">
+                                                                    <div class="input-group mb-1">
+                                                                        <button class="btn btn-sm btn-outline-warning"
+                                                                            type="button" id="bminus">&minus;</button>
+                                                                        <input type="text" id="count"
+                                                                            class="form-control form-control-sm"
+                                                                            placeholder="0" style="text-align: center;"
+                                                                            disabled>
+                                                                        <button class="btn btn-sm btn-outline-warning"
+                                                                            type="button" id="bplus">&plus;</button>
+                                                                        <div class="vr"></div>
+                                                                        <button class="btn btn-sm btn-outline-warning"
+                                                                            type="button" id="Item_1"
+                                                                            title="Add to List" data-bs-toggle="tooltip"
+                                                                            data-bs-placement="right">
+                                                                            <svg class="bi pe-none" width="18"
+                                                                                height="18" role="img"
+                                                                                aria-label="Add to List">
+                                                                                <use xlink:href="#cart" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-footer">
+                                                                <small id="stock" class="text-mute"></small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <script>
+                                                        var current_stock = 10;
+                                                        var percent = current_stock * 0.5;
+                                                        var count = 0;
+                                                        var stockElement = document.getElementById('stock');
+                                                        var countElement = document.getElementById('count');
+
+                                                        function updateStockDisplay() {
+                                                            countElement.value = count;
+                                                            stockElement.innerHTML = "Stocks: " + current_stock + " out of 10";
+
+                                                            if (current_stock <= percent) {
+                                                                stockElement.classList.remove('text-muted');
+                                                                stockElement.classList.add('text-danger');
+                                                            } else {
+                                                                stockElement.classList.remove('text-danger');
+                                                                stockElement.classList.add('text-muted');
+                                                            }
+                                                        }
+
+                                                        updateStockDisplay();
+
+                                                        document.getElementById('bplus').addEventListener('click', function () {
+                                                            if (current_stock > 0) {
+                                                                count++;
+                                                                current_stock--;
+                                                                updateStockDisplay();
+                                                            }
+                                                        });
+
+                                                        document.getElementById('bminus').addEventListener('click', function () {
+                                                            if (count > 0) {
+                                                                count--;
+                                                                current_stock++;
+                                                                updateStockDisplay();
+                                                            }
+                                                        });
+
+                                                        document.getElementById('Item_1').addEventListener('click', function () {
+                                                            if (count > 0) {
+                                                                alert("Item Added to Cart");
+                                                            }
+                                                        });
+                                                    </script> -->
+                                                    <script>
+                                                    //get all items from json file
+                                                    const Itempath = './MOCK_DATA.json';
+                                                    var items = [];
+
+                                                    // Fetch the JSON file
+                                                    fetch(Itempath)
+                                                        .then(response => {
+                                                            if (!response.ok) {
+                                                                throw new Error('Network response was not ok');
+                                                            }
+                                                            return response.json();
+                                                        })
+                                                        .then(jsonData => {
+                                                            jsonData.forEach(function (item) {
+                                                                items.push(item);
+                                                            });
+
+                                                            
+                                                        })
+                                                        .catch(error => {
+                                                            console.error('Error fetching the file:', error);
+                                                        });
+                                                </script>

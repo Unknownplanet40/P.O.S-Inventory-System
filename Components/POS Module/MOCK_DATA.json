@@ -1,0 +1,76 @@
+[
+  {
+    "id": 1,
+    "product_name": "Laundry Detergent",
+    "category": "Powder",
+    "price": 9.99,
+    "quantity": 50
+  },
+  {
+    "id": 2,
+    "product_name": "Fabric Softener",
+    "category": "Liquid",
+    "price": 5.99,
+    "quantity": 30,
+    "ml": 1000
+  },
+  {
+    "id": 3,
+    "product_name": "Bleach",
+    "category": "Liquid",
+    "price": 3.49,
+    "quantity": 40,
+    "ml": 750
+  },
+  {
+    "id": 4,
+    "product_name": "Stain Remover",
+    "category": "Spray",
+    "price": 4.99,
+    "quantity": 25
+  },
+  {
+    "id": 5,
+    "product_name": "Laundry Bags",
+    "category": "Accessories",
+    "price": 2.99,
+    "quantity": 100
+  },
+  {
+    "id": 6,
+    "product_name": "Dryer Sheets",
+    "category": "Sheets",
+    "price": 3.99,
+    "quantity": 45
+  },
+  {
+    "id": 7,
+    "product_name": "Washing Machine Cleaner",
+    "category": "Liquid",
+    "price": 6.49,
+    "quantity": 20,
+    "ml": 500
+  },
+  {
+    "id": 8,
+    "product_name": "Clothespins",
+    "category": "Accessories",
+    "price": 1.99,
+    "quantity": 75
+  },
+  {
+    "id": 9,
+    "product_name": "Lint Roller",
+    "category": "Roller",
+    "price": 2.49,
+    "quantity": 60
+  },
+  {
+    "id": 10,
+    "product_name": "Laundry Basket",
+    "category": "Basket",
+    "price": 7.99,
+    "quantity": 35
+  }
+]
+  
