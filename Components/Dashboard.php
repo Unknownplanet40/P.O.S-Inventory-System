@@ -8,20 +8,18 @@ session_start();
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="This is a Sidebar for Dashboard" />
+    <meta name="description" content="Dashboard" />
     <meta name="author" content="Ryan James Capadocia, Jeric Dayandante, James Matthew Veloria" />
+    <title>Dashboard</title>
     <link rel="stylesheet" href="../Style/Bootstrap-css/bootstrap.css" />
     <link rel="stylesheet" href="../Style/Sidebar.css" />
-    <?php include_once '../Style/Custom.php'; ?>
-
     <script defer src="../Script/Bootstrap-js/bootstrap.bundle.js"></script>
     <script defer src="../Script/sidebars.js"></script>
     <script defer src="../Script/chart.umd.js"></script>
     <script defer src="../Script/DashChart.js"></script>
-
     <Script>
         // cover whole page it the window is resized to mobile size
-        window.addEventListener('resize', function () {
+        window.addEventListener('resize', function() {
             if (window.innerWidth <= 768 && window.innerWidth <= 992) {
                 document.getElementById('mainwindow').classList.add('d-none');
                 document.getElementById('information').removeAttribute('hidden');
@@ -32,7 +30,13 @@ session_start();
             }
         });
     </Script>
-    <title>Dashboard</title>
+    <style>
+        .custom-active {
+            background-color: #ffcd00 !important;
+            color: #000 !important;
+            font-weight: 600 !important;
+        }
+    </style>
 </head>
 
 <body>
