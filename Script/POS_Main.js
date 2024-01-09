@@ -1,8 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const Itempath = "./MOCK_DATA.json";
-  const CustomersData = "./Customers.json";
+  const Itempath = "../../dump/MOCK_DATA.json";
+  const CustomersData = "../../dump/Customers.json";
 
-  var items = [];
   var SelectedReceipt = [];
   var SelectedItemID = [];
   var SelectedItemName = [];
@@ -29,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return response.json();
     })
     .then((jsonData) => {
+      document.getElementById("loading").setAttribute("hidden", "true");
       jsonData.forEach(function (item) {
         // Prevent data from being null or undefined
         if (!item["id"]) {
@@ -108,11 +108,11 @@ document.addEventListener("DOMContentLoaded", function () {
         // create price
         var price = document.createElement("small");
         price.classList.add("card-text", "text-muted");
-        if (item["category"] == "Liquid") {
-          price.innerHTML =
-            "&#8369; " + item["price"] + " | " + item["ml"] + " ml";
-        } else {
+        // if item null or undefined, dont display ml
+        if (!item["ml"]) {
           price.innerHTML = "&#8369; " + item["price"];
+        } else {
+          price.innerHTML = "&#8369; " + item["price"] + " / " + item["ml"] + "ml";
         }
         cardbody.appendChild(price);
 
@@ -176,35 +176,118 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // create stock
         var stock = document.createElement("small");
-        stock.classList.add("text-mute");
+        // change the color of the stock based on the level of stock
+        var tempercentage = (item["CurrentStock"] / item["quantity"]) * 100;
+        if (tempercentage >= 50) {
+          stock.classList.add("text-dark");
+        } else if (tempercentage >= 20 && tempercentage <= 49) {
+          stock.classList.add("text-warning");
+        } else if (tempercentage >= 0 && tempercentage <= 19) {
+          stock.classList.add("text-danger");
+        }
         stock.id = "stock_" + item["id"];
         stock.innerText =
-          "Stocks: " + item["quantity"] + " out of " + item["quantity"];
+          "Stocks: " + item["CurrentStock"] + " out of " + item["quantity"];
         cardfooter.appendChild(stock);
 
-        var current_stock = item["quantity"];
-        var percent = current_stock * 0.5;
+        var itemStock = item["quantity"];
+        var current_stock = item["CurrentStock"];
+        var lowStock = [];
         var count = 0;
+        var displayed = 0;
+
+        async function displayToasts() {
+          // Populate lowStock array
+          //all that have isLowStock equals to true then add it to the array
+          jsonData.forEach(function (item) {
+            if (item["isLowStock"] == true) {
+              lowStock.push(item["product_name"]);
+            }
+          });
+
+          // Display toasts sequentially
+          for (const item of lowStock) {
+            await displayToast(item);
+          }
+        }
+        async function displayToast(item) {
+          return new Promise((resolve) => {
+            Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3500,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            }).fire({
+              icon: "warning",
+              title: "Low Stock",
+              text: item + " is low on stock",
+              didClose: () => {
+                displayed++;
+                if (displayed == lowStock.length) {
+                  //clear the array
+                  lowStock = [];
+                }
+                console.log(lowStock);
+                resolve(); // Resolve the promise when the toast is closed
+              },
+            });
+          });
+        }
+
+        displayToasts();
 
         function updateStockDisplay() {
           document.getElementById("count_" + item["id"]).value = count;
           document.getElementById("stock_" + item["id"]).innerText =
-            "Stocks: " + current_stock + " out of " + item["quantity"];
+            "Stocks: " + current_stock + " out of " + itemStock;
 
-          if (current_stock <= percent) {
-            document
-              .getElementById("stock_" + item["id"])
-              .classList.remove("text-muted");
-            document
-              .getElementById("stock_" + item["id"])
-              .classList.add("text-danger");
+          // if the current stock is 0, disable the plus button
+          if (current_stock == 0) {
+            document.getElementById("bplus_" + item["id"]).disabled = true;
           } else {
+            document.getElementById("bplus_" + item["id"]).disabled = false;
+          }
+
+          // level of stock
+          // 100% - 50% = muted
+          // 49% - 20% = yellow
+          // 19% - 0% = red
+          var percentage = (current_stock / itemStock) * 100;
+          if (percentage >= 50) {
+            document
+              .getElementById("stock_" + item["id"])
+              .classList.remove("text-warning");
             document
               .getElementById("stock_" + item["id"])
               .classList.remove("text-danger");
             document
               .getElementById("stock_" + item["id"])
-              .classList.add("text-muted");
+              .classList.add("text-dark");
+          } else if (percentage >= 20 && percentage <= 49) {
+            document
+              .getElementById("stock_" + item["id"])
+              .classList.remove("text-dark");
+            document
+              .getElementById("stock_" + item["id"])
+              .classList.remove("text-danger");
+            document
+              .getElementById("stock_" + item["id"])
+              .classList.add("text-warning");
+          } else if (percentage >= 0 && percentage <= 19) {
+            document
+              .getElementById("stock_" + item["id"])
+              .classList.remove("text-dark");
+            document
+              .getElementById("stock_" + item["id"])
+              .classList.remove("text-warning");
+            document
+              .getElementById("stock_" + item["id"])
+              .classList.add("text-danger");
           }
         }
 
@@ -418,7 +501,11 @@ document.addEventListener("DOMContentLoaded", function () {
   fetch(CustomersData)
     .then((response) => {
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error("Auto-complete failed to load");
+      }
+
+      if (response.headers.get("content-length") == 0) {
+        throw new Error("Records is empty!");
       }
       return response.json();
     })
@@ -453,7 +540,22 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     })
     .catch((error) => {
-      console.error("Error fetching the file:", error);
+      var JsonError = document.getElementById("JsonErrorMessage");
+      var ErrorContainer = document.getElementById("JsonErrorMessageDiv");
+      error = error.toString().replace("Error: ", "");
+
+      if (error.toString().includes("Auto-complete")) {
+        ErrorContainer.removeAttribute("hidden");
+        JsonError.classList.remove("col-form-label");
+        JsonError.classList.add("text-danger");
+      } else if (error.toString().includes("Record")) {
+        setTimeout(function () {
+          ErrorContainer.removeAttribute("hidden");
+          JsonError.classList.remove("col-form-label");
+          JsonError.classList.add("text-muted");
+        }, 1000);
+      }
+      JsonError.innerHTML = error;
     });
 
   document.getElementById("newcustomer").addEventListener("click", function () {
@@ -469,11 +571,18 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.setItem("ExistingCustomer", ExistingCustomer.checked);
       location.reload();
     } else {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Please fill up all fields",
-      });
+      document.getElementById("CustomerName").classList.add("is-invalid");
+      document.getElementById("CustomerNumber").classList.add("is-invalid");
+      document.getElementById("CustomerAddress").classList.add("is-invalid");
+      setTimeout(function () {
+        document.getElementById("CustomerName").classList.remove("is-invalid");
+        document
+          .getElementById("CustomerNumber")
+          .classList.remove("is-invalid");
+        document
+          .getElementById("CustomerAddress")
+          .classList.remove("is-invalid");
+      }, 1500);
     }
   });
 

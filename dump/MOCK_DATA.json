@@ -4,7 +4,10 @@
     "product_name": "Laundry Detergent",
     "category": "Powder",
     "price": 9.99,
-    "quantity": 50
+    "quantity": 50,
+    "ml": null,
+    "CurrentStock": 50,
+    "isLowStock": false
   },
   {
     "id": 2,
@@ -12,7 +15,9 @@
     "category": "Liquid",
     "price": 5.99,
     "quantity": 30,
-    "ml": 1000
+    "ml": 1000,
+    "CurrentStock": 14,
+    "isLowStock": true
   },
   {
     "id": 3,
@@ -20,28 +25,39 @@
     "category": "Liquid",
     "price": 3.49,
     "quantity": 40,
-    "ml": 750
+    "ml": 750,
+    "CurrentStock": 40,
+    "isLowStock": false
   },
   {
     "id": 4,
     "product_name": "Stain Remover",
     "category": "Spray",
     "price": 4.99,
-    "quantity": 25
+    "quantity": 25,
+    "ml": null,
+    "CurrentStock": 25,
+    "isLowStock": false
   },
   {
     "id": 5,
     "product_name": "Laundry Bags",
     "category": "Accessories",
     "price": 2.99,
-    "quantity": 100
+    "quantity": 100,
+    "ml": null,
+    "CurrentStock": 36,
+    "isLowStock": true
   },
   {
     "id": 6,
     "product_name": "Dryer Sheets",
     "category": "Sheets",
     "price": 3.99,
-    "quantity": 45
+    "quantity": 45,
+    "ml": null,
+    "CurrentStock": 45,
+    "isLowStock": false
   },
   {
     "id": 7,
@@ -49,28 +65,39 @@
     "category": "Liquid",
     "price": 6.49,
     "quantity": 20,
-    "ml": 500
+    "ml": 500,
+    "CurrentStock": 9,
+    "isLowStock": true
   },
   {
     "id": 8,
     "product_name": "Clothespins",
     "category": "Accessories",
     "price": 1.99,
-    "quantity": 75
+    "quantity": 75,
+    "ml": null,
+    "CurrentStock": 75,
+    "isLowStock": false
   },
   {
     "id": 9,
     "product_name": "Lint Roller",
     "category": "Roller",
     "price": 2.49,
-    "quantity": 60
+    "quantity": 60,
+    "ml": null,
+    "CurrentStock": 60,
+    "isLowStock": false
   },
   {
     "id": 10,
     "product_name": "Laundry Basket",
     "category": "Basket",
     "price": 7.99,
-    "quantity": 35
+    "quantity": 35,
+    "ml": null,
+    "CurrentStock": 20,
+    "isLowStock": true
   }
 ]
   

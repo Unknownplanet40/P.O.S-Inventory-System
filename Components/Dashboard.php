@@ -44,6 +44,7 @@ session_start();
         <h1 class="object-fit-contain"></h1>
     </div>
     <main class="d-flex flex-nowrap" id="mainwindow">
+        <?php include_once '../assets/Icons.php'; ?>
         <?php require_once '../Components/LargeSidebar.php'; ?>
         <div class="container-xxl">
             <div class="container-xxl p-2" style=" overflow-y: scroll; overflow-x: hidden; height: 100vh;">

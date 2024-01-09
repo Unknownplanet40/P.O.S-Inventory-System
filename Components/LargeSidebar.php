@@ -1,4 +1,4 @@
-<?php include_once '../assets/Icons.php'; ?>
+
 <div class="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary" style="width: 280px">
   <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
     <!-- <svg class="bi pe-none me-2" width="40" height="32">
@@ -8,9 +8,9 @@
     <span class="fs-5 text-wrap" title="Manlalaba Laundry Station" data-bs-toggle="tooltip" data-bs-placement="right">Manlalaba Laundry Station</span>
   </a>
   <p class="fs-6 text-muted mb-0 ms-5"><?php
-  if (isset($_SESSION['Role']) && $_SESSION['Role'] == 'Admin') {
+  if (isset($_SESSION['role']) && $_SESSION['role'] == 0) {
     echo 'Administrator';
-  } else if (isset($_SESSION['Role']) && $_SESSION['Role'] == 'Staff') {
+  } else if (isset($_SESSION['role']) && $_SESSION['role'] == 1) {
     echo 'Operator';
   } else {
     echo 'Undefined';
@@ -86,7 +86,7 @@
     <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle"
       data-bs-toggle="dropdown" aria-expanded="false">
       <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2" />
-      <strong><?php echo (isset($_SESSION['user_name'])) ? $_SESSION['user_name'] : 'User'; ?></strong>
+      <strong><?php echo (isset($_SESSION['name'])) ? $_SESSION['name'] : 'User'; ?></strong>
     </a>
     <ul class="dropdown-menu text-small shadow">
       <li><a class="dropdown-item" href="#">New project...</a></li>

@@ -1,12 +1,12 @@
 <?php
 include_once '../Database/config.php';
-
+session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = mysqli_real_escape_string($conn, $_POST['email']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
 
-    $query = "SELECT * FROM accounts WHERE username = '$username';";
-    $query .= "SELECT * FROM accounts WHERE password = '$password';";
+    $query = "SELECT * FROM account WHERE username = '$username';";
+    $query .= "SELECT * FROM account WHERE password = '$password';";
 
     $result = mysqli_multi_query($conn, $query);
 
@@ -15,17 +15,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mysqli_next_result($conn);
         $secondResult = mysqli_store_result($conn);
         if ($firstResult->num_rows > 0 && $secondResult->num_rows > 0) {
-            session_start();
-
-            $sql = "SELECT * FROM accounts WHERE username = '$username' AND password = '$password';";
+            $sql = "SELECT UUID FROM account WHERE username = '$username' AND password = '$password';";
             $row = mysqli_fetch_assoc(mysqli_query($conn, $sql));
-
-            $_SESSION['user_name'] = $row['Username'];
-            $_SESSION['user_pass'] = $row['Password'];
-            $_SESSION['Role'] = $row['Role'];
-
-            header("Location: ../Dashboard.php");
-
+            $_SESSION['UUID'] = $row['UUID'];
+            header("Location: ../Validation.php");
         } else if ($firstResult->num_rows > 0 && $secondResult->num_rows == 0) {
             $error = "Invalid password.";
         } else {
@@ -35,12 +28,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "<script>console.log('Failed to execute queries: " . mysqli_error($conn) . "');</script>";
     }
-
     // Close connection
     $conn->close();
 }
 
-
+if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
+    $notice = $_SESSION['statusNotif'];
+    $show = $_SESSION['ColorCode'];
+    unset($_SESSION['statusNotif']);
+    unset($_SESSION['ColorCode']);
+} else {
+    $show = "visually-hidden";
+}
 ?>
 
 
@@ -54,9 +53,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Manlalaba Laundry Station</title>
     <link rel="stylesheet" href="../../Style/Bootstrap-css/bootstrap.css">
     <link rel="stylesheet" href="../../Style/Login.css">
+    <link rel="stylesheet" href="../../Style/SA2-BS4.css">
+    <script src="../../Script/sweetalert2.all.min.js"></script>
+    <style>
+        .swal2-timer-progress-bar {
+            background-color: #ffcd00 !important;
+        }
+    </style>
 </head>
 
 <body>
+    <?php
+    if (strpos($connectionError, "Failed to connect") !== false || $connectionError != "") {
+        echo '
+        <script>
+            Swal.mixin({
+            toast: true,
+            position: "bottom-end",
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        }).fire({
+            icon: "success",
+            title: "' . $connectionError . '"
+        });
+        </script>';
+    }
+    ?>
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6 col-md-7 intro-section">
@@ -70,7 +97,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div class="col-sm-6 col-md-5 form-section">
                 <div class="login-wrapper">
-                    <h2 class="login-title">Log in</h2>
+                    <h2 class="login-title">Login
+
+                    </h2>
                     <form action="<?php $_SERVER["PHP_SELF"] ?>" method="POST" class="form login-form">
                         <div class="form-group">
                             <label for="email" class="sr-only" hidden>Username</label>
@@ -78,27 +107,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                         <div class="form-group mb-3">
                             <label for="password" class="sr-only" hidden>Password</label>
-                            <input type="password" name="password" id="password" class="form-control"
-                                placeholder="Password">
+                            <input type="password" name="password" id="password" class="form-control" placeholder="Password">
                             <div class="form-check mt-2">
-                                <input type="checkbox" class="form-check-input"> <span class="form-checkbox-text">Show
-                                    password</span>
+                                <label class="form-check-label" for="SpCb">Show Password</label>
+                                <input type="checkbox" class="form-check-input" id="SpCb">
                             </div>
                         </div>
                         <div class="d-flex justify-content-between align-items-center">
-                            <input name="login" id="login" class="btn login-btn" type="submit" value="Login">
+                            <div class="position-relative">
+                                <input name="login" id="login" class="btn login-btn" type="submit" value="Login">
+                                <span id="indicator" class="position-absolute top-0 start-100 translate-middle p-2 bg-success border border-light rounded-circle" title="You are connected to the internet">
+                                    <span class="visually-hidden">Internet Connection Status</span>
+                                </span>
+                            </div>
+
                             <a href="#!" class="forgot-password-link">Password?</a>
                         </div>
                     </form>
-                    <p class="form-text text-center" id="reminder">Please Input Username and Password</p>
-                    <p class="mute-text text-center text-danger" id="error">
-                        <?php if (isset($error))
-                            echo $error; ?>&nbsp
-                    </p>
-                    <p class="login-wrapper-footer-text visually-hidden">Need an account? <a href="#!"
-                            class="text-reset">Signup
-                            here</a></p>
+                    <?php
+                    if (isset($notice)) {
+                        if (strpos($notice, "You can't log in due to an active session") !== false) {
+                            echo '
+                        <script>
+                            Swal.mixin({
+                            toast: true,
+                            position: "bottom-end",
+                            showConfirmButton: false,
+                            timer: 10500,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        }).fire({
+                            icon: "warning",
+                            title: "Session Conflict",
+                            text: "' . $notice . '"
+                        });
+                        </script>';
+                        } else {
+                            echo '<p class="form-text text-center';
+                            if (isset($show)) echo $show;
+                            echo '" id="reminder">';
+                            if (isset($notice)) echo $notice;
+                            echo '</p>';
+                        }
+                    }
+                    ?>
+                    <p class="mute-text text-center text-danger" id="error"> <?php if (isset($error)) echo $error; ?>&nbsp</p>
+                    <p class="login-wrapper-footer-text visually-hidden">Need an account? <a href="#!" class="text-reset">Signup here</a></p>
                     <script>
+                        //check if connected to the internet
+                        var connected = navigator.onLine;
+                        if (connected) {
+                            document.getElementById('indicator').classList.remove('visually-hidden');
+                        } else {
+                            document.getElementById('indicator').classList.add('visually-hidden');
+                        }
+
                         // remove content of error message after 5 seconds
                         setTimeout(() => {
                             document.getElementById('error').innerHTML = "&nbsp";
@@ -116,10 +182,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             if (emailValue !== "" || passwordValue !== "") {
                                 document.getElementById('login').disabled = false;
-                                document.getElementById('reminder').innerHTML = "&nbsp;";
+                                setTimeout(() => {
+                                    document.getElementById('reminder').innerHTML = "&nbsp";
+                                }, 2000);
                             } else {
                                 document.getElementById('login').disabled = true;
-                                document.getElementById('reminder').innerHTML = "Please Input Username and Password";
                             }
                         }
 
@@ -127,6 +194,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         document.getElementById('email').addEventListener('keyup', checkInputFields);
                         document.getElementById('password').addEventListener('keyup', checkInputFields);
 
+                        // Show password
+                        document.getElementById('SpCb').addEventListener('click', () => {
+                            var passwordInput = document.getElementById('password');
+                            if (passwordInput.type === "password") {
+                                passwordInput.type = "text";
+                            } else {
+                                passwordInput.type = "password";
+                            }
+                        });
                     </script>
                 </div>
             </div>
