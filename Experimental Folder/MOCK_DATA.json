@@ -7,7 +7,8 @@
     "quantity": 50,
     "ml": null,
     "CurrentStock": 50,
-    "isLowStock": false
+    "isLowStock": false,
+    "image_path": null
   },
   {
     "id": 2,
@@ -16,8 +17,9 @@
     "price": 5.99,
     "quantity": 30,
     "ml": 1000,
-    "CurrentStock": 14,
-    "isLowStock": true
+    "CurrentStock": 30,
+    "isLowStock": false,
+    "image_path": null
   },
   {
     "id": 3,
@@ -27,7 +29,8 @@
     "quantity": 40,
     "ml": 750,
     "CurrentStock": 40,
-    "isLowStock": false
+    "isLowStock": false,
+    "image_path": null
   },
   {
     "id": 4,
@@ -37,7 +40,8 @@
     "quantity": 25,
     "ml": null,
     "CurrentStock": 25,
-    "isLowStock": false
+    "isLowStock": false,
+    "image_path": null
   },
   {
     "id": 5,
@@ -46,8 +50,9 @@
     "price": 2.99,
     "quantity": 100,
     "ml": null,
-    "CurrentStock": 36,
-    "isLowStock": true
+    "CurrentStock": 100,
+    "isLowStock": false,
+    "image_path": null
   },
   {
     "id": 6,
@@ -57,7 +62,8 @@
     "quantity": 45,
     "ml": null,
     "CurrentStock": 45,
-    "isLowStock": false
+    "isLowStock": false,
+    "image_path": null
   },
   {
     "id": 7,
@@ -66,8 +72,9 @@
     "price": 6.49,
     "quantity": 20,
     "ml": 500,
-    "CurrentStock": 9,
-    "isLowStock": true
+    "CurrentStock": 20,
+    "isLowStock": false,
+    "image_path": null
   },
   {
     "id": 8,
@@ -77,7 +84,8 @@
     "quantity": 75,
     "ml": null,
     "CurrentStock": 75,
-    "isLowStock": false
+    "isLowStock": false,
+    "image_path": null
   },
   {
     "id": 9,
@@ -87,7 +95,8 @@
     "quantity": 60,
     "ml": null,
     "CurrentStock": 60,
-    "isLowStock": false
+    "isLowStock": false,
+    "image_path": null
   },
   {
     "id": 10,
@@ -96,8 +105,9 @@
     "price": 7.99,
     "quantity": 35,
     "ml": null,
-    "CurrentStock": 20,
-    "isLowStock": true
+    "CurrentStock": 35,
+    "isLowStock": false,
+    "image_path": null
   }
 ]
   

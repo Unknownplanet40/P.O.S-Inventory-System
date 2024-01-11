@@ -1,7 +1,17 @@
 <?php
 include_once '../Database/config.php';
 session_start();
-include_once './FetchItems.php';
+include_once './FetchDatas.php';
+
+// fist check if the user is logged in
+if ($_SESSION['isLogin'] == 1) {
+    getItem();
+} else {
+    $_SESSION['statusNotif'] = "Not Logged In";
+    $_SESSION['ColorCode'] = "Text-dark";
+    header("Location: ../Login Module/LoginPage.php");
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -45,6 +55,10 @@ include_once './FetchItems.php';
         .swal2-timer-progress-bar {
             background-color: #ffcd00 !important;
         }
+
+        body {
+            min-width: 1300px;
+        }
     </style>
 </head>
 
@@ -74,10 +88,38 @@ include_once './FetchItems.php';
                     <div class="col-md-8">
                         <div class="container-xxl shadow border border-warning" style="background-color: #f5f5f5; border-radius: 10px;">
                             <nav>
-                                <div class="nav nav-tabs mt-1" id="nav-tab" role="tablist">
-                                    <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Items</button>
-                                    <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Services</button>
+                                <div class="nav nav-tabs mt-1 " id="nav-tab" role="tablist">
+                                    <style>
+                                        .nav-link.active {
+                                            background-color: #ffcd00 !important;
+                                            color: #000 !important;
+                                            font-weight: 600 !important;
+                                        }
+
+                                        .nav-link {
+                                            color: #000 !important;
+                                            font-weight: 600 !important;
+                                        }
+                                    </style>
+                                    <button id="T1" class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Items</button>
+                                    <button id="T2" class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Services</button>
+                                    <!-- left side tabs -->
+                                    <div class="nav-item dropdown ms-auto">
+                                        <a class="nav-link dropdown-toggle text-warning" href="#" id="navbardrop" data-bs-toggle="dropdown">
+                                            <span title="Notifications" data-bs-toggle="tooltip" data-bs-placement="left" id="notif-icon">
+                                            </span>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-end" id="notif-list">
+                                            <div class="dropdown-header text-danger text-center"><strong>Notifications</strong></div>
+                                            <div class="dropdown-divider"></div>
+                                            <div class="text-center" id="no-notif" hidden style="cursor: pointer;"><small class="text-muted">No Notifications</small></div>
+                                        </div>
+                                    </div>
                                 </div>
+
+                                <script>
+
+                                </script>
                             </nav>
                             <div class="row g-2 tab-content" id="nav-tabContent">
                                 <div class="col-md-12 tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
@@ -122,14 +164,16 @@ include_once './FetchItems.php';
                                                                 <div class="row mb-3">
                                                                     <label for="CustomerNumber" class="col-sm-2 col-form-label">Number</label>
                                                                     <div class="col-sm-10">
-                                                                        <input type="text" class="form-control" id="CustomerNumber">
+                                                                        <input type="text" class="form-control" id="CustomerNumber" autocomplete="on" list="customerNumberlists">
                                                                         <input type="checkbox" id="ExistingCustomer" hidden>
+                                                                        <datalist id="customerNumberlists"></datalist>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row mb-3">
-                                                                    <label for="CustomerAddress" class="col-sm-2 col-form-label">Address</label>
+                                                                    <label for="CustomerAddress" class="col-sm-2 col-form-label">address</label>
                                                                     <div class="col-sm-10">
-                                                                        <input type="address" class="form-control" id="CustomerAddress" title="Address is required" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                                                                        <input type="address" class="form-control" id="CustomerAddress" title="Address is required" data-bs-toggle="tooltip" data-bs-placement="bottom" list="customerAddresslists" autocomplete="on">
+                                                                        <datalist id="customerAddresslists"></datalist>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row mb-3">
@@ -160,8 +204,8 @@ include_once './FetchItems.php';
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="container-xxl mb-2" style="max-height: 72vh; overflow-y: scroll;">
-                                        <div class="row row-cols-1 row-cols-md-3 g-4" id="itemlist">
+                                    <div class="container-xxl mb-2" style="max-height: 73vh; overflow-y: scroll;">
+                                        <div class="row row-cols-1 row-cols-md-3 g-4 mb-2" id="itemlist">
                                         </div>
                                     </div>
                                     <p id="noResults" class="text-center text-muted" hidden>No Results</p>

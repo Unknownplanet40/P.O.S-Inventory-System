@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const Itempath = "../../dump/MOCK_DATA.json";
+  const Itempath = "../../dump/products.json";
   const CustomersData = "../../dump/Customers.json";
 
   var SelectedReceipt = [];
@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     SelectedItemPrice,
     SelectedItemQuantity,
   ];
+  var displayedNotif = false;
 
   fetch(Itempath)
     .then((response) => {
@@ -112,7 +113,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!item["ml"]) {
           price.innerHTML = "&#8369; " + item["price"];
         } else {
-          price.innerHTML = "&#8369; " + item["price"] + " / " + item["ml"] + "ml";
+          price.innerHTML =
+            "&#8369; " + item["price"] + " / " + item["ml"] + "ml";
         }
         cardbody.appendChild(price);
 
@@ -192,54 +194,207 @@ document.addEventListener("DOMContentLoaded", function () {
 
         var itemStock = item["quantity"];
         var current_stock = item["CurrentStock"];
-        var lowStock = [];
         var count = 0;
-        var displayed = 0;
 
-        async function displayToasts() {
-          // Populate lowStock array
-          //all that have isLowStock equals to true then add it to the array
-          jsonData.forEach(function (item) {
-            if (item["isLowStock"] == true) {
-              lowStock.push(item["product_name"]);
+        var lowStock = [];
+        var notifItems = [];
+        var notif = [];
+
+        /*         async function displayToast() {
+          if (localStorage.getItem("notifItems") != null) {
+            var temp = localStorage.getItem("notifItems").split(",");
+            temp.forEach(function (item) {
+              notifItems.push(item);
+            });
+          }
+
+          if (localStorage.getItem("notif") != null) {
+            var temp = localStorage.getItem("notif").split(",");
+            temp.forEach(function (item) {
+              notif.push(item);
+            });
+          }
+
+          // get item that has low stock
+          jsonData.forEach(function (lowitem) {
+            if (lowitem["isLowStock"] == true) {
+              lowStock.push(lowitem["product_name"]);
+              if (!notifItems.includes(lowitem["product_name"])) {
+                notifItems.push(lowitem["product_name"]);
+                notif.push(false);
+              }
+            }
+            if (lowitem["isLowStock"] == false) {
+              if (notifItems.includes(lowitem["product_name"])) {
+                var index = notifItems.indexOf(lowitem["product_name"]);
+                notifItems.splice(index, 1);
+                notif.splice(index, 1);
+
+                localStorage.removeItem("notif");
+                localStorage.removeItem("notifItems");
+                localStorage.setItem("notif", notif);
+                localStorage.setItem("notifItems", notifItems);
+              }
             }
           });
 
-          // Display toasts sequentially
-          for (const item of lowStock) {
-            await displayToast(item);
+          //compare the low stock items to the notif items and if the low stock items is not in the notif items then add it and if the notif items is not in the low stock items then remove it
+          if (lowStock.length == 0) {
+            notifItems = []
+            notif = []
+
+            localStorage.removeItem("notif");
+            localStorage.removeItem("notifItems");
+            localStorage.setItem("notif", notif);
+            localStorage.setItem("notifItems", notifItems);
+          } else {
+            for (var i = notifItems.length - 1; i >= 0; i--) {
+              if (!lowStock.includes(notifItems[i])) {
+                notifItems.splice(i, 1);
+              }
+            }
+          }
+
+          for (const itemlow of notifItems) {
+            // index of the item
+            var index = notifItems.indexOf(itemlow);
+            await displaySingleToast(itemlow, index);
           }
         }
-        async function displayToast(item) {
-          return new Promise((resolve) => {
-            Swal.mixin({
-              toast: true,
-              position: "top-end",
-              showConfirmButton: false,
-              timer: 3500,
-              timerProgressBar: true,
-              didOpen: (toast) => {
-                toast.addEventListener("mouseenter", Swal.stopTimer);
-                toast.addEventListener("mouseleave", Swal.resumeTimer);
-              },
-            }).fire({
-              icon: "warning",
-              title: "Low Stock",
-              text: item + " is low on stock",
-              didClose: () => {
-                displayed++;
-                if (displayed == lowStock.length) {
-                  //clear the array
-                  lowStock = [];
-                }
-                console.log(lowStock);
-                resolve(); // Resolve the promise when the toast is closed
-              },
+
+        async function displaySingleToast(itemlow, index) {
+          if (notif[index] == false) {
+            return new Promise((resolve) => {
+              if (notif[index] == false) {
+                Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 5000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.addEventListener("mouseenter", Swal.stopTimer);
+                    toast.addEventListener("mouseleave", Swal.resumeTimer);
+                  },
+                }).fire({
+                  icon: "warning",
+                  title: "Notification",
+                  text: itemlow + " is running low on stock",
+                  didClose: () => {
+                    notif[index] = true;
+                    resolve();
+                    localStorage.removeItem("notif");
+                    localStorage.removeItem("notifItems");
+                    localStorage.setItem("notif", notif);
+                    localStorage.setItem("notifItems", notifItems);
+                  },
+                });
+              }
             });
+          }
+        } */
+        
+
+        if (localStorage.getItem("notifItems") != null) {
+          var temp = localStorage.getItem("notifItems").split(",");
+          temp.forEach(function (item) {
+            notifItems.push(item);
           });
+        } else {
+          localStorage.setItem("notifItems", notifItems);
         }
 
-        displayToasts();
+        if (localStorage.getItem("notif") != null) {
+          var temp = localStorage.getItem("notif").split(",");
+          temp.forEach(function (item) {
+            notif.push(item);
+          });
+        } else {
+          localStorage.setItem("notif", notif);
+        }
+
+        async function displayToast() {
+          // get item that has low stock
+          jsonData.forEach(function (lowitem) {
+            if (lowitem["isLowStock"] === true) {
+              lowStock.push(lowitem["product_name"]);
+              if (!notifItems.includes(lowitem["product_name"])) {
+                notifItems.push(lowitem["product_name"]);
+                notif.push(false);
+              }
+            }
+            if (lowitem["isLowStock"] === false) {
+              if (notifItems.includes(lowitem["product_name"])) {
+                notifItems = notifItems.filter(
+                  (item) => item !== lowitem["product_name"]
+                );
+                notif = notif.filter(
+                  (_, i) => i !== notifItems.indexOf(lowitem["product_name"])
+                );
+
+                updateLocalStorage();
+              }
+            }
+          });
+
+          if (lowStock.length === 0) {
+            notifItems = [];
+            notif = [];
+            updateLocalStorage();
+            displayedNotif = false;
+          } else {
+            //notifItems = notifItems.filter((item) => lowStock.includes(item));
+            for (var i = notifItems.length - 1; i >= 0; i--) {
+              if (!lowStock.includes(notifItems[i])) {
+                notifItems.splice(i, 1);
+                notif.splice(i, 1);
+              }
+            }
+            displayedNotif = true;
+          }
+
+          for (const itemlow of notifItems) {
+            await displaySingleToast(itemlow);
+          }
+        }
+
+        function updateLocalStorage() {
+          localStorage.setItem("notif", notif);
+          localStorage.setItem("notifItems", notifItems);
+        }
+
+        async function displaySingleToast(itemlow) {
+          var index = notifItems.indexOf(itemlow);
+          if (notif[index] === false) {
+            return new Promise((resolve) => {
+              if (notif[index] === false) {
+                Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 5000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.addEventListener("mouseenter", Swal.stopTimer);
+                    toast.addEventListener("mouseleave", Swal.resumeTimer);
+                  },
+                }).fire({
+                  icon: "warning",
+                  title: "Notification",
+                  text: itemlow + " is running low on stock",
+                  didClose: () => {
+                    notif[index] = true;
+                    resolve();
+                    updateLocalStorage();
+                    displayedNotif = true;
+                  },
+                });
+              }
+            });
+          }
+        }
+
+        displayToast();
 
         function updateStockDisplay() {
           document.getElementById("count_" + item["id"]).value = count;
@@ -558,6 +713,42 @@ document.addEventListener("DOMContentLoaded", function () {
       JsonError.innerHTML = error;
     });
 
+    // for notification tab
+    var checkitem = localStorage.getItem("notifItems");
+
+    if (checkitem != "") {
+      var temp = [];
+      temp = localStorage.getItem("notifItems").split(",");
+      console.log(temp);
+
+      temp.forEach(function (notiftab) {
+        var notiflist = document.getElementById("notif-list");
+        var div = document.createElement("div");
+        div.classList.add("alert", "alert-danger", "text-nowrap", "m-1");
+        div.setAttribute("role", "alert");
+        div.innerHTML =
+          "<strong>" + notiftab + "</strong>" + " is running low on stock";
+        notiflist.appendChild(div);
+      });
+    }
+
+    var spanlist = document.getElementById("notif-icon");
+    var emptyNotif = document.getElementById("no-notif");
+
+    if (checkitem != "") {
+      var svg = document.createElement("svg");
+      svg.innerHTML =
+        '<svg class="bi pe-none text-warning" width="24" height="24" role="img" aria-label="Notification"> <use xlink:href="#notif-active" /> </svg>';
+      spanlist.appendChild(svg);
+      emptyNotif.setAttribute("hidden", "true");
+    } else {
+      var svg = document.createElement("svg");
+      svg.innerHTML =
+        '<svg class="bi pe-none text-warning" width="24" height="24" role="img" aria-label="Notification"> <use xlink:href="#notif-inactive" /> </svg>';
+      spanlist.appendChild(svg);
+      emptyNotif.removeAttribute("hidden");
+    }
+
   document.getElementById("newcustomer").addEventListener("click", function () {
     var customerName = document.getElementById("CustomerName").value;
     var customerNumber = document.getElementById("CustomerNumber").value;
@@ -603,7 +794,10 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.getItem("number");
     document.getElementById("Caddress").innerHTML =
       localStorage.getItem("address");
-    localStorage.clear();
+    // remove name, number and address from local storage
+    localStorage.removeItem("name");
+    localStorage.removeItem("number");
+    localStorage.removeItem("address");
   }
 
   /* 

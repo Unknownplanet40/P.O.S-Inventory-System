@@ -3,9 +3,10 @@ require_once '../Components/Database/config.php';
 session_start();
 date_default_timezone_set('Asia/Manila');
 
-
 $sql = "SELECT * FROM account WHERE UUID = '" . $_SESSION['UUID'] . "';";
 $result = mysqli_query($conn, $sql);
+
+
 
 if ($result) {
     $row = mysqli_fetch_assoc($result);
@@ -132,3 +133,4 @@ if ($result) {
     echo "<script>console.log('Failed to execute query: " . mysqli_error($conn) . "');</script>";
     error_log("Validation.php: " + mysqli_error($conn), 3, '../Error-Log.log');
 }
+mysqli_close($conn);

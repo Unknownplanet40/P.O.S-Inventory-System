@@ -15,7 +15,7 @@ try {
         $connectionError = "";
     } else {
         echo "<script>console.log('Failed to connect to database.');</script>";
-        $connectionError = "Failed to connect to database.";
+        $connectionError = "dberror";
     }
 } catch (\Throwable $th) {
     $connectionError = $th->getMessage();

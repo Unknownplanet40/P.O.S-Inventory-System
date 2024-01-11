@@ -1,3 +1,99 @@
+
+        if (localStorage.getItem("notifItems") != null) {
+          var temp = localStorage.getItem("notifItems").split(",");
+          temp.forEach(function (item) {
+            notifItems.push(item);
+          });
+        }
+
+        // get notif from local storage and add it to the array
+        if (localStorage.getItem("notif") != null) {
+          var temp = localStorage.getItem("notif").split(",");
+          temp.forEach(function (item) {
+            notif.push(item);
+          });
+        }
+
+        async function displayToasts() {
+          // Populate lowStock array
+          //all that have isLowStock equals to true then add it to the array
+
+          jsonData.forEach(function (item) {
+            if (item["isLowStock"] == true){
+              if (!notifItems.includes(item["product_name"])) {
+                notifItems.push(item["product_name"]);
+                notif.push(false);
+              }
+              lowStock.push(item["product_name"]);
+            }
+          });
+
+          if (notifItems.length != 0) {
+            // remove item that are not in the lowStock array
+            for (var i = 0; i < notifItems.length; i++) {
+              if (!lowStock.includes(notifItems[i])) {
+                notifItems.splice(i, 1);
+                notif.splice(i, 1);
+              } else {
+                // add item that are in the lowStock array but not in the notifItems array
+                if (!notifItems.includes(lowStock[i])) {
+                  notifItems.push(lowStock[i]);
+                  notif.push(false);
+                }
+              }
+            }
+          }
+
+          // Display toasts sequentially
+          for (const item of notifItems) {
+            await displayToast(item);
+          }
+        }
+
+        async function displayToast(item) {
+
+          for (var i = 0; i < notifItems.length; i++) {
+            if (notifItems[i] == item && notif[i] == false) {
+              notif[i] = true;
+              return new Promise((resolve) => {
+                Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 3500,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.addEventListener("mouseenter", Swal.stopTimer);
+                    toast.addEventListener("mouseleave", Swal.resumeTimer);
+                  },
+                }).fire({
+                  icon: "warning",
+                  title: "Low Stock",
+                  text: item + " is low on stock",
+                  didClose: () => {
+                    displayed++;
+
+                    if (displayed == notifItems.length) {
+                      localStorage.removeItem("notifItems");
+                      localStorage.removeItem("notif");
+                      localStorage.setItem("notifItems", notifItems);
+                      localStorage.setItem("notif", notif);
+                    }
+
+                    console.log(localStorage.getItem("notifItems"));
+                    console.log(localStorage.getItem("notif"));
+                    resolve(); // Resolve the promise when the toast is closed
+                  },
+                });
+              });
+            }
+          }
+        }
+
+        displayToasts();
+        console.log(localStorage.getItem("notifItems"));
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

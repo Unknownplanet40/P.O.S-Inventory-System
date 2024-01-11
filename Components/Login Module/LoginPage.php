@@ -60,25 +60,28 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
             background-color: #ffcd00 !important;
         }
     </style>
+    <script>
+
+    </script>
 </head>
 
 <body>
     <?php
-    if (strpos($connectionError, "Failed to connect") !== false || $connectionError != "") {
+    if (strpos($connectionError, "dberror") !== false || $connectionError != "") {
         echo '
         <script>
             Swal.mixin({
             toast: true,
             position: "bottom-end",
             showConfirmButton: false,
-            timer: 2500,
+            timer: 10500,
             timerProgressBar: true,
             didOpen: (toast) => {
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;
             }
         }).fire({
-            icon: "success",
+            icon: "error",
             title: "' . $connectionError . '"
         });
         </script>';
@@ -145,6 +148,26 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
                             text: "' . $notice . '"
                         });
                         </script>';
+                        } elseif (strpos($notice, "Not Logged In") !== false) {
+                            echo '
+                        <script>
+                            Swal.mixin({
+                            toast: true,
+                            position: "bottom-end",
+                            showConfirmButton: false,
+                            timer: 10500,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        }).fire({
+                            icon: "info",
+                            title: "Credentials Required",
+                            text: "Kindly log in before attempting to access the page. Your login credentials are required to proceed."
+                        });
+                        </script>';
+
                         } else {
                             echo '<p class="form-text text-center';
                             if (isset($show)) echo $show;
@@ -155,7 +178,7 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
                     }
                     ?>
                     <p class="mute-text text-center text-danger" id="error"> <?php if (isset($error)) echo $error; ?>&nbsp</p>
-                    <p class="login-wrapper-footer-text visually-hidden">Need an account? <a href="#!" class="text-reset">Signup here</a></p>
+                    <p class="login-wrapper-footer-text visually-hidden">Need an account? <a href="#!" class="text-reset">Signup here</a></p> 
                     <script>
                         //check if connected to the internet
                         var connected = navigator.onLine;
