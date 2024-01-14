@@ -141,8 +141,7 @@ if ($_SESSION['isLogin'] == 1) {
                                                     </ul>
                                                 </div>
                                                 <div class="d-grid gap-2 d-md-flex justify-content-end">
-                                                    <button class="btn btn-sm btn-warning me-md-2" type="button" data-bs-toggle="modal" data-bs-target="#NewCustomer" id="NC_Modal"><span class="text-dark" title="Add Customer Address first before adding items" data-bs-toggle="tooltip" data-bs-placement="bottom">New
-                                                            Customer</span></button>
+                                                    <button class="btn btn-sm btn-warning me-md-2" type="button" data-bs-toggle="modal" data-bs-target="#NewCustomer" id="NC_Modal"><span class="text-dark" id="NC_text">New Customer</span></button>
                                                 </div>
                                                 <!-- Modal -->
                                                 <div class="modal fade" id="NewCustomer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="Customer Modal" aria-hidden="true">
@@ -172,14 +171,8 @@ if ($_SESSION['isLogin'] == 1) {
                                                                 <div class="row mb-3">
                                                                     <label for="CustomerAddress" class="col-sm-2 col-form-label">address</label>
                                                                     <div class="col-sm-10">
-                                                                        <input type="address" class="form-control" id="CustomerAddress" title="Address is required" data-bs-toggle="tooltip" data-bs-placement="bottom" list="customerAddresslists" autocomplete="on">
+                                                                        <input type="address" class="form-control" id="CustomerAddress" list="customerAddresslists" autocomplete="on">
                                                                         <datalist id="customerAddresslists"></datalist>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row mb-3">
-                                                                    <label for="Weight" class="col-sm-2 col-form-label">Weight</label>
-                                                                    <div class="col-sm-10">
-                                                                        <input type="number" class="form-control" id="Weight" title="Weight of clothes to be washed" data-bs-toggle="tooltip" data-bs-placement="bottom" value="8" max="8" min="1" disabled>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row mb-3" id="JsonErrorMessageDiv" hidden>
@@ -188,7 +181,7 @@ if ($_SESSION['isLogin'] == 1) {
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-warning" id="newcustomer">Submit</button>
+                                                                <button type="button" class="btn btn-warning" id="newcustomer" data-bs-dismiss="modal">Submit</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -213,12 +206,24 @@ if ($_SESSION['isLogin'] == 1) {
                                 </div>
                                 <div class="col-md-12 tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
                                     <div class="container-xxl" style="max-height: 68vh; overflow-y: scroll;">
+                                        <div class="input-group">
+                                            <div class="input-group-text w-100 my-2 bg-transparent border-0">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="Switch" title="Custom Weight" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                                                </div>
+                                                <div class="input-group">
+                                                    <span class="input-group-text" id="basic-addon1">Clothes Weight (kg)</span>
+                                                    <input type="number" class="form-control" id="Weight" title="Weight of clothes to be washed" data-bs-toggle="tooltip" data-bs-placement="bottom" value="8" max="8" min="1" disabled>
+                                                </div>
+                                                <!-- button -->
+                                                <button type="button" class="btn btn-sm btn-warning mx-1" id="Btn_weight" title="Add to List" data-bs-toggle="tooltip" data-bs-placement="bottom">Add to List</button>
+                                            </div>
+                                            <small class="text-dark text-center position-absolute bottom-0 end-50"
+                                            style="font-size: 10px;">
+                                                The maximum weight than can handle by the machine is 8kg</small>
+                                        </div>
                                         <div class="row g-3 py-2">
                                             <div class="col">
-                                                <div class="form-floating mb-3" hidden>
-                                                    <input type="email" class="form-control form-control-sm" id="floatingInput" title="Max Weight of 8kg per load" data-bs-toggle="tooltip" data-bs-placement="bottom" placeholder="">
-                                                    <label for="floatingInput">Weight</label>
-                                                </div>
                                                 <ul class="list-group">
                                                     <li class="list-group-item text-bg-warning text-center" aria-current="true">Services</li>
                                                     <li class="list-group-item d-flex justify-content-between align-items-start">
@@ -306,7 +311,7 @@ if ($_SESSION['isLogin'] == 1) {
                     </div>
                     <div class="col-md-4">
                         <div class="container-xxl border border-warning shadow" style="background-color: #f5f5f5; border-radius: 10px;">
-                            <div class="card my-2 bg-transparent border-0" style="min-height: 8vh;">
+                            <div class="card my-2 bg-transparent border-0 visually-hidden" style="min-height: 8vh;">
                                 <div class="card-body" data-bs-toggle="collapse" data-bs-target="#Info">
                                     <span class="text-muted text-center" id="Cname" title="click to expand" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="bottom">No Customer Selected &nbsp;<span class="spinner-border spinner-border-sm text-warning" aria-hidden="true" id="spin"></span></span>
                                     <div class="collapse" id="Info">
@@ -321,7 +326,7 @@ if ($_SESSION['isLogin'] == 1) {
                                     </div>
                                 </div>
                             </div>
-                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="d-flex justify-content-between align-items-center my-3">
                                 <span class="text-primary">Receipt</span>
                                 <span class="badge bg-primary rounded-pill" id="total-items"></span>
                             </h4>

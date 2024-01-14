@@ -293,11 +293,10 @@ document.addEventListener("DOMContentLoaded", function () {
             });
           }
         } */
-        
 
         if (localStorage.getItem("notifItems") != null) {
-          var temp = localStorage.getItem("notifItems").split(",");
-          temp.forEach(function (item) {
+          var tempNI = localStorage.getItem("notifItems").split(",");
+          tempNI.forEach(function (item) {
             notifItems.push(item);
           });
         } else {
@@ -305,8 +304,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (localStorage.getItem("notif") != null) {
-          var temp = localStorage.getItem("notif").split(",");
-          temp.forEach(function (item) {
+          var tempN = localStorage.getItem("notif").split(",");
+          tempN.forEach(function (item) {
             notif.push(item);
           });
         } else {
@@ -666,7 +665,11 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     .then((jsonData) => {
       var customerName = document.getElementById("customerNamelists");
+      var customerNumber = document.getElementById("customerNumberlists");
+      var customerAddress = document.getElementById("customerAddresslists");
       var customerNameList = [];
+      var customerNumberList = [];
+      var customerAddressList = [];
       jsonData.forEach(function (customer) {
         if (!customerNameList.includes(customer.name)) {
           var option = document.createElement("option");
@@ -676,6 +679,23 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
 
+      jsonData.forEach(function (customer) {
+        if (!customerNumberList.includes(customer.phone_number)) {
+          var option = document.createElement("option");
+          option.value = customer.phone_number;
+          customerNumber.appendChild(option);
+        }
+      });
+
+      jsonData.forEach(function (customer) {
+        if (!customerAddressList.includes(customer.address)) {
+          var option = document.createElement("option");
+          option.value = customer.address;
+          customerAddress.appendChild(option);
+        }
+      });
+
+      // for auto-complete Customer Name
       document
         .getElementById("CustomerName")
         .addEventListener("input", function () {
@@ -689,6 +709,44 @@ document.addEventListener("DOMContentLoaded", function () {
             if (name.toLowerCase() == customName) {
               customerNumber.value = customer.phone_number;
               customerAddress.value = customer.address;
+              ExistingCustomer.checked = true;
+            }
+          });
+        });
+
+      // for auto-complete Customer Number
+      document
+        .getElementById("CustomerNumber")
+        .addEventListener("input", function () {
+          var customNumber = this.value;
+          var customerName = document.getElementById("CustomerName");
+          var customerAddress = document.getElementById("CustomerAddress");
+          var ExistingCustomer = document.getElementById("ExistingCustomer");
+
+          jsonData.forEach(function (customer) {
+            if (customer.phone_number == customNumber) {
+              customerName.value =
+                customer.first_name + " " + customer.last_name;
+              customerAddress.value = customer.address;
+              ExistingCustomer.checked = true;
+            }
+          });
+        });
+
+      // for auto-complete Customer Address
+      document
+        .getElementById("CustomerAddress")
+        .addEventListener("input", function () {
+          var customAddress = this.value.toLowerCase();
+          var customerName = document.getElementById("CustomerName");
+          var customerNumber = document.getElementById("CustomerNumber");
+          var ExistingCustomer = document.getElementById("ExistingCustomer");
+
+          jsonData.forEach(function (customer) {
+            if (customer.address.toLowerCase() == customAddress) {
+              customerName.value =
+                customer.first_name + " " + customer.last_name;
+              customerNumber.value = customer.phone_number;
               ExistingCustomer.checked = true;
             }
           });
@@ -713,41 +771,60 @@ document.addEventListener("DOMContentLoaded", function () {
       JsonError.innerHTML = error;
     });
 
-    // for notification tab
-    var checkitem = localStorage.getItem("notifItems");
+  // for Weight input
+  var changeweight = document.getElementById("Switch");
+  var weight = document.getElementById("Weight");
+  var Btn_weight = document.getElementById("Btn_weight");
+  var spanlist = document.getElementById("notif-icon");
+  var emptyNotif = document.getElementById("no-notif");
+  var checkitem = localStorage.getItem("notifItems");
 
-    if (checkitem != "") {
-      var temp = [];
-      temp = localStorage.getItem("notifItems").split(",");
-      console.log(temp);
-
-      temp.forEach(function (notiftab) {
-        var notiflist = document.getElementById("notif-list");
-        var div = document.createElement("div");
-        div.classList.add("alert", "alert-danger", "text-nowrap", "m-1");
-        div.setAttribute("role", "alert");
-        div.innerHTML =
-          "<strong>" + notiftab + "</strong>" + " is running low on stock";
-        notiflist.appendChild(div);
-      });
-    }
-
-    var spanlist = document.getElementById("notif-icon");
-    var emptyNotif = document.getElementById("no-notif");
-
-    if (checkitem != "") {
-      var svg = document.createElement("svg");
-      svg.innerHTML =
-        '<svg class="bi pe-none text-warning" width="24" height="24" role="img" aria-label="Notification"> <use xlink:href="#notif-active" /> </svg>';
-      spanlist.appendChild(svg);
-      emptyNotif.setAttribute("hidden", "true");
+  changeweight.addEventListener("change", function () {
+    if (changeweight.checked) {
+      weight.removeAttribute("disabled");
     } else {
-      var svg = document.createElement("svg");
-      svg.innerHTML =
-        '<svg class="bi pe-none text-warning" width="24" height="24" role="img" aria-label="Notification"> <use xlink:href="#notif-inactive" /> </svg>';
-      spanlist.appendChild(svg);
-      emptyNotif.removeAttribute("hidden");
+      weight.setAttribute("disabled", "true");
     }
+  });
+
+  if (
+    checkitem !== null &&
+    checkitem !== undefined &&
+    checkitem.trim() !== ""
+  ) {
+    var svg = document.createElement("svg");
+    svg.innerHTML =
+      '<svg class="bi pe-none text-warning" width="24" height="24" role="img" aria-label="Notification"> <use xlink:href="#notif-active" /> </svg>';
+    spanlist.appendChild(svg);
+    emptyNotif.setAttribute("hidden", "true");
+  } else {
+    var svg = document.createElement("svg");
+    svg.innerHTML =
+      '<svg class="bi pe-none text-warning" width="24" height="24" role="img" aria-label="Notification"> <use xlink:href="#notif-inactive" /> </svg>';
+    spanlist.appendChild(svg);
+    emptyNotif.removeAttribute("hidden");
+  }
+
+  // for notification tab
+  if (
+    checkitem !== null &&
+    checkitem !== undefined &&
+    checkitem.trim() !== ""
+  ) {
+    var temp = [];
+    temp = checkitem.split(",");
+    console.log(temp);
+
+    temp.forEach(function (notiftab) {
+      var notiflist = document.getElementById("notif-list");
+      var div = document.createElement("div");
+      div.classList.add("alert", "alert-danger", "text-nowrap", "m-1");
+      div.setAttribute("role", "alert");
+      div.innerHTML =
+        "<strong>" + notiftab + "</strong>" + " is running low on stock";
+      notiflist.appendChild(div);
+    });
+  }
 
   document.getElementById("newcustomer").addEventListener("click", function () {
     var customerName = document.getElementById("CustomerName").value;
@@ -755,12 +832,18 @@ document.addEventListener("DOMContentLoaded", function () {
     var customerAddress = document.getElementById("CustomerAddress").value;
     var ExistingCustomer = document.getElementById("ExistingCustomer");
 
-    if (customerName != "" && customerNumber != "" && customerAddress != "") {
+    if (
+      customerName !== "" &&
+      customerNumber !== "" &&
+      customerAddress !== ""
+    ) {
       localStorage.setItem("name", customerName);
       localStorage.setItem("number", customerNumber);
       localStorage.setItem("address", customerAddress);
       localStorage.setItem("ExistingCustomer", ExistingCustomer.checked);
-      location.reload();
+
+      document.getElementById("NC_text").innerText = "Customer Details";
+      document.getElementById("ModalTitle").innerText = "Customer Details";
     } else {
       document.getElementById("CustomerName").classList.add("is-invalid");
       document.getElementById("CustomerNumber").classList.add("is-invalid");
@@ -778,26 +861,35 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // if the page is reloaded, get the data from the local storage and put it back to the input boxes
-  if (localStorage.getItem("name") != null) {
-    document.getElementById("CustomerName").value =
-      localStorage.getItem("name");
-    document.getElementById("CustomerNumber").value =
-      localStorage.getItem("number");
-    document.getElementById("CustomerAddress").value =
-      localStorage.getItem("address");
-    document.getElementById("ExistingCustomer").checked =
-      localStorage.getItem("ExistingCustomer");
+  var LS_name = localStorage.getItem("name");
+  var LS_number = localStorage.getItem("number");
+  var LS_address = localStorage.getItem("address");
+  var LS_Exist = localStorage.getItem("ExistingCustomer");
+
+  if (LS_name !== null && LS_name !== undefined && LS_name.trim() !== "") {
+    // view the customer details in receipt area
+    /*     
+    document.getElementById("CustomerName").value = LS_name;
+    document.getElementById("CustomerNumber").value = LS_number;
+    document.getElementById("CustomerAddress").value = LS_address;
+    document.getElementById("ExistingCustomer").checked = LS_Exist;
 
     document.getElementById("Cname").innerHTML = "Customer Details";
-    document.getElementById("Cname2").innerHTML = localStorage.getItem("name");
-    document.getElementById("Cnumber").innerHTML =
-      localStorage.getItem("number");
-    document.getElementById("Caddress").innerHTML =
-      localStorage.getItem("address");
+    document.getElementById("Cname2").innerHTML = LS_name;
+    document.getElementById("Cnumber").innerHTML = LS_number;
+    document.getElementById("Caddress").innerHTML = LS_address;
     // remove name, number and address from local storage
     localStorage.removeItem("name");
     localStorage.removeItem("number");
-    localStorage.removeItem("address");
+    localStorage.removeItem("address"); 
+    */
+
+    document.getElementById("CustomerName").value = LS_name;
+    document.getElementById("CustomerNumber").value = LS_number;
+    document.getElementById("CustomerAddress").value = LS_address;
+    document.getElementById("ExistingCustomer").checked = LS_Exist;
+    document.getElementById("NC_text").innerText = "Customer Details";
+    document.getElementById("ModalTitle").innerText = "Customer Details";
   }
 
   /* 
