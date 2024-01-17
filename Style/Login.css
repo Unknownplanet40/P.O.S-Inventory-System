@@ -2,6 +2,7 @@
 
 * {
   font-family: "Poppins";
+  box-sizing: border-box;
 }
 
 body {
@@ -167,8 +168,22 @@ h1 > a {
   color: #6e3b3bc0;
 }
 .login-wrapper .form-control::placeholder {
-  /* color: #b0adad; */
   color: #6e3b3bc0;
+  
+}
+
+.login-wrapper .uname::placeholder {
+  background-image: url(../assets/Username.svg);
+  background-repeat: no-repeat;
+  background-position: 0 center;
+  padding-left: 30px;
+}
+
+.login-wrapper .pword::placeholder {
+  background-image: url(../assets/Password.svg);
+  background-repeat: no-repeat;
+  background-position: 2px center;
+  padding-left: 30px;
 }
 
 .login-title {

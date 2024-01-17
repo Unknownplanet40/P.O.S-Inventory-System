@@ -11,22 +11,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = mysqli_multi_query($conn, $query);
 
     if ($result) {
-        $firstResult = mysqli_store_result($conn);
+        $UsernameResult = mysqli_store_result($conn);
         mysqli_next_result($conn);
-        $secondResult = mysqli_store_result($conn);
-        if ($firstResult->num_rows > 0 && $secondResult->num_rows > 0) {
+        $PasswordResult = mysqli_store_result($conn);
+        if ($UsernameResult->num_rows > 0 && $PasswordResult->num_rows > 0) {
             $sql = "SELECT UUID FROM account WHERE username = '$username' AND password = '$password';";
             $row = mysqli_fetch_assoc(mysqli_query($conn, $sql));
             $_SESSION['UUID'] = $row['UUID'];
             header("Location: ../Validation.php");
-        } else if ($firstResult->num_rows > 0 && $secondResult->num_rows == 0) {
+        } else if ($UsernameResult->num_rows > 0 && $PasswordResult->num_rows == 0) {
             $error = "Invalid password.";
         } else {
             $error = "Invalid username or password.";
         }
-        echo "<script>console.log('Queries executed successfully.');</script>";
     } else {
-        echo "<script>console.log('Failed to execute queries: " . mysqli_error($conn) . "');</script>";
+        echo "<script>console.error('Failed to execute queries: " . mysqli_error($conn) . "');</script>";
     }
     // Close connection
     $conn->close();
@@ -100,17 +99,15 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
             </div>
             <div class="col-sm-6 col-md-5 form-section">
                 <div class="login-wrapper">
-                    <h2 class="login-title">Login
-
-                    </h2>
+                    <h2 class="login-title">Login</h2>
                     <form action="<?php $_SERVER["PHP_SELF"] ?>" method="POST" class="form login-form">
                         <div class="form-group">
                             <label for="email" class="sr-only" hidden>Username</label>
-                            <input type="text" name="email" id="email" class="form-control" placeholder="Username">
+                            <input type="text" name="email" id="email" class="form-control uname" placeholder="Username">
                         </div>
                         <div class="form-group mb-3">
                             <label for="password" class="sr-only" hidden>Password</label>
-                            <input type="password" name="password" id="password" class="form-control" placeholder="Password">
+                            <input type="password" name="password" id="password" class="form-control pword" placeholder="Password">
                             <div class="form-check mt-2">
                                 <label class="form-check-label" for="SpCb">Show Password</label>
                                 <input type="checkbox" class="form-check-input" id="SpCb">
@@ -181,7 +178,7 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
                     <p class="login-wrapper-footer-text visually-hidden">Need an account? <a href="#!" class="text-reset">Signup here</a></p> 
                     <script>
                         //check if connected to the internet
-                        var connected = navigator.onLine;
+                        var connected = navigator.offLine;
                         if (connected) {
                             document.getElementById('indicator').classList.remove('visually-hidden');
                         } else {

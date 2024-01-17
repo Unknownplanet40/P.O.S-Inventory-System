@@ -86,7 +86,7 @@ if ($_SESSION['isLogin'] == 1) {
             <div class="container-xxl pt-3">
                 <div class="row">
                     <div class="col-md-8">
-                        <div class="container-xxl shadow border border-warning" style="background-color: #f5f5f5; border-radius: 10px;">
+                        <div class="container-xxl shadow border border-warning rounded">
                             <nav>
                                 <div class="nav nav-tabs mt-1 " id="nav-tab" role="tablist">
                                     <style>
@@ -218,8 +218,7 @@ if ($_SESSION['isLogin'] == 1) {
                                                 <!-- button -->
                                                 <button type="button" class="btn btn-sm btn-warning mx-1" id="Btn_weight" title="Add to List" data-bs-toggle="tooltip" data-bs-placement="bottom">Add to List</button>
                                             </div>
-                                            <small class="text-dark text-center position-absolute bottom-0 end-50"
-                                            style="font-size: 10px;">
+                                            <small class="text-dark text-center position-absolute bottom-0 end-50" style="font-size: 10px;">
                                                 The maximum weight than can handle by the machine is 8kg</small>
                                         </div>
                                         <div class="row g-3 py-2">
@@ -299,6 +298,7 @@ if ($_SESSION['isLogin'] == 1) {
                                                     </li>
                                                 </ol>
                                             </div>
+                                            <small class="text-muted text-center">You can unselect the services by clicking the Item in the list</small>
                                             <div class="d-grid gap-2 visually-hidden">
                                                 <button class="btn btn-sm btn-primary" type="button">Add to
                                                     List</button>
@@ -310,7 +310,7 @@ if ($_SESSION['isLogin'] == 1) {
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="container-xxl border border-warning shadow" style="background-color: #f5f5f5; border-radius: 10px;">
+                        <div class="container-xxl border border-warning shadow rounded">
                             <div class="card my-2 bg-transparent border-0 visually-hidden" style="min-height: 8vh;">
                                 <div class="card-body" data-bs-toggle="collapse" data-bs-target="#Info">
                                     <span class="text-muted text-center" id="Cname" title="click to expand" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-placement="bottom">No Customer Selected &nbsp;<span class="spinner-border spinner-border-sm text-warning" aria-hidden="true" id="spin"></span></span>

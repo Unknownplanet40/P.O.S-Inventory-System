@@ -80,8 +80,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // create image
         var image = document.createElement("img");
         image.classList.add("card-img-top", "p-2");
-        image.src = "../../assets/TestDeter.jpg";
-        image.alt = "...";
+        image.src = item["image_path"];
+        image.alt = "Image of " + item["product_name"];
         image.style.height = "128px";
         image.style.objectFit = "contain";
         card.appendChild(image);
@@ -89,11 +89,12 @@ document.addEventListener("DOMContentLoaded", function () {
         // create card body
         var cardbody = document.createElement("div");
         cardbody.classList.add("card-body");
+        cardbody.title = item["product_name"] + " - " + item["category"];
         card.appendChild(cardbody);
 
         // create card title
         var cardtitle = document.createElement("h5");
-        cardtitle.classList.add("card-title");
+        cardtitle.classList.add("card-title", "text-truncate");
         cardtitle.id = "itemname";
         cardtitle.innerText = item["product_name"];
         cardbody.appendChild(cardtitle);
@@ -114,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
           price.innerHTML = "&#8369; " + item["price"];
         } else {
           price.innerHTML =
-            "&#8369; " + item["price"] + " / " + item["ml"] + "ml";
+            "&#8369; " + item["price"] + " per " + item["ml"] + "ml";
         }
         cardbody.appendChild(price);
 
@@ -199,100 +200,6 @@ document.addEventListener("DOMContentLoaded", function () {
         var lowStock = [];
         var notifItems = [];
         var notif = [];
-
-        /*         async function displayToast() {
-          if (localStorage.getItem("notifItems") != null) {
-            var temp = localStorage.getItem("notifItems").split(",");
-            temp.forEach(function (item) {
-              notifItems.push(item);
-            });
-          }
-
-          if (localStorage.getItem("notif") != null) {
-            var temp = localStorage.getItem("notif").split(",");
-            temp.forEach(function (item) {
-              notif.push(item);
-            });
-          }
-
-          // get item that has low stock
-          jsonData.forEach(function (lowitem) {
-            if (lowitem["isLowStock"] == true) {
-              lowStock.push(lowitem["product_name"]);
-              if (!notifItems.includes(lowitem["product_name"])) {
-                notifItems.push(lowitem["product_name"]);
-                notif.push(false);
-              }
-            }
-            if (lowitem["isLowStock"] == false) {
-              if (notifItems.includes(lowitem["product_name"])) {
-                var index = notifItems.indexOf(lowitem["product_name"]);
-                notifItems.splice(index, 1);
-                notif.splice(index, 1);
-
-                localStorage.removeItem("notif");
-                localStorage.removeItem("notifItems");
-                localStorage.setItem("notif", notif);
-                localStorage.setItem("notifItems", notifItems);
-              }
-            }
-          });
-
-          //compare the low stock items to the notif items and if the low stock items is not in the notif items then add it and if the notif items is not in the low stock items then remove it
-          if (lowStock.length == 0) {
-            notifItems = []
-            notif = []
-
-            localStorage.removeItem("notif");
-            localStorage.removeItem("notifItems");
-            localStorage.setItem("notif", notif);
-            localStorage.setItem("notifItems", notifItems);
-          } else {
-            for (var i = notifItems.length - 1; i >= 0; i--) {
-              if (!lowStock.includes(notifItems[i])) {
-                notifItems.splice(i, 1);
-              }
-            }
-          }
-
-          for (const itemlow of notifItems) {
-            // index of the item
-            var index = notifItems.indexOf(itemlow);
-            await displaySingleToast(itemlow, index);
-          }
-        }
-
-        async function displaySingleToast(itemlow, index) {
-          if (notif[index] == false) {
-            return new Promise((resolve) => {
-              if (notif[index] == false) {
-                Swal.mixin({
-                  toast: true,
-                  position: "top-end",
-                  showConfirmButton: false,
-                  timer: 5000,
-                  timerProgressBar: true,
-                  didOpen: (toast) => {
-                    toast.addEventListener("mouseenter", Swal.stopTimer);
-                    toast.addEventListener("mouseleave", Swal.resumeTimer);
-                  },
-                }).fire({
-                  icon: "warning",
-                  title: "Notification",
-                  text: itemlow + " is running low on stock",
-                  didClose: () => {
-                    notif[index] = true;
-                    resolve();
-                    localStorage.removeItem("notif");
-                    localStorage.removeItem("notifItems");
-                    localStorage.setItem("notif", notif);
-                    localStorage.setItem("notifItems", notifItems);
-                  },
-                });
-              }
-            });
-          }
-        } */
 
         if (localStorage.getItem("notifItems") != null) {
           var tempNI = localStorage.getItem("notifItems").split(",");
@@ -481,6 +388,7 @@ document.addEventListener("DOMContentLoaded", function () {
           document.getElementById("FoldServ").disabled = true;
           document.getElementById("PickupServ").disabled = true;
           document.getElementById("DeliveryServ").disabled = true;
+          Btn_weight.disabled = true;
         } else {
           document.getElementById("Item_" + item["id"]).disabled = false;
 
@@ -491,6 +399,7 @@ document.addEventListener("DOMContentLoaded", function () {
           document.getElementById("FoldServ").disabled = false;
           document.getElementById("PickupServ").disabled = false;
           document.getElementById("DeliveryServ").disabled = false;
+          Btn_weight.disabled = false;
         }
 
         // add event listener to item button that when clicked add the item to the receipt
@@ -569,8 +478,6 @@ document.addEventListener("DOMContentLoaded", function () {
               SelectedItemQuantity.push(
                 document.getElementById("count_" + item["id"]).value
               );
-
-              console.log(SelectedItems); // remove this later
 
               //reset the count
               document.getElementById("count_" + item["id"]).value = 0;
@@ -826,39 +733,71 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  document.getElementById("newcustomer").addEventListener("click", function () {
-    var customerName = document.getElementById("CustomerName").value;
-    var customerNumber = document.getElementById("CustomerNumber").value;
-    var customerAddress = document.getElementById("CustomerAddress").value;
-    var ExistingCustomer = document.getElementById("ExistingCustomer");
+    document.getElementById("newcustomer").addEventListener("click", function () {
+        var customerName = document.getElementById("CustomerName").value;
+        var customerNumber = document.getElementById("CustomerNumber").value;
+        var customerAddress = document.getElementById("CustomerAddress").value;
+        var ExistingCustomer = document.getElementById("ExistingCustomer");
 
-    if (
-      customerName !== "" &&
-      customerNumber !== "" &&
-      customerAddress !== ""
-    ) {
-      localStorage.setItem("name", customerName);
-      localStorage.setItem("number", customerNumber);
-      localStorage.setItem("address", customerAddress);
-      localStorage.setItem("ExistingCustomer", ExistingCustomer.checked);
+        if (
+          customerName !== "" &&
+          customerNumber !== "" &&
+          customerAddress !== ""
+        ) {
+          localStorage.setItem("name", customerName);
+          localStorage.setItem("number", customerNumber);
+          localStorage.setItem("address", customerAddress);
+          localStorage.setItem("ExistingCustomer", ExistingCustomer.checked);
 
-      document.getElementById("NC_text").innerText = "Customer Details";
-      document.getElementById("ModalTitle").innerText = "Customer Details";
-    } else {
-      document.getElementById("CustomerName").classList.add("is-invalid");
-      document.getElementById("CustomerNumber").classList.add("is-invalid");
-      document.getElementById("CustomerAddress").classList.add("is-invalid");
-      setTimeout(function () {
-        document.getElementById("CustomerName").classList.remove("is-invalid");
-        document
-          .getElementById("CustomerNumber")
-          .classList.remove("is-invalid");
-        document
-          .getElementById("CustomerAddress")
-          .classList.remove("is-invalid");
-      }, 1500);
-    }
-  });
+          document.getElementById("NC_text").innerText = "Customer Details";
+          document.getElementById("ModalTitle").innerText = "Customer Details";
+
+          var itemID = document.querySelectorAll('[id^="Item_"]');
+          itemID.forEach(function (item) {
+            item.disabled = false;
+          });
+
+          // Services
+          document.getElementById("BothServ").disabled = false;
+          document.getElementById("WashOnly").disabled = false;
+          document.getElementById("DryOnly").disabled = false;
+          document.getElementById("FoldServ").disabled = false;
+          document.getElementById("PickupServ").disabled = false;
+          document.getElementById("DeliveryServ").disabled = false;
+          Btn_weight.disabled = false;
+        } else {
+          document.getElementById("CustomerName").classList.add("is-invalid");
+          document.getElementById("CustomerNumber").classList.add("is-invalid");
+          document
+            .getElementById("CustomerAddress")
+            .classList.add("is-invalid");
+          setTimeout(function () {
+            document
+              .getElementById("CustomerName")
+              .classList.remove("is-invalid");
+            document
+              .getElementById("CustomerNumber")
+              .classList.remove("is-invalid");
+            document
+              .getElementById("CustomerAddress")
+              .classList.remove("is-invalid");
+          }, 1500);
+
+          var itemID = document.querySelectorAll('[id^="Item_"]');
+          itemID.forEach(function (item) {
+            item.disabled = true;
+          });
+
+          // Services
+          document.getElementById("BothServ").disabled = true;
+          document.getElementById("WashOnly").disabled = true;
+          document.getElementById("DryOnly").disabled = true;
+          document.getElementById("FoldServ").disabled = true;
+          document.getElementById("PickupServ").disabled = true;
+          document.getElementById("DeliveryServ").disabled = true;
+          Btn_weight.disabled = true;
+        }
+      });
 
   // if the page is reloaded, get the data from the local storage and put it back to the input boxes
   var LS_name = localStorage.getItem("name");
@@ -892,25 +831,22 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("ModalTitle").innerText = "Customer Details";
   }
 
-  /* 
-            document.getElementById('reset-list').addEventListener('click', function () {
-        
-                Swal.fire({
-                    title: 'Are you sure?',
-                    text: "This will clear the list and cannot be undone!",
-                    icon: 'warning',
-                    allowOutsideClick: false,
-        
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Yes, clear it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-        
-                    }
-                });
-            }); */
+  /*   document.getElementById("reset-list").addEventListener("click", function () {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "This will clear the list and cannot be undone!",
+      icon: "warning",
+      allowOutsideClick: false,
+
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, clear it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+      }
+    });
+  }); */
 
   //if reset button is clicked clear the search box
   document.getElementById("reset").addEventListener("click", function () {
@@ -1171,8 +1107,6 @@ document.addEventListener("DOMContentLoaded", function () {
           document.getElementById("noItems").removeAttribute("hidden");
         }
 
-        console.log(SelectedItems);
-
         document.getElementById("WashOnly").disabled = false;
         document.getElementById("DryOnly").disabled = false;
 
@@ -1243,8 +1177,6 @@ document.addEventListener("DOMContentLoaded", function () {
       SelectedItemName.push("Wash Only");
       SelectedItemPrice.push(60);
       SelectedItemQuantity.push(1);
-
-      console.log(SelectedItems); // remove this later
 
       // add event listener to receipt item that when clicked remove the item from the receipt
       document.getElementById(receiptID).addEventListener("click", function () {
@@ -1653,8 +1585,6 @@ document.addEventListener("DOMContentLoaded", function () {
         SelectedItemPrice.push(20);
         SelectedItemQuantity.push(1);
 
-        console.log(SelectedItems); // remove this later
-
         // add event listener to receipt item that when clicked remove the item from the receipt
         document
           .getElementById(receiptID)
@@ -1698,4 +1628,102 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("PickupServ").disabled = false;
       }
     });
+
+  //Weight
+  document.getElementById("Btn_weight").addEventListener("click", function () {
+    var Receipt = document.getElementById("receipt");
+    document.getElementById("noItems").setAttribute("hidden", "true");
+    var random = Math.floor(Math.random() * 1000000);
+
+    //add to receipt
+    var li = document.createElement("li");
+    var receiptID = "receipt_" + random;
+    li.classList.add(
+      "list-group-item",
+      "d-flex",
+      "justify-content-between",
+      "align-items-start",
+      "bg-transparent"
+    );
+    li.setAttribute("title", "Click to remove item");
+    li.id = receiptID;
+    li.style.cursor = "pointer";
+    Receipt.appendChild(li);
+
+    // add item name
+    var div = document.createElement("div");
+    div.classList.add("ms-2", "me-auto", "text-truncate");
+    div.id = "itemname_" + random;
+    div.style.textTransform = "capitalize";
+    div.style.maxWidth = "215px";
+    div.innerHTML = weight.value + " Kg";
+    li.appendChild(div);
+
+    // add item price
+    var span = document.createElement("span");
+    span.id = "itemprice";
+    span.innerHTML =
+      '<span class="text-muted">&#8369; <span id="priceItem">0.00</span><span class="text-danger px-2 fw-bold">&#8855;</span></span>';
+    li.appendChild(span);
+
+    // get all itemprice and add it to the total
+    var itemprice = document.querySelectorAll("#priceItem");
+    var total = 0;
+    itemprice.forEach(function (price) {
+      total += parseFloat(price.innerText);
+    });
+
+    document.getElementById("ammount").innerHTML =
+      '<span class="fw-bold" id="overall">&#8369;&nbsp;' +
+      total.toFixed(2) +
+      "</span>";
+    SelectedReceipt.push(receiptID);
+    SelectedItemID.push("item_" + random); // add random number to the id to make it unique
+    SelectedItemName.push(weight.value + " Kg");
+    SelectedItemPrice.push(0);
+    SelectedItemQuantity.push(1);
+
+    // add event listener to receipt item that when clicked remove the item from the receipt
+    document.getElementById(receiptID).addEventListener("click", function () {
+      var index = SelectedReceipt.indexOf(receiptID);
+
+      // add removed count to the current stock to the item
+
+      var itemprice = document.querySelectorAll("#priceItem");
+      var total = 0;
+      itemprice.forEach(function (price) {
+        total += parseFloat(price.innerText);
+      });
+
+      var overall = document.getElementById("overall");
+      overall.innerHTML = "&#8369;&nbsp;" + (total - 0).toFixed(2);
+
+      if (index > -1) {
+        SelectedReceipt.splice(index, 1);
+        SelectedItemID.splice(index, 1);
+        SelectedItemName.splice(index, 1);
+        SelectedItemPrice.splice(index, 1);
+        SelectedItemQuantity.splice(index, 1);
+      }
+
+      document.getElementById(receiptID).remove();
+
+      if (SelectedReceipt.length == 0) {
+        document.getElementById("noItems").removeAttribute("hidden");
+      }
+
+      console.log(SelectedItems);
+    });
+  });
+
+  // before the page is reloaded
+  window.addEventListener("beforeunload", function (e) {
+    var name = document.getElementById("CustomerName").value;
+
+    if (name !== "") {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+  });
 });
+

@@ -1,6 +1,7 @@
 <?php
 
-function getItem(){
+function getItem()
+{
     // kunin ang global na variable na $conn
     global $conn; // importante kapag wla to sa loob ng function, hindi mahahanap ang $conn
 
@@ -28,6 +29,9 @@ function getItem(){
             $category = $row['category'];
             $price = $row['price'];
             $quantity = $row['quantity'];
+            $CML = $row['Current_ML'];
+            $TML = $row['Total_ML'];
+
             if ($row['ml'] == 0) {
                 $ml = NULL;
             } else {
@@ -40,7 +44,20 @@ function getItem(){
             } else {
                 $isLowStock = false;
             }
-            $image_path = $row['image_path'];
+
+            if ($row['image_path'] == NULL) {
+                if ($category == "Liquid") {
+                    $image_path = "../../assets/Default_Image/Def_Liquid.png";
+                } elseif ($category == "Powder") {
+                    $image_path = "../../assets/Default_Image/Def_Powder.png";
+                } elseif ($category == "Basket") {
+                    $image_path = "../../assets/Default_Image/Def_basket.png";
+                } else {
+                    $image_path = "../../assets/Default_Image/Def_Others.png";
+                }
+            } else {
+                $image_path = $row['image_path'];
+            }
 
             $output[] = array(
                 'id' => (int)$id, // (int) convert sa integer ang string (optional)
@@ -49,6 +66,8 @@ function getItem(){
                 'price' => (float)$price,
                 'quantity' => (int)$quantity,
                 'ml' => (int)$ml,
+                'Current_ML' => (int)$CML,
+                'Total_ML' => (int)$TML,
                 'CurrentStock' => (int)$CurrentStock,
                 'isLowStock' => $isLowStock,
                 'image_path' => $image_path
@@ -66,8 +85,6 @@ function getItem(){
     }
 }
 
-function getCustomerinfo(){
-
+function getCustomerinfo()
+{
 }
-
-?>
