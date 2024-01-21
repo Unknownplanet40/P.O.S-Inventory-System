@@ -5,13 +5,18 @@
   box-sizing: border-box;
 }
 
-body {
+/* body {
   background-color: #fff;
   background-image: url(../assets/WaveBackground.svg);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
   font-family: "Poppins";
+} */
+
+body{
+  font-family: "Poppins";
+  font-weight: 400;
 }
 
 h1 > a {
@@ -91,6 +96,18 @@ h1 > a {
   color: #fff;
 }
 
+.form-check-input:checked {
+  background-color: #ffcd00;
+  border-color: #6e3b3bc0;
+}
+
+.form-check-label {
+  font-size: 14px;
+  padding-top: 2px;
+  font-weight: 600;
+  color: #6e3b3b;
+}
+
 @media (max-width: 767px) {
   .intro-section-footer {
     margin-top: 35px;
@@ -118,6 +135,10 @@ h1 > a {
   align-items: center;
   -webkit-box-pack: center;
   justify-content: center;
+  background-image: url(../assets/LoginWave.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 @media (max-width: 767px) {
   .form-section {
@@ -136,7 +157,7 @@ h1 > a {
 }
 .login-wrapper .form-control {
   border: 0;
-  border-bottom: 1px solid #e7e7e7;
+  border-bottom: 1px solid #c5c5c5;
   border-radius: 3px;
   font-size: 14px;
   font-weight: bold;
@@ -144,6 +165,11 @@ h1 > a {
   margin-bottom: 7px;
   background-color: transparent;
 }
+
+.login-wrapper .form-control:hover {
+  border-color: #6e3b3bc0;
+}
+
 .login-wrapper .form-control:focus {
   border-color: #ffcd00;
   outline: 0;
@@ -180,7 +206,7 @@ h1 > a {
 }
 
 .login-wrapper .pword::placeholder {
-  background-image: url(../assets/Password.svg);
+  background-image: url(../assets/PassIcon.svg);
   background-repeat: no-repeat;
   background-position: 2px center;
   padding-left: 30px;
@@ -190,6 +216,7 @@ h1 > a {
   font-size: 30px;
   font-weight: bold;
   margin-bottom: 30px;
+  color: #6e3b3bfa;
 }
 
 .login-btn {
@@ -215,7 +242,7 @@ h1 > a {
 
 .forgot-password-link {
   font-size: 14px;
-  color: #080808;
+  color: #6e3b3b;
   text-decoration: underline;
 }
 

@@ -5,6 +5,7 @@ include_once './FetchDatas.php';
 
 // fist check if the user is logged in
 if ($_SESSION['isLogin'] == 1) {
+    getCustomerinfo();
     getItem();
 } else {
     $_SESSION['statusNotif'] = "Not Logged In";
@@ -92,12 +93,12 @@ if ($_SESSION['isLogin'] == 1) {
                                     <style>
                                         .nav-link.active {
                                             background-color: #ffcd00 !important;
-                                            color: #000 !important;
+                                            color: #a8342d !important;
                                             font-weight: 600 !important;
                                         }
 
                                         .nav-link {
-                                            color: #000 !important;
+                                            color: #a8342d !important;
                                             font-weight: 600 !important;
                                         }
                                     </style>
@@ -156,14 +157,14 @@ if ($_SESSION['isLogin'] == 1) {
                                                                 <div class="row mb-3">
                                                                     <label for="CustomerName" class="col-sm-2 col-form-label">Name</label>
                                                                     <div class="col-sm-10">
-                                                                        <input type="text" class="form-control" id="CustomerName" autocomplete="on" list="customerNamelists">
+                                                                        <input type="text" class="form-control" id="CustomerName" autocomplete="on" list="customerNamelists" title="First Name and Last Name" data-bs-toggle="tooltip" data-bs-placement="right">
                                                                         <datalist id="customerNamelists"></datalist>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row mb-3">
                                                                     <label for="CustomerNumber" class="col-sm-2 col-form-label">Number</label>
                                                                     <div class="col-sm-10">
-                                                                        <input type="text" class="form-control" id="CustomerNumber" autocomplete="on" list="customerNumberlists">
+                                                                        <input type="text" class="form-control" id="CustomerNumber" autocomplete="on" list="customerNumberlists" pattern="\d{4}-\d{3}-\d{4}" required title="Format: 09XX-XXX-XXXX" maxlength="13" minlength="13" placeholder="09XX-XXX-XXXX" data-bs-toggle="tooltip" data-bs-placement="right">
                                                                         <input type="checkbox" id="ExistingCustomer" hidden>
                                                                         <datalist id="customerNumberlists"></datalist>
                                                                     </div>
@@ -171,7 +172,7 @@ if ($_SESSION['isLogin'] == 1) {
                                                                 <div class="row mb-3">
                                                                     <label for="CustomerAddress" class="col-sm-2 col-form-label">address</label>
                                                                     <div class="col-sm-10">
-                                                                        <input type="address" class="form-control" id="CustomerAddress" list="customerAddresslists" autocomplete="on">
+                                                                        <input type="address" class="form-control" id="CustomerAddress" list="customerAddresslists" autocomplete="on" title="House Number, Street, Barangay, City, Province" data-bs-toggle="tooltip" data-bs-placement="right">
                                                                         <datalist id="customerAddresslists"></datalist>
                                                                     </div>
                                                                 </div>
@@ -181,7 +182,7 @@ if ($_SESSION['isLogin'] == 1) {
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                <button type="button" class="btn btn-warning" id="newcustomer" data-bs-dismiss="modal">Submit</button>
+                                                                <button type="button" class="btn btn-warning" id="newcustomer">Submit</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -327,12 +328,17 @@ if ($_SESSION['isLogin'] == 1) {
                                 </div>
                             </div>
                             <h4 class="d-flex justify-content-between align-items-center my-3">
-                                <span class="text-primary">Receipt</span>
+                                <span class="text-dark">Receipt</span>
                                 <span class="badge bg-primary rounded-pill" id="total-items"></span>
                             </h4>
                             <div class="container-xxl" style="max-height: 30vh; overflow-y: scroll;">
                                 <ol class="list-group list-group-flush" id="receipt">
                                     <div class="text-center" id="noItems" title="waiting for items" data-bs-toggle="tooltip" data-bs-placement="bottom">
+                                        <style>
+                                            .placeholder {
+                                                background-color: #a8342d;
+                                            }
+                                        </style>
                                         <div class="row">
                                             <div class="col-1 placeholder-glow p-2"><span class="placeholder col-12 rounded"></span></div>
                                             <div class="col-5 placeholder-glow p-2"><span class="placeholder col-12 rounded"></span></div>
@@ -358,20 +364,20 @@ if ($_SESSION['isLogin'] == 1) {
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-start bg-transparent">
                                     <div class="ms-2 me-auto">
-                                        <span class="text-primary fs-4">Total</span>
+                                        <span class="text-dark fs-4">Total</span>
                                     </div>
-                                    <span class="fw-bold fs-4" id="ammount">&#8369;&nbsp;0.00</span>
+                                    <span class="fw-bold fs-4" style="color: #a8342d;" id="ammount">&#8369;&nbsp;0.00</span>
                             </ol>
                             <div class="container-xxl p-3">
                                 <div class="card">
                                     <div class="card-body text-center">
-                                        <button type="button" class="btn btn-warning btn-sm w-100" id="checkout">Checkout</button>
+                                        <button type="button" class="btn btn-sm w-100" style="background-color: #a8342d; color: #fff;" id="checkout">Checkout</button>
                                         <div class="row" hidden>
                                             <div class="col">
                                                 <button type="button" class="btn btn-danger btn-sm w-50" id="reset-list">clear</button>
                                             </div>
                                             <div class="col">
-                                                <button type="button" class="btn btn-warning btn-sm w-100" id="checkout">Checkout</button>
+                                                <button type="button" class="btn btn-sm w-100" id="checkout">Checkout</button>
                                             </div>
                                         </div>
                                     </div>

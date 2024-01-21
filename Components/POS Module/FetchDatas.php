@@ -31,6 +31,7 @@ function getItem()
             $quantity = $row['quantity'];
             $CML = $row['Current_ML'];
             $TML = $row['Total_ML'];
+            $perML = $row['perML_order'];
 
             if ($row['ml'] == 0) {
                 $ml = NULL;
@@ -59,19 +60,22 @@ function getItem()
                 $image_path = $row['image_path'];
             }
 
-            $output[] = array(
-                'id' => (int)$id, // (int) convert sa integer ang string (optional)
-                'product_name' => $product_name,
-                'category' => $category,
-                'price' => (float)$price,
-                'quantity' => (int)$quantity,
-                'ml' => (int)$ml,
-                'Current_ML' => (int)$CML,
-                'Total_ML' => (int)$TML,
-                'CurrentStock' => (int)$CurrentStock,
-                'isLowStock' => $isLowStock,
-                'image_path' => $image_path
-            );
+            if ($row['Achieved'] != 1) {
+                $output[] = array(
+                    'id' => (int)$id, // (int) convert sa integer ang string (optional)
+                    'product_name' => $product_name,
+                    'category' => $category,
+                    'price' => (float)$price,
+                    'quantity' => (int)$quantity,
+                    'ml' => (int)$ml,
+                    'perML_order' => (int)$perML,
+                    'Current_ML' => (int)$CML,
+                    'Total_ML' => (int)$TML,
+                    'CurrentStock' => (int)$CurrentStock,
+                    'isLowStock' => $isLowStock,
+                    'image_path' => $image_path
+                );
+            }
         }
 
         // gumawa ng .json sa dump folder
@@ -87,4 +91,39 @@ function getItem()
 
 function getCustomerinfo()
 {
+    global $conn;
+
+    $sql = "SELECT * FROM customer_information";
+    $result = mysqli_query($conn, $sql);
+
+
+    if (mysqli_num_rows($result) > 0) {
+
+        if (!file_exists('../../dump/Customers.json')) {
+            mkdir('../../dump/Customers.json.json', 0777, true);
+        }
+
+        $output = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+
+            $customer_id = $row['Cust_ID'];
+            $first_name = $row['Cust_first_name'];
+            $last_name = $row['Cust_last_name'];
+            $phone_number = $row['Cust_number'];
+            $address = $row['Cust_Address'];
+
+            $output[] = array(
+                'customer_id' => (int)$customer_id, // (int) convert sa integer ang string (optional)
+                'first_name' => $first_name,
+                'last_name' => $last_name,
+                'phone_number' => $phone_number,
+                'address' => $address
+            );
+        }
+
+        $fp = fopen('../../dump/Customers.json', 'w');
+        fwrite($fp, json_encode($output));
+        fclose($fp);
+    }
 }

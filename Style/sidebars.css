@@ -2,6 +2,7 @@
 
 * {
   font-family: "Poppins";
+  scroll-behavior: smooth;
 }
 
 body {
@@ -25,7 +26,7 @@ main {
 /* Firefox */
 * {
   scrollbar-width: auto;
-  scrollbar-color: #6e3b3b #ffffff00;
+  scrollbar-color: #a8342d #ffffff00;
 }
 
 /* Chrome, Edge, and Safari */
@@ -38,7 +39,7 @@ main {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #6e3b3b;
+  background-color: #a8342d;
   border-radius: 10px;
   border: 3px solid #ffffff00;
 }

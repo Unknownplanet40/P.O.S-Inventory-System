@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     SelectedItemPrice,
     SelectedItemQuantity,
   ];
-  var displayedNotif = false;
+  var checkitemout = false;
 
   fetch(Itempath)
     .then((response) => {
@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
           price.innerHTML = "&#8369; " + item["price"];
         } else {
           price.innerHTML =
-            "&#8369; " + item["price"] + " per " + item["ml"] + "ml";
+            "&#8369; " + item["price"] + " per " + item["perML_order"] + "g";
         }
         cardbody.appendChild(price);
 
@@ -174,27 +174,51 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // create card footer
         var cardfooter = document.createElement("div");
-        cardfooter.classList.add("card-footer");
+        if (item["category"] == "Liquid") {
+          cardfooter.classList.add("card-footer", "text-center");
+        } else {
+          cardfooter.classList.add("card-footer");
+        }
+        cardfooter.style.cursor = "pointer";
         card.appendChild(cardfooter);
 
         // create stock
         var stock = document.createElement("small");
         // change the color of the stock based on the level of stock
-        var tempercentage = (item["CurrentStock"] / item["quantity"]) * 100;
-        if (tempercentage >= 50) {
+        if (item["category"] == "Liquid") {
           stock.classList.add("text-dark");
-        } else if (tempercentage >= 20 && tempercentage <= 49) {
-          stock.classList.add("text-warning");
-        } else if (tempercentage >= 0 && tempercentage <= 19) {
-          stock.classList.add("text-danger");
+          var tempercentage = (item["Current_ML"] / item["ml"]) * 100;
+          if (tempercentage >= 50) {
+            stock.classList.add("text-dark");
+          } else if (tempercentage >= 20 && tempercentage <= 49) {
+            stock.classList.add("text-warning");
+          } else if (tempercentage >= 0 && tempercentage <= 19) {
+            stock.classList.add("text-danger");
+          }
+          stock.id = "stock_" + item["id"];
+          stock.innerText =
+            item["Current_ML"] + " ml" + " out of " + item["ml"] + " ml";
+          stock.title =
+            "This item is measured in ml per item and not by quantity";
+        } else {
+          var tempercentage = (item["CurrentStock"] / item["quantity"]) * 100;
+          if (tempercentage >= 50) {
+            stock.classList.add("text-dark");
+          } else if (tempercentage >= 20 && tempercentage <= 49) {
+            stock.classList.add("text-warning");
+          } else if (tempercentage >= 0 && tempercentage <= 19) {
+            stock.classList.add("text-danger");
+          }
+          stock.id = "stock_" + item["id"];
+          stock.innerText =
+            "Stocks: " + item["CurrentStock"] + " out of " + item["quantity"];
+          stock.title = "This item is measured in quantity per item";
         }
-        stock.id = "stock_" + item["id"];
-        stock.innerText =
-          "Stocks: " + item["CurrentStock"] + " out of " + item["quantity"];
         cardfooter.appendChild(stock);
 
         var itemStock = item["quantity"];
         var current_stock = item["CurrentStock"];
+        var current_ml = item["Current_ML"];
         var count = 0;
 
         var lowStock = [];
@@ -303,52 +327,103 @@ document.addEventListener("DOMContentLoaded", function () {
         displayToast();
 
         function updateStockDisplay() {
-          document.getElementById("count_" + item["id"]).value = count;
-          document.getElementById("stock_" + item["id"]).innerText =
-            "Stocks: " + current_stock + " out of " + itemStock;
+          if (item["category"] == "Liquid") {
+            document.getElementById("count_" + item["id"]).value = count;
+            document.getElementById("stock_" + item["id"]).innerText =
+              current_ml + " ml" + " out of " + item["ml"] + " ml";
 
-          // if the current stock is 0, disable the plus button
-          if (current_stock == 0) {
-            document.getElementById("bplus_" + item["id"]).disabled = true;
+            // if the current stock is 0, disable the plus button
+            if (item["Current_ML"] == 0) {
+              document.getElementById("bplus_" + item["id"]).disabled = true;
+            } else {
+              document.getElementById("bplus_" + item["id"]).disabled = false;
+            }
+
+            // level of stock
+            // 100% - 50% = muted
+            // 49% - 20% = yellow
+            // 19% - 0% = red
+            var percentage = (current_ml / item["ml"]) * 100;
+            console.log(percentage);
+            if (percentage >= 50) {
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.remove("text-warning");
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.remove("text-danger");
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.add("text-dark");
+            } else if (percentage >= 20 && percentage <= 49) {
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.remove("text-dark");
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.remove("text-danger");
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.add("text-warning");
+            } else if (percentage >= 0 && percentage <= 19) {
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.remove("text-dark");
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.remove("text-warning");
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.add("text-danger");
+            }
           } else {
-            document.getElementById("bplus_" + item["id"]).disabled = false;
-          }
+            document.getElementById("count_" + item["id"]).value = count;
+            document.getElementById("stock_" + item["id"]).innerText =
+              "Stocks: " + current_stock + " out of " + itemStock;
 
-          // level of stock
-          // 100% - 50% = muted
-          // 49% - 20% = yellow
-          // 19% - 0% = red
-          var percentage = (current_stock / itemStock) * 100;
-          if (percentage >= 50) {
-            document
-              .getElementById("stock_" + item["id"])
-              .classList.remove("text-warning");
-            document
-              .getElementById("stock_" + item["id"])
-              .classList.remove("text-danger");
-            document
-              .getElementById("stock_" + item["id"])
-              .classList.add("text-dark");
-          } else if (percentage >= 20 && percentage <= 49) {
-            document
-              .getElementById("stock_" + item["id"])
-              .classList.remove("text-dark");
-            document
-              .getElementById("stock_" + item["id"])
-              .classList.remove("text-danger");
-            document
-              .getElementById("stock_" + item["id"])
-              .classList.add("text-warning");
-          } else if (percentage >= 0 && percentage <= 19) {
-            document
-              .getElementById("stock_" + item["id"])
-              .classList.remove("text-dark");
-            document
-              .getElementById("stock_" + item["id"])
-              .classList.remove("text-warning");
-            document
-              .getElementById("stock_" + item["id"])
-              .classList.add("text-danger");
+            // if the current stock is 0, disable the plus button
+            if (current_stock == 0) {
+              document.getElementById("bplus_" + item["id"]).disabled = true;
+            } else {
+              document.getElementById("bplus_" + item["id"]).disabled = false;
+            }
+
+            // level of stock
+            // 100% - 50% = muted
+            // 49% - 20% = yellow
+            // 19% - 0% = red
+            var percentage = (current_stock / itemStock) * 100;
+            if (percentage >= 50) {
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.remove("text-warning");
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.remove("text-danger");
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.add("text-dark");
+            } else if (percentage >= 20 && percentage <= 49) {
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.remove("text-dark");
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.remove("text-danger");
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.add("text-warning");
+            } else if (percentage >= 0 && percentage <= 19) {
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.remove("text-dark");
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.remove("text-warning");
+              document
+                .getElementById("stock_" + item["id"])
+                .classList.add("text-danger");
+            }
           }
         }
 
@@ -356,10 +431,18 @@ document.addEventListener("DOMContentLoaded", function () {
         document
           .getElementById("bminus_" + item["id"])
           .addEventListener("click", function () {
-            if (count > 0) {
-              count--;
-              current_stock++;
-              updateStockDisplay();
+            if (item["category"] == "Liquid") {
+              if (count > 0) {
+                count--;
+                current_ml += item["perML_order"];
+                updateStockDisplay();
+              }
+            } else {
+              if (count > 0) {
+                count--;
+                current_stock++;
+                updateStockDisplay();
+              }
             }
           });
 
@@ -368,10 +451,19 @@ document.addEventListener("DOMContentLoaded", function () {
           .getElementById("bplus_" + item["id"])
           .addEventListener("click", function () {
             // if the current stock is 0, disable the plus button
-            if (current_stock != 0) {
-              count++;
-              current_stock--;
-              updateStockDisplay();
+            if (item["category"] == "Liquid") {
+              if (current_ml != 0) {
+                count++;
+                // minus the ml to the current ml to the item
+                current_ml -= item["perML_order"];
+                updateStockDisplay();
+              }
+            } else {
+              if (current_stock != 0) {
+                count++;
+                current_stock--;
+                updateStockDisplay();
+              }
             }
           });
 
@@ -493,7 +585,13 @@ document.addEventListener("DOMContentLoaded", function () {
                   console.log(SelectedItemName[index] + " " + dump); // for debugging purposes
 
                   // add removed count to the current stock to the item
-                  current_stock += parseInt(SelectedItemQuantity[index]);
+                  if (item["category"] == "Liquid") {
+                    current_ml +=
+                      SelectedItemQuantity[index] * item["perML_order"];
+                  } else {
+                    current_stock += parseInt(SelectedItemQuantity[index]);
+                  }
+
                   updateStockDisplay();
 
                   var itemprice = document.querySelectorAll("#priceItem");
@@ -520,7 +618,6 @@ document.addEventListener("DOMContentLoaded", function () {
                       .getElementById("noItems")
                       .removeAttribute("hidden");
                   }
-
                   console.log(SelectedItems);
                 });
             }
@@ -617,6 +714,8 @@ document.addEventListener("DOMContentLoaded", function () {
               customerNumber.value = customer.phone_number;
               customerAddress.value = customer.address;
               ExistingCustomer.checked = true;
+            } else {
+              ExistingCustomer.checked = false;
             }
           });
         });
@@ -636,6 +735,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 customer.first_name + " " + customer.last_name;
               customerAddress.value = customer.address;
               ExistingCustomer.checked = true;
+            } else {
+              ExistingCustomer.checked = false;
             }
           });
         });
@@ -655,6 +756,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 customer.first_name + " " + customer.last_name;
               customerNumber.value = customer.phone_number;
               ExistingCustomer.checked = true;
+            } else {
+              ExistingCustomer.checked = false;
             }
           });
         });
@@ -733,71 +836,94 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-    document.getElementById("newcustomer").addEventListener("click", function () {
-        var customerName = document.getElementById("CustomerName").value;
-        var customerNumber = document.getElementById("CustomerNumber").value;
-        var customerAddress = document.getElementById("CustomerAddress").value;
-        var ExistingCustomer = document.getElementById("ExistingCustomer");
+  document.getElementById("newcustomer").addEventListener("click", function () {
+    var customerName = document.getElementById("CustomerName").value;
+    var customerNumber = document.getElementById("CustomerNumber").value;
+    var customerAddress = document.getElementById("CustomerAddress").value;
+    var ExistingCustomer = document.getElementById("ExistingCustomer");
+    var validNumber = /^\d{4}-\d{3}-\d{4}$/;
 
-        if (
-          customerName !== "" &&
-          customerNumber !== "" &&
-          customerAddress !== ""
-        ) {
-          localStorage.setItem("name", customerName);
-          localStorage.setItem("number", customerNumber);
-          localStorage.setItem("address", customerAddress);
-          localStorage.setItem("ExistingCustomer", ExistingCustomer.checked);
+    if (customerName !== "" && customerNumber !== "" && customerAddress !== ""
+    ) {
 
-          document.getElementById("NC_text").innerText = "Customer Details";
-          document.getElementById("ModalTitle").innerText = "Customer Details";
+      if (validNumber.test(customerNumber)) {
+        localStorage.setItem("name", customerName);
+        localStorage.setItem("number", customerNumber);
+        localStorage.setItem("address", customerAddress);
+        localStorage.setItem("ExistingCustomer", ExistingCustomer.checked);
 
-          var itemID = document.querySelectorAll('[id^="Item_"]');
-          itemID.forEach(function (item) {
-            item.disabled = false;
-          });
+        document.getElementById("NC_text").innerText = "Customer Details";
+        document.getElementById("ModalTitle").innerText = "Customer Details";
 
-          // Services
-          document.getElementById("BothServ").disabled = false;
-          document.getElementById("WashOnly").disabled = false;
-          document.getElementById("DryOnly").disabled = false;
-          document.getElementById("FoldServ").disabled = false;
-          document.getElementById("PickupServ").disabled = false;
-          document.getElementById("DeliveryServ").disabled = false;
-          Btn_weight.disabled = false;
-        } else {
-          document.getElementById("CustomerName").classList.add("is-invalid");
-          document.getElementById("CustomerNumber").classList.add("is-invalid");
+        var itemID = document.querySelectorAll('[id^="Item_"]');
+        itemID.forEach(function (item) {
+          item.disabled = false;
+        });
+
+        // Services
+        document.getElementById("BothServ").disabled = false;
+        document.getElementById("WashOnly").disabled = false;
+        document.getElementById("DryOnly").disabled = false;
+        document.getElementById("FoldServ").disabled = false;
+        document.getElementById("PickupServ").disabled = false;
+        document.getElementById("DeliveryServ").disabled = false;
+        Btn_weight.disabled = false;
+
+        // close the modal
+        var myModal = document.getElementById("NewCustomer");
+        var modal = bootstrap.Modal.getInstance(myModal);
+        modal.hide();
+      } else {
+        document.getElementById("CustomerNumber").classList.add("is-invalid");
+        setTimeout(function () {
           document
-            .getElementById("CustomerAddress")
-            .classList.add("is-invalid");
-          setTimeout(function () {
-            document
-              .getElementById("CustomerName")
-              .classList.remove("is-invalid");
-            document
-              .getElementById("CustomerNumber")
-              .classList.remove("is-invalid");
-            document
-              .getElementById("CustomerAddress")
-              .classList.remove("is-invalid");
-          }, 1500);
+            .getElementById("CustomerNumber")
+            .classList.remove("is-invalid");
+        }, 1500);
 
-          var itemID = document.querySelectorAll('[id^="Item_"]');
-          itemID.forEach(function (item) {
-            item.disabled = true;
-          });
+        var itemID = document.querySelectorAll('[id^="Item_"]');
+        itemID.forEach(function (item) {
+          item.disabled = true;
+        });
 
-          // Services
-          document.getElementById("BothServ").disabled = true;
-          document.getElementById("WashOnly").disabled = true;
-          document.getElementById("DryOnly").disabled = true;
-          document.getElementById("FoldServ").disabled = true;
-          document.getElementById("PickupServ").disabled = true;
-          document.getElementById("DeliveryServ").disabled = true;
-          Btn_weight.disabled = true;
-        }
+        // Services
+        document.getElementById("BothServ").disabled = true;
+        document.getElementById("WashOnly").disabled = true;
+        document.getElementById("DryOnly").disabled = true;
+        document.getElementById("FoldServ").disabled = true;
+        document.getElementById("PickupServ").disabled = true;
+        document.getElementById("DeliveryServ").disabled = true;
+        Btn_weight.disabled = true;
+      }
+    } else {
+      document.getElementById("CustomerName").classList.add("is-invalid");
+      document.getElementById("CustomerNumber").classList.add("is-invalid");
+      document.getElementById("CustomerAddress").classList.add("is-invalid");
+      setTimeout(function () {
+        document.getElementById("CustomerName").classList.remove("is-invalid");
+        document
+          .getElementById("CustomerNumber")
+          .classList.remove("is-invalid");
+        document
+          .getElementById("CustomerAddress")
+          .classList.remove("is-invalid");
+      }, 1500);
+
+      var itemID = document.querySelectorAll('[id^="Item_"]');
+      itemID.forEach(function (item) {
+        item.disabled = true;
       });
+
+      // Services
+      document.getElementById("BothServ").disabled = true;
+      document.getElementById("WashOnly").disabled = true;
+      document.getElementById("DryOnly").disabled = true;
+      document.getElementById("FoldServ").disabled = true;
+      document.getElementById("PickupServ").disabled = true;
+      document.getElementById("DeliveryServ").disabled = true;
+      Btn_weight.disabled = true;
+    }
+  });
 
   // if the page is reloaded, get the data from the local storage and put it back to the input boxes
   var LS_name = localStorage.getItem("name");
@@ -999,21 +1125,65 @@ document.addEventListener("DOMContentLoaded", function () {
         text: "Please add an item to the list",
       });
     } else {
-      if (ExistingCustomer.checked == true) {
-        Swal.fire({
-          title: "Item(s) will be added to the customer's account",
-          text: "This is Existing Customer",
-          icon: "info",
-          allowOutsideClick: false,
+      var temp = [];
+      SelectedItemID.forEach(function (item) {
+        temp.push(item.replace("item_", ""));
+      });
+      SelectedItemID = temp;
+
+      var SeletedData = {
+        SelectedItemID: SelectedItemID,
+        SelectedItemName: SelectedItemName,
+        SelectedItemPrice: SelectedItemPrice,
+        SelectedItemQuantity: SelectedItemQuantity,
+        CustomerName: document.getElementById("CustomerName").value,
+        CustomerNumber: document.getElementById("CustomerNumber").value,
+        CustomerAddress: document.getElementById("CustomerAddress").value,
+        ExistingCustomer: ExistingCustomer.checked,
+      };
+      console.log(SeletedData);
+
+      var jsonData = JSON.stringify(SeletedData);
+
+      // Send data to PHP using Fetch API
+      fetch("Checkout.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonData,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          var $title = data["title"];
+          var $text = data["text"];
+          var $icon = data["icon"];
+          Swal.fire({
+            title: $title,
+            text: $text,
+            icon: $icon,
+            allowOutsideClick: false,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              checkitemout = true;
+
+              // remove all items in the receipt
+              localStorage.removeItem("name");
+              localStorage.removeItem("number");
+              localStorage.removeItem("address");
+              localStorage.removeItem("ExistingCustomer");
+              window.location.reload();
+            }
+          });
+        })
+        .catch((error) => {
+          console.error("There was an error! | ", error);
         });
-      } else {
-        Swal.fire({
-          title: "Item(s) will be added to the customer's account",
-          text: "This is New Customer",
-          icon: "info",
-          allowOutsideClick: false,
-        });
-      }
     }
   });
 
@@ -1720,10 +1890,21 @@ document.addEventListener("DOMContentLoaded", function () {
   window.addEventListener("beforeunload", function (e) {
     var name = document.getElementById("CustomerName").value;
 
-    if (name !== "") {
-      e.preventDefault();
-      e.returnValue = "";
+    if (checkitemout !== true) {
+      if (name !== "") {
+        e.preventDefault();
+        e.returnValue = "";
+      }
     }
   });
-});
 
+  // check if user is opened the inspect element
+  /* document.addEventListener("contextmenu", function (e) {
+    e.preventDefault();
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Please do not inspect element",
+    });
+  }); */
+});

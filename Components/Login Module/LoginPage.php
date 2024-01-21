@@ -173,8 +173,22 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
                             echo '</p>';
                         }
                     }
+
+                    if (isset($error)){
+                        echo '
+                            <div class="alert alert-danger user-select-none text-center" role="alert" id="erroralert">
+                                ' . $error . '
+                            </div>
+                        ';
+                    } else {
+                        echo '
+                            <div class="alert bg-transparent user-select-none text-center" role="alert" id="erroralert">
+                                &nbsp
+                            </div>
+                        ';
+                    }
                     ?>
-                    <p class="mute-text text-center text-danger" id="error"> <?php if (isset($error)) echo $error; ?>&nbsp</p>
+                    <p class="mute-text text-center text-danger visually-hidden" id="error"> <?php if (isset($error)) echo $error; ?>&nbsp</p>
                     <p class="login-wrapper-footer-text visually-hidden">Need an account? <a href="#!" class="text-reset">Signup here</a></p> 
                     <script>
                         //check if connected to the internet
@@ -185,9 +199,20 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
                             document.getElementById('indicator').classList.add('visually-hidden');
                         }
 
+                        window.onload = function() {
+                            document.getElementById('login').scrollIntoView();
+
+                        }
+
                         // remove content of error message after 5 seconds
                         setTimeout(() => {
                             document.getElementById('error').innerHTML = "&nbsp";
+                        }, 3500);
+
+                        setTimeout(() => {
+                            document.getElementById('erroralert').classList.remove('alert-danger');
+                            document.getElementById('erroralert').classList.add('bg-transparent');
+                            document.getElementById('erroralert').innerHTML = "&nbsp";
                         }, 3500);
 
 
@@ -223,6 +248,22 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
                                 passwordInput.type = "password";
                             }
                         });
+
+                        // Konami Code for Easter Egg added later
+                        var keys = [];
+                        var konami = '38,38,40,40,37,39,37,39,66,65';
+                        window.addEventListener("keydown", function(e) {
+                            keys.push(e.keyCode);
+                            console.log(keys.toString());
+                            if (keys.toString().indexOf(konami) >= 0) {
+                                if (navigator.onLine) {
+                                    alert("You are connected to the internet");
+                                } else {
+                                    alert("You are not connected to the internet");
+                                }
+                                keys = [];
+                            }
+                        }, true);
                     </script>
                 </div>
             </div>

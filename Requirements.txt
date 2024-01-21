@@ -1,12 +1,28 @@
 Requirements and Responsibilities for POS and Inventory Management System
 
-System Requirements
+Minimum System Requirements
+Chrome Browser (Version 90.0.4430.93)
+Xampp (Version 7.4.9)
+PHP (Version 7.4.9)
+MySQL (Version 8.0.21)
+Windows 10 (Version 20H2)
+
+Recommended System Requirements
 Chrome Browser (Version 120.0.6099.130 or higher)
-Internet Connection (For Google Fonts and Bootstrap CDN)
-Xampp (For Database)
-PHP (Version 7.4.9 or higher)
-MySQL (Version 8.0.21 or higher)
+Xampp (Version 8.2.12 or higher)
+PHP (Version 8.2.12 or higher)
+MySQL (Version 8.2.12 or higher)
 Windows 10 (Version 21H1 or higher)
+
+PC Requirements
+Processor: Intel(R) Celeron CPU N3150 @ 1.60GHz
+RAM: 4.00 GB or higher
+System Type: 64-bit Operating System, x64-based processor
+Storage: 500 GB or higher
+Display: 1366 x 768 or higher
+
+Installation Guide
+
 
 Liblaray and Frameworks Used in the Project
 1. Bootstrap

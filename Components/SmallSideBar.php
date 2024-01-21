@@ -14,20 +14,16 @@
                     </svg>
                 </a>
             </li>
-            <script>
-
-            </script>
-
             <li class="nav-item">
-                <a <?php echo (basename($_SERVER['PHP_SELF']) == "POS.php") ? 'class="custom-active nav-link py-3 border-bottom rounded-0"' : "href='../Components/POS Module/POS.php'"; ?> style="color: #6e3b3b;" class="nav-link py-3 border-bottom rounded-0" laria-current="page" title="Point of Sale" data-bs-toggle="tooltip" data-bs-placement="right">
+                <a <?php echo (basename($_SERVER['PHP_SELF']) == "POS.php") ? 'class="custom-active nav-link py-3 border-bottom rounded-0"' : "href='../../Components/POS Module/POS.php'"; ?> style="color: #6e3b3b;" class="nav-link py-3 border-bottom rounded-0" laria-current="page" title="Point of Sale" data-bs-toggle="tooltip" data-bs-placement="right">
                     <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Point of Sale">
                         <use xlink:href="#speedometer2" />
                     </svg>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link py-3 border-bottom rounded-0" style="color: #6e3b3b;" aria-current="page" title="Inventory" data-bs-toggle="tooltip" data-bs-placement="right">
-                    <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Inventory">
+                <a <?php echo (basename($_SERVER['PHP_SELF']) == "Products.php") ? 'class="custom-active nav-link py-3 border-bottom rounded-0"' : "href='../../Components/Inventory Module/Products.php'"; ?> style="color: #6e3b3b;" class="nav-link py-3 border-bottom rounded-0" laria-current="page" title="Point of Sale" data-bs-toggle="tooltip" data-bs-placement="right">
+                    <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Point of Sale">
                         <use xlink:href="#table" />
                     </svg>
                 </a>
@@ -49,9 +45,9 @@
         </ul>
         <div class="dropdown border-top position-absolute bottom-0 start-0" title="More Option " data-bs-toggle="tooltip" data-bs-placement="right">
             <a class="d-flex align-items-center justify-content-center p-3 link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                <?php 
+                <?php
                 if (isset($_SESSION['profile']) && $_SESSION['profile'] != null) {
-                    echo '<img src="../../assets/Profile_Pictures/'.$_SESSION['profile_pic'].'" alt="Profile Picture" width="32" height="32" class="rounded-circle me-2">';
+                    echo '<img src="../../assets/Profile_Pictures/' . $_SESSION['profile_pic'] . '" alt="Profile Picture" width="32" height="32" class="rounded-circle me-2">';
                 } else {
                     echo '
                     <script src="../../assets/Animated/Profile/profile.js"></script>

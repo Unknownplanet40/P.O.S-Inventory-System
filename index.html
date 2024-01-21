@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manlalaba is a laundry shop that offers laundry services to its customers.">
+    <meta name="author" content="Ryan James Capadocia, Jeric Dayandante, James Matthew Veloria" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/Favicon.gif">
+    <title>Verifying</title>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var i = 0;
+            var txt = 'Verifying...';
+            var speed = 50;
+            function typeWriter() {
+                if (i < txt.length) {
+                    document.title = txt.substring(0, i + 1);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                }
+            }
+
+            function checkServer() {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+
+                    if (this.readyState == 4 && this.status == 200) {
+                        window.location.href = "http://localhost/P.O.S-Inventory-System/Components/Login%20Module/LoginPage.php";
+                    } else {
+                        
+                    }
+                };
+                xhttp.open("GET", "http://localhost/P.O.S-Inventory-System/", true);
+                xhttp.send();
+            }
+            typeWriter();
+            checkServer();
+        });
+    </script>
+</head>
+
+<body>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 20%;
+        }
+    </style>
+
+    <img src="./assets/Loader.gif" alt="Loader" style="width: 10%; height: 10%;">
+</body>
+
+</html>
