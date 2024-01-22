@@ -19,10 +19,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $row = mysqli_fetch_assoc(mysqli_query($conn, $sql));
             $_SESSION['UUID'] = $row['UUID'];
             header("Location: ../Validation.php");
-        } else if ($UsernameResult->num_rows > 0 && $PasswordResult->num_rows == 0) {
+        } elseif ($UsernameResult->num_rows > 0 && $PasswordResult->num_rows == 0) {
             $error = "Invalid password.";
-        } else {
+        } elseif ($UsernameResult->num_rows == 0 && $PasswordResult->num_rows > 0) {
             $error = "Invalid username or password.";
+        } else {
+            $error = "Invalid username and password.";
         }
     } else {
         echo "<script>console.error('Failed to execute queries: " . mysqli_error($conn) . "');</script>";
@@ -54,6 +56,7 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
     <link rel="stylesheet" href="../../Style/Login.css">
     <link rel="stylesheet" href="../../Style/SA2-BS4.css">
     <script src="../../Script/sweetalert2.all.min.js"></script>
+    <script defer src="../../Script/Bootstrap-js/bootstrap.bundle.js"></script>
     <style>
         .swal2-timer-progress-bar {
             background-color: #ffcd00 !important;
@@ -86,6 +89,26 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
         </script>';
     }
     ?>
+
+    <!-- Modal -->
+    <div class="modal fade" id="Passreset" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Understood</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6 col-md-7 intro-section">
@@ -116,12 +139,11 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="position-relative">
                                 <input name="login" id="login" class="btn login-btn" type="submit" value="Login">
-                                <span id="indicator" class="position-absolute top-0 start-100 translate-middle p-2 bg-success border border-light rounded-circle" title="You are connected to the internet">
+                                <span id="indicator" class="position-absolute top-0 start-100 translate-middle p-2 bg-success border border-light rounded-circle" title="You are connected to the internet" hidden>
                                     <span class="visually-hidden">Internet Connection Status</span>
                                 </span>
                             </div>
-
-                            <a href="#!" class="forgot-password-link">Password?</a>
+                            <a class="forgot-link" style="cursor: pointer;" id="passres">Forgot password?</a>
                         </div>
                     </form>
                     <?php
@@ -164,7 +186,6 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
                             text: "Kindly log in before attempting to access the page. Your login credentials are required to proceed."
                         });
                         </script>';
-
                         } else {
                             echo '<p class="form-text text-center';
                             if (isset($show)) echo $show;
@@ -174,7 +195,7 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
                         }
                     }
 
-                    if (isset($error)){
+                    if (isset($error)) {
                         echo '
                             <div class="alert alert-danger user-select-none text-center" role="alert" id="erroralert">
                                 ' . $error . '
@@ -189,15 +210,15 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
                     }
                     ?>
                     <p class="mute-text text-center text-danger visually-hidden" id="error"> <?php if (isset($error)) echo $error; ?>&nbsp</p>
-                    <p class="login-wrapper-footer-text visually-hidden">Need an account? <a href="#!" class="text-reset">Signup here</a></p> 
+                    <p class="login-wrapper-footer-text visually-hidden">Need an account? <a href="#!" class="text-reset">Signup here</a></p>
                     <script>
                         //check if connected to the internet
-                        var connected = navigator.offLine;
+                        /* var connected = navigator.offLine;
                         if (connected) {
                             document.getElementById('indicator').classList.remove('visually-hidden');
                         } else {
                             document.getElementById('indicator').classList.add('visually-hidden');
-                        }
+                        } */
 
                         window.onload = function() {
                             document.getElementById('login').scrollIntoView();
@@ -264,6 +285,43 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
                                 keys = [];
                             }
                         }, true);
+
+                        // under construction
+                        document.getElementById('passres').addEventListener('click', () => {
+                            Swal.fire({
+                                title: 'Password Reset',
+                                html: '<p class="text-center">Enter your email address to reset your password.</p>' +
+                                    '<input type="email" class="form-control" id="email" placeholder="Email Address">',
+                                showCancelButton: true,
+                                confirmButtonText: 'Reset',
+                                showLoaderOnConfirm: true,
+                                preConfirm: (email) => {
+                                    return fetch(`./resetpassword.php?email=${email}`)
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                throw new Error(response.statusText)
+                                            }
+                                            return response.json()
+                                        })
+                                        .catch(error => {
+                                            Swal.showValidationMessage(
+                                                `Request failed: ${error}`
+                                            )
+                                        })
+                                },
+                                allowOutsideClick: () => !Swal.isLoading()
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Password Reset',
+                                        text: 'A password reset link has been sent to your email address.',
+                                        showConfirmButton: false,
+                                        timer: 3000
+                                    })
+                                }
+                            })
+                        });
                     </script>
                 </div>
             </div>

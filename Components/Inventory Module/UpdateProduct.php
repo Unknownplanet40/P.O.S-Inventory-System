@@ -49,14 +49,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $OldprodCategory = $row['category'];
         $OldprodML = $row['ml'];
         $OldprodImage = $row['image_path'];
+        
+        //testing 
+        echo "---------- Old Data ----------<br>";
+        echo "From Database: <br>";
+        echo "Product ID: " . $prodID . "<br>";
+        echo "Product Name: " . $OldprodName . "<br>";
+        echo "Product Price: " . $OldprodPrice . "<br>";
+        echo "Product Quantity: " . $OldprodQuantity . "<br>";
+        echo "Product Category: " . $OldprodCategory . "<br>";
+        echo "Product ML: " . $OldprodML . "<br>";
+        echo "Product Image: " . $OldprodImage . "<br>";
 
-        if ($OldprodCategory != $prodCategory) {
-            $sql = "UPDATE pos_products SET category = '$prodCategory' WHERE id = '$prodID'";
-            $result = mysqli_query($conn, $sql);
-        }
-
+        echo "---------- New Data ----------<br>";
+        echo "From Form: <br>";
+        echo "Product ID: " . $prodID . "<br>";
+        echo "Product Name: " . $prodName . "<br>";
+        echo "Product Price: " . $prodPrice . "<br>";
+        echo "Product Quantity: " . $prodQuantity . "<br>";
+        echo "Product Category: " . $prodCategory . "<br>";
+        echo "Product ML: " . $prodML . "<br>";
+        echo "Product Image: " . $prodImage . "<br>";
+        echo "<a href='./Products.php'>Back</a><br>";
     }
 }
 $conn->close();
-header("Location: ./Products.php");
+//header("Location: ./Products.php");
 ?>
