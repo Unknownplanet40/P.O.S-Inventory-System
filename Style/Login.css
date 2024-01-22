@@ -14,18 +14,20 @@
   font-family: "Poppins";
 } */
 
-body{
+body {
   font-family: "Poppins";
   font-weight: 400;
 }
 
-h1 > a {
+h1>a {
   text-decoration: none;
   color: #fff !important;
 }
 
 .intro-section {
-  background-image: url(../assets/Backdrop.png);
+  /* background-image: url(../assets/Backdrop.png);
+   */
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url(../assets/Backdrop.png);
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -37,20 +39,23 @@ h1 > a {
   -webkit-box-direction: normal;
   flex-direction: column;
   color: #fff;
-  /* dark overlay */
+  /* darken background image */
 
 }
+
 @media (max-width: 991px) {
   .intro-section {
     padding-left: 50px;
     padding-right: 50px;
   }
 }
+
 @media (max-width: 767px) {
   .intro-section {
     padding: 28px;
   }
 }
+
 @media (max-width: 575px) {
   .intro-section {
     min-height: auto;
@@ -73,15 +78,18 @@ h1 > a {
   margin-top: auto;
   margin-bottom: auto;
 }
+
 .intro-content-wrapper .intro-title {
   font-size: 40px;
   font-weight: bold;
   margin-bottom: 17px;
 }
+
 .intro-content-wrapper .intro-text {
   font-size: 19px;
   line-height: 1.37;
 }
+
 .intro-content-wrapper .btn-read-more {
   background-color: #fff;
   padding: 13px 30px;
@@ -90,6 +98,7 @@ h1 > a {
   font-weight: bold;
   color: #000;
 }
+
 .intro-content-wrapper .btn-read-more:hover {
   background-color: transparent;
   border: 1px solid #fff;
@@ -119,12 +128,14 @@ h1 > a {
   font-weight: bold;
   color: inherit;
 }
+
 @media (max-width: 767px) {
   .intro-section-footer .footer-nav a {
     font-size: 14px;
   }
 }
-.intro-section-footer .footer-nav a + a {
+
+.intro-section-footer .footer-nav a+a {
   margin-left: 30px;
 }
 
@@ -140,6 +151,7 @@ h1 > a {
   background-repeat: no-repeat;
   background-position: center;
 }
+
 @media (max-width: 767px) {
   .form-section {
     padding: 35px;
@@ -150,11 +162,13 @@ h1 > a {
   width: 300px;
   max-width: 100%;
 }
+
 @media (max-width: 575px) {
   .login-wrapper {
     width: 100%;
   }
 }
+
 .login-wrapper .form-control {
   border: 0;
   border-bottom: 1px solid #c5c5c5;
@@ -181,21 +195,25 @@ h1 > a {
   /* color: #b0adad; */
   color: #6e3b3bc0;
 }
+
 .login-wrapper .form-control::-moz-placeholder {
   /* color: #b0adad; */
   color: #6e3b3bc0;
 }
+
 .login-wrapper .form-control:-ms-input-placeholder {
   /* color: #b0adad; */
   color: #6e3b3bc0;
 }
+
 .login-wrapper .form-control::-ms-input-placeholder {
   /* color: #b0adad; */
   color: #6e3b3bc0;
 }
+
 .login-wrapper .form-control::placeholder {
   color: #6e3b3bc0;
-  
+
 }
 
 .login-wrapper .uname::placeholder {
@@ -219,6 +237,19 @@ h1 > a {
   color: #6e3b3bfa;
 }
 
+.day {
+  font-size: 30px;
+  font-weight: bold;
+  color: #6e3b3b;
+}
+
+.time {
+  font-size: 20px;
+  font-weight: bold;
+  color: #6e3b3b;
+
+}
+
 .login-btn {
   padding: 8px 30px;
   background-color: #ffcd00;
@@ -227,17 +258,23 @@ h1 > a {
   font-weight: bold;
   color: #6e3b3b;
   text-transform: uppercase;
+  border: 1px solid #6e3b3b;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
 }
+
 .login-btn:hover {
-  background-color: #ffcc00b0;
-  color: #6e3b3b;
+  background-color: #6e3b3b;
+  color: #ffcc00;
+  transform: scale(1.08);
+  transition: all 0.3s ease-in-out;
 }
 
 .login-btn:disabled {
   background-color: #ffcd00;
   color: #6e3b3b;
   opacity: 0.5;
-  cursor: wait;
+  cursor: not-allowed;
 }
 
 .forgot-password-link {

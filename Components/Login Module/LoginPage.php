@@ -113,7 +113,7 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
         <div class="row">
             <div class="col-sm-6 col-md-7 intro-section">
                 <div class="brand-wrapper">
-                    <h1><a><img src="../../assets/Logo.svg" width="48" alt="" srcset=""></a></h1>
+                    <h1 class="pt-0"><img src="../../assets/Logo.svg" width="48" alt="" srcset=""></h1>
                 </div>
                 <div class="intro-content-wrapper">
                     <h1 class="intro-title">Manlalaba Laundry Station</h1>
@@ -122,6 +122,10 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
             </div>
             <div class="col-sm-6 col-md-5 form-section">
                 <div class="login-wrapper">
+                    <div class="pb-5">
+                        <h2 class="text-center mb-1 fs-2 day" id="day">what does the fox say?</h2>
+                        <h2 class="text-center mt-1 fs-5 time" id="time">Ring-ding-ding-ding-dingeringeding!</h2>
+                    </div>
                     <h2 class="login-title">Login</h2>
                     <form action="<?php $_SERVER["PHP_SELF"] ?>" method="POST" class="form login-form">
                         <div class="form-group">
@@ -136,15 +140,15 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
                                 <input type="checkbox" class="form-check-input" id="SpCb">
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-center">
                             <div class="position-relative">
                                 <input name="login" id="login" class="btn login-btn" type="submit" value="Login">
                                 <span id="indicator" class="position-absolute top-0 start-100 translate-middle p-2 bg-success border border-light rounded-circle" title="You are connected to the internet" hidden>
                                     <span class="visually-hidden">Internet Connection Status</span>
                                 </span>
                             </div>
-                            <a class="forgot-link" style="cursor: pointer;" id="passres">Forgot password?</a>
                         </div>
+                        <a class="forgot-link" style="cursor: pointer;" id="passres" hidden>Forgot password?</a>
                     </form>
                     <?php
                     if (isset($notice)) {
@@ -285,6 +289,41 @@ if (isset($_SESSION['statusNotif']) && $_SESSION['statusNotif'] != "") {
                                 keys = [];
                             }
                         }, true);
+
+                        function updateTime() {
+                            var currentTime = new Date();
+                            var hours = currentTime.getHours();
+                            var minutes = currentTime.getMinutes();
+                            var seconds = currentTime.getSeconds();
+                            var ampm = hours >= 12 ? 'PM' : 'AM';
+                            var day = currentTime.getDay();
+                            var month = currentTime.getMonth();
+                            var monthlist = ["January", "February", "March", "April ", "May", "June", "July", "August", "September", "October", "November", "December"];
+                            var date = currentTime.getDate();
+                            var year = currentTime.getFullYear();
+
+                            // Convert to 12-hour format
+                            hours = hours % 12 || 12;
+
+                            // Add leading zeros if needed
+                            hours = (hours < 10 ? "0" : "") + hours;
+                            minutes = (minutes < 10 ? "0" : "") + minutes;
+                            seconds = (seconds < 10 ? "0" : "") + seconds;
+
+                            // Format the time as hh:mm:ss AM/PM
+                            var formattedTime = hours + ":" + minutes + " " + ampm;
+
+                            // Update the content of the 'time' element
+                            document.getElementById('time').innerText = formattedTime;
+                            document.getElementById('day').innerText = monthlist[month] + " " + date + ", " + year;
+                        }
+
+                        // Call updateTime function initially to display the current time
+                        updateTime();
+
+                        // Update the time every second (1000 milliseconds)
+                        setInterval(updateTime, 1000);
+
 
                         // under construction
                         document.getElementById('passres').addEventListener('click', () => {
