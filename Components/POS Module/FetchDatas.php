@@ -57,7 +57,7 @@ function getItem()
                     $image_path = "../../assets/Default_Image/Def_Others.png";
                 }
             } else {
-                $image_path = $row['image_path'];
+                $image_path = "../../assets/Custom_Image/" . $row['image_path'];
             }
 
             if ($row['Achieved'] != 1) {

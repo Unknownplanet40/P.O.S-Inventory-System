@@ -33,7 +33,7 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
     <link rel="stylesheet" href="../../Style/sidebars.css" />
 
     <script defer src="../../Script/Bootstrap-js/bootstrap.bundle.js"></script>
-    <script defer src="../../Script/sweetalert2.all.min.js"></script>
+    <script src="../../Script/sweetalert2.all.min.js"></script>
     <script defer src="../../Script/sidebars.js"></script>
 
     <script defer src="../../DataTables/js/jquery-3.7.0.js"></script>
@@ -156,17 +156,207 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
             background-repeat: no-repeat;
             background-position: center left;
         }
+
+        .loader {
+            outline: 1px solid #ddd;
+            width: 120px;
+            height: 150px;
+            background-color: #fff;
+            background-repeat: no-repeat;
+            background-image: linear-gradient(#ddd 50%, #bbb 51%),
+                linear-gradient(#ddd, #ddd), linear-gradient(#ddd, #ddd),
+                radial-gradient(ellipse at center, #aaa 25%, #eee 26%, #eee 50%, #0000 55%),
+                radial-gradient(ellipse at center, #aaa 25%, #eee 26%, #eee 50%, #0000 55%),
+                radial-gradient(ellipse at center, #aaa 25%, #eee 26%, #eee 50%, #0000 55%);
+            background-position: 0 20px, 45px 0, 8px 6px, 55px 3px, 75px 3px, 95px 3px;
+            background-size: 100% 4px, 1px 23px, 30px 8px, 15px 15px, 15px 15px, 15px 15px;
+            position: relative;
+            border-radius: 6%;
+            animation: shake 3s ease-in-out infinite;
+            transform-origin: 60px 180px;
+        }
+
+        .loader:before {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 100%;
+            width: 7px;
+            height: 5px;
+            background: #aaa;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 102px 0 #aaa;
+        }
+
+        .loader:after {
+            content: "";
+            position: absolute;
+            width: 95px;
+            height: 95px;
+            left: 0;
+            right: 0;
+            margin: auto;
+            bottom: 20px;
+            background-color: #bbdefb;
+            background-image:
+                linear-gradient(to right, #0004 0%, #0004 49%, #0000 50%, #0000 100%),
+                linear-gradient(135deg, #64b5f6 50%, #607d8b 51%);
+            background-size: 30px 100%, 90px 80px;
+            border-radius: 50%;
+            background-repeat: repeat, no-repeat;
+            background-position: 0 0;
+            box-sizing: border-box;
+            border: 10px solid #DDD;
+            box-shadow: 0 0 0 4px #999 inset, 0 0 6px 6px #0004 inset;
+            animation: spin 3s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg)
+            }
+
+            50% {
+                transform: rotate(360deg)
+            }
+
+            75% {
+                transform: rotate(750deg)
+            }
+
+            100% {
+                transform: rotate(1800deg)
+            }
+        }
+
+        @keyframes shake {
+
+            65%,
+            80%,
+            88%,
+            96% {
+                transform: rotate(0.5deg)
+            }
+
+            50%,
+            75%,
+            84%,
+            92% {
+                transform: rotate(-0.5deg)
+            }
+
+            0%,
+            50%,
+            100% {
+                transform: rotate(0)
+            }
+        }
     </style>
 </head>
 
 <body>
-    <!-- small screen indicator -->
     <div class="d-block d-md-none">
-        <!-- fill all the space of the screen -->
         <div class="fillup">
             <h1 class="text-center text-white">This page is not available in small screen</h1>
         </div>
     </div>
+    <?php
+    if (isset($_SESSION['message'])) {
+        if (strpos($_SESSION['message'], 'successfully') !== false) {
+            echo '<script>
+            Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 2000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.addEventListener("mouseenter", Swal.stopTimer);
+                    toast.addEventListener("mouseleave", Swal.resumeTimer);
+                  },
+                }).fire({
+                  icon: "success",
+                  title: "Message",
+                  text: "' . $_SESSION['message'] . '",
+                });
+            </script>';
+        } else if (strpos($_SESSION['message'], 'No changes made') !== false) {
+            echo '<script>
+            Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 2000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.addEventListener("mouseenter", Swal.stopTimer);
+                    toast.addEventListener("mouseleave", Swal.resumeTimer);
+                  },
+                }).fire({
+                  icon: "info",
+                  title: "Message",
+                  text: "' . $_SESSION['message'] . '",
+                });
+            </script>';
+        } elseif (strpos($_SESSION['message'], 'Error: ') !== false) {
+            echo '<script>
+            Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 2000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.addEventListener("mouseenter", Swal.stopTimer);
+                    toast.addEventListener("mouseleave", Swal.resumeTimer);
+                  },
+                }).fire({
+                  icon: "error",
+                  title: "Message",
+                  text: "' . $_SESSION['message'] . '",
+                });
+            </script>';
+        } elseif (strpos($_SESSION['message'], 'Restore') !== false) {
+            echo '<script>
+            Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 2000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.addEventListener("mouseenter", Swal.stopTimer);
+                    toast.addEventListener("mouseleave", Swal.resumeTimer);
+                  },
+                }).fire({
+                  icon: "success",
+                  title: "Message",
+                  text: "' . $_SESSION['message'] . '",
+                });
+            </script>';
+        } else {
+            echo '<script>
+            Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 2000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.addEventListener("mouseenter", Swal.stopTimer);
+                    toast.addEventListener("mouseleave", Swal.resumeTimer);
+                  },
+                }).fire({
+                  icon: "warning",
+                  title: "Message",
+                  text: "' . $_SESSION['message'] . '",
+                });
+            </script>';
+        }
+        unset($_SESSION['message']);
+    }
+
+    ?>
     <div class="parent">
         <div class="div1">
             <?php require_once '../SmallSidebar.php'; ?>
@@ -196,7 +386,7 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                 <div class="card-body">
                                     <div class="d-grid gap-2 col-12 mx-auto">
                                         <button class="btn btn-warning btn-sm fw-bold" type="button">Add Item</button>
-                                        <button type="button" class="btn custom-brown btn-sm position-relative">
+                                        <button type="button" class="btn custom-brown btn-sm position-relative" data-bs-toggle="modal" data-bs-target="#Archive">
                                             Achieved Items
                                             <?php if ($ACHIEVED > 0) { ?>
                                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -210,21 +400,21 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                             </div>
                         </div>
                     </div>
-
+                    <?php include_once './Archived_Table.php'; ?>
                     <div class="modal fade" id="Editmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-md">
-                            <form id="editForm" name="editForm">
-                                <div class="modal-content">
-                                    <div class="modal-header text-bg-warning">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form id="editForm" name="editForm" method="POST" enctype="multipart/form-data">
+                                <div class="modal-content rounded-1">
+                                    <div class=" modal-header text-bg-warning visually-hidden">
                                         <h1 class="modal-title fs-5 text-center" id="staticBackdropLabel">Product Details</h1>
                                     </div>
                                     <div class="modal-body">
-                                        <div class="card mb-3">
+                                        <div class="card mb-3 border border-0">
                                             <div class="row g-0">
                                                 <div class="col-md-4 p-3">
                                                     <img src="" class="img-thumbnail mx-auto d-block" alt="Product Image" id="prodImage" name="prodImage" style="max-width: 132px; max-height: 132px;">
                                                     <div class="input-group mb-3 input-group-sm mx-auto mt-3" style="max-width: 100px;">
-                                                        <input type="file" class="form-control" id="changeImage" name="changeImage" accept="image/*" style="margin-left: 15px; margin-right: -10px;">
+                                                        <input type="file" class="form-control shadow-sm" id="changeImage" name="changeImage" accept="image/png, image/jpeg, image/jpg" style="margin-left: 8px; margin-right: -3px;">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-8">
@@ -234,41 +424,69 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                                             <input type="text" class="form-control" placeholder="Name" value="" name="prodName" id="prodName">
                                                             <label for="prodName">Product Name</label>
                                                         </div>
-                                                        <div class="form-floating mb-3">
-                                                            <input type="text" class="form-control" placeholder="Category" value="" name="prodCategory" id="prodCategory">
-                                                            <label for="prodCategory">Category</label>
+                                                        <div class="input-group mb-3">
+                                                            <span class="input-group-text" style="min-width: 135px;">Category</span>
+                                                            <select class="form-select" id="prodCategory" name="prodCategory">
+                                                                <option selected hidden disabled>Choose...</option>
+                                                                <?php
+                                                                $sql = "SELECT category FROM pos_products WHERE Achieved = 0";
+                                                                $result = mysqli_query($conn, $sql);
+                                                                $cat[] = array();
+                                                                if (mysqli_num_rows($result) > 0) {
+                                                                    while ($row = mysqli_fetch_assoc($result)) {
+                                                                        $category = $row['category'];
+
+                                                                        //check if its already in the array
+                                                                        if (!in_array($category, $cat)) {
+                                                                            array_push($cat, $category);
+                                                                            echo "<option value='$category'>$category</option>";
+                                                                        }
+                                                                    }
+                                                                }
+                                                                ?>
+                                                            </select>
                                                         </div>
-                                                        <div class="form-floating mb-3">
+                                                        <div class="input-group mb-3">
+                                                            <span class="input-group-text" style="min-width: 135px;">Price</span>
                                                             <input type="number" class="form-control" placeholder="Product Price" value="" min="0" name="prodPrice" id="prodPrice" step=".01">
-                                                            <label for="prodPrice">Price</label>
                                                         </div>
-                                                        <div class="form-floating mb-3">
-                                                            <input type="number" class="form-control" placeholder="Product Quantity" value="" min="0" name="prodQuantity" id="prodQuantity">
-                                                            <label for="prodQuantity">Quantity</label>
+                                                        <div class="input-group mb-3">
+                                                            <span class="input-group-text" style="min-width: 135px;">Current Stock</span>
+                                                            <input type="number" class="form-control text-end rounded-end" placeholder="Current Stock" value="" min="0" name="prodQuantity" id="prodCurrentStock">
+                                                            <span class="input-group-text user-select-none bg-transparent border border-0" title="Product Quantity" data-bs-toggle="tooltip" data-bs-placement="right"><b id="prodQuantity">1000</b></span>
                                                         </div>
-                                                        <div class="form-floating mb-3" id="ml">
-                                                            <input type="number" class="form-control" placeholder="Product ML" value="0" min="0" name="prodML" id="prodML">
-                                                            <label for="prodML">ML</label>
+                                                        <div class="input-group mb-3" id="ml">
+                                                            <span class="input-group-text" style="min-width: 135px;">Current ML</span>
+                                                            <input type="number" class="form-control text-end rounded-end" placeholder="Product ML" value="0" min="0" name="prodML" id="prodML">
+                                                            <span class="input-group-text user-select-none bg-transparent border border-0" title="Product ML" data-bs-toggle="tooltip" data-bs-placement="right"><b id="prodML">1000</b></span>
                                                         </div>
+                                                        <script>
+                                                            document.getElementById('prodCategory').addEventListener('change', function() {
+                                                                var category = this.value;
+                                                                if (category == "Liquid") {
+                                                                    document.getElementById('ml').classList.remove('visually-hidden');
+                                                                } else {
+                                                                    document.getElementById('ml').classList.add('visually-hidden');
+                                                                }
+                                                            });
+                                                        </script>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModal">Close</button>
-                                        <input type="submit" class="btn btn-warning" value="Save Changes" name="saveChanges" id="saveChanges">
+                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal" id="closeModal">Close</button>
+                                        <input type="submit" class="btn btn-warning btn-sm" value="Save Changes" name="saveChanges" id="saveChanges">
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
 
-                    <div class="border border-warning p-4 rounded" style="max-height: 70vh; overflow-y: auto; overflow-x: hidden;">
+                    <div class="p-4 rounded" style="max-height: 70vh; overflow-y: auto; overflow-x: hidden;">
                         <div class="d-flex justify-content-center" id="spinner">
-                            <div class="spinner-border" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
+                            <span class="loader"></span>
                         </div>
                         <table id="productTable" class="table table-striped table-hover d-none table-sm">
                             <thead>
@@ -277,8 +495,8 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                     <th>Category</th>
                                     <th>Price</th>
                                     <th>Status</th>
-                                    <th>ML</th>
                                     <th>Quantity</th>
+                                    <th>ML</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -287,6 +505,8 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                 $sql = "SELECT * FROM pos_products WHERE Achieved = 0";
                                 $result = mysqli_query($conn, $sql);
 
+                                $i = 0;
+                                $cat[] = array();
                                 if (mysqli_num_rows($result) > 0) {
                                     while ($row = mysqli_fetch_assoc($result)) {
                                         $id = $row['id'];
@@ -314,7 +534,7 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                                 $image = "../../assets/Default_Image/Def_Others.png";
                                             }
                                         } else {
-                                            $image = $row['image_path'];
+                                            $image = "../../assets/Custom_Image/" . $row['image_path'];
                                         }
 
                                         if ($LowStock == 1) {
@@ -333,24 +553,22 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                             $Current_ML = "N/A";
                                         }
 
-
                                         if ($LowStock == "Low Stock") {
                                             echo "<tr class='table-danger'>";
                                         } else {
                                             echo "<tr>";
                                         }
-                                        echo "<td><img src='$image' width='50px' height='50px' class='rounded-circle' alt='Product Image'>&nbsp;&nbsp;$product_name</td>";
+                                        echo "<td><img src='$image' width='25px' height='25px' class='rounded-circle' alt='Product Image'>&nbsp;&nbsp;$product_name</td>";
                                         echo "<td>$category</td>";
                                         echo "<td><b>₱ </b>$price</td>";
                                         echo "<td>$indicator&nbsp;$LowStock</td>";
+                                        echo "<td><b title='Current Stock' data-bs-toggle='tooltip' data-bs-placement='left'>$CurrentStock</b> / <span title='Product Quantity' data-bs-toggle='tooltip' data-bs-placement='right'>$quantity</span></td>";
                                         echo "<td>";
                                         if ($category == "Liquid") {
-                                            echo "<b>$Current_ML</b> / $ml";
+                                            echo "<b title='Current ML' data-bs-toggle='tooltip' data-bs-placement='left'>$Current_ML</b> / <span title='Product ML' data-bs-toggle='tooltip' data-bs-placement='right'>$ml</span>";
                                         } else {
-                                            echo "<span class='text-muted'>N/A</span>";
+                                            echo "<small class='text-muted'>&horbar;<span class='visually-hidden'>N/A</span></small>";
                                         }
-                                        echo "</td>";
-                                        echo "<td><b>$CurrentStock</b> / $quantity</td>";
                                         echo "</td>";
                                         echo "<td>
                                     <button class='btn btn-sm custom-active' data-bs-toggle='modal' data-bs-target='#Editmodal' title='Edit Item' id='$edit'>&#9998;</button>
@@ -373,9 +591,12 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                                 document.getElementById('prodID').value = id;
                                                 document.getElementById('prodName').value = prodName;
                                                 document.getElementById('prodImage').src = prodImage;
+                                                document.getElementById('changeImage').value = '';
                                                 document.getElementById('prodCategory').value = prodCategory;
+
+
                                                 document.getElementById('prodPrice').value = prodPrice;
-                                                document.getElementById('prodQuantity').value = prodQuantity;
+                                                document.getElementById('prodCurrentStock').value = prodCurrentStock;
 
                                                 if (prodCategory == 'Liquid') {
                                                     document.getElementById('ml').classList.remove('visually-hidden');
@@ -388,7 +609,7 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                     }
                                 }
                                 ?>
-                                </tbody>
+                            </tbody>
                         </table>
 
                         <script>
@@ -398,6 +619,7 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                     var reader = new FileReader();
                                     reader.onload = function() {
                                         document.getElementById('prodImage').src = this.result;
+                                        console.log(document.getElementById('changeImage').value);
                                     }
                                     reader.readAsDataURL(file);
                                 }
@@ -425,14 +647,12 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                 const prodNameValid = validateAndSetError('prodName');
                                 const prodCategoryValid = validateAndSetError('prodCategory');
                                 const prodPriceValid = validateAndSetError('prodPrice');
-                                const prodQuantityValid = validateAndSetError('prodQuantity');
+                                const prodQuantityValid = validateAndSetError('prodCurrentStock');
                                 const prodMLValid = validateAndSetError('prodML');
 
                                 if (prodNameValid && prodCategoryValid && prodPriceValid && prodQuantityValid && prodMLValid) {
                                     const editForm = document.getElementById('editForm');
                                     editForm.action = './UpdateProduct.php';
-                                    editForm.method = 'POST';
-                                    editForm.enctype = 'multipart/form-data';
                                     editForm.submit();
                                 }
                             });
@@ -450,11 +670,7 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                 document.getElementById('prodQuantity').classList.remove('is-invalid');
                                 document.getElementById('prodML').classList.remove('is-invalid');
                             });
-
-                            // if mouse hover on the row of the table then show the edit and delete button
-                            
                         </script>
-
                     </div>
                 </div>
             </main>

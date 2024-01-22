@@ -29,7 +29,8 @@ document.addEventListener("DOMContentLoaded", function () {
       return response.json();
     })
     .then((jsonData) => {
-      document.getElementById("loading").setAttribute("hidden", "true");
+      document.getElementById("loading").classList.add("visually-hidden");
+
       jsonData.forEach(function (item) {
         // Prevent data from being null or undefined
         if (!item["id"]) {
