@@ -65,7 +65,7 @@
                                                         confirmButtonText: 'Yes, restore it!'
                                                     }).then((result) => {
                                                         if (result.isConfirmed) {
-                                                            document.getElementById("Restore<?php echo $row['id']; ?>").action = "./RestoreProd.php";
+                                                            //document.getElementById("Restore<?php echo $row['id']; ?>").action = "./RestoreProd.php";
                                                             document.getElementById("Restore<?php echo $row['id']; ?>").submit();
                                                         }
                                                     })

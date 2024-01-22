@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // create image
         var image = document.createElement("img");
-        image.classList.add("card-img-top", "p-2");
+        image.classList.add("card-img-top", "p-2");  
         image.src = item["image_path"];
         image.alt = "Image of " + item["product_name"];
         image.style.height = "128px";
