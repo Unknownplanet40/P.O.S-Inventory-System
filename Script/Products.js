@@ -9,7 +9,7 @@ $.extend(true, DataTable.defaults, {
     zeroRecords: "No Items Found",
   },
   columnDefs: [{ orderable: false, targets: -1 }],
-  order: [[3, "desc"]],
+  order: [[2, "desc"]],
   responsive: true,
 });
 

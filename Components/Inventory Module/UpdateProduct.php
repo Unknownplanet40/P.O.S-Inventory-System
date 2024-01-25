@@ -2,7 +2,8 @@
 session_start();
 include_once '../Database/config.php';
 
-function UploadImage(){
+function UploadImage()
+{
     global $conn, $prodID, $prodName, $prodImage;
     if ($prodImage != '') {
         $target_dir = "../../assets/Custom_Image/";
@@ -20,12 +21,23 @@ function UploadImage(){
                 return true;
             }
         } else if ($_FILES["changeImage"]["size"] > 5000000) {
+            $_SESSION['Imageerror'] = "Image is too large! (Max: 5MB)";
             return false;
         } else {
+            $_SESSION['Imageerror'] = "." . $imageFileType . " is not supported!";
             return false;
         }
     } else {
         return true;
+    }
+}
+
+function compare($Old, $New)
+{
+    if ($Old == $New) {
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -46,33 +58,83 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $OldprodName = $row['product_name'];
         $OldprodPrice = $row['price'];
         $OldprodQuantity = $row['quantity'];
+        $OldprodCurrentStock = $row['CurrentStock'];
+        $OldprodCurrentML = $row['Current_ML'];
         $OldprodCategory = $row['category'];
         $OldprodML = $row['ml'];
         $OldprodImage = $row['image_path'];
-        
-        //testing 
-        echo "---------- Old Data ----------<br>";
-        echo "From Database: <br>";
-        echo "Product ID: " . $prodID . "<br>";
-        echo "Product Name: " . $OldprodName . "<br>";
-        echo "Product Price: " . $OldprodPrice . "<br>";
-        echo "Product Quantity: " . $OldprodQuantity . "<br>";
-        echo "Product Category: " . $OldprodCategory . "<br>";
-        echo "Product ML: " . $OldprodML . "<br>";
-        echo "Product Image: " . $OldprodImage . "<br>";
 
-        echo "---------- New Data ----------<br>";
-        echo "From Form: <br>";
-        echo "Product ID: " . $prodID . "<br>";
-        echo "Product Name: " . $prodName . "<br>";
-        echo "Product Price: " . $prodPrice . "<br>";
-        echo "Product Quantity: " . $prodQuantity . "<br>";
-        echo "Product Category: " . $prodCategory . "<br>";
-        echo "Product ML: " . $prodML . "<br>";
-        echo "Product Image: " . $prodImage . "<br>";
-        echo "<a href='./Products.php'>Back</a><br>";
+        // Check if there are any changes
+        if (compare($OldprodName, $prodName) && compare($OldprodPrice, $prodPrice) && compare($OldprodCurrentStock, $prodQuantity) && compare($OldprodCategory, $prodCategory) && compare($OldprodML, $prodML)) {
+            if ($prodImage != '') {
+                if (UploadImage()) {
+                    $_SESSION['message'] = "Image updated successfully! 1";
+                } else {
+
+                    $_SESSION['message'] = "Image was not updated! - " . $_SESSION['Imageerror'] . " 2";
+                }
+            } else {
+                $_SESSION['message'] = "No changes were made! 1";
+            }
+        } else {
+
+            if ($prodCategory == "Liquid") {
+                if ($prodML <= $OldprodML){
+                    $sql = "UPDATE pos_products SET product_name = '$prodName', price = '$prodPrice', quantity = '$prodQuantity', category = '$prodCategory', Current_ML = '$prodML', CurrentStock = '$prodQuantity' WHERE id = '$prodID'";
+                    $result = mysqli_query($conn, $sql);
+                    if ($result) {
+                        if (UploadImage()) {
+                            $_SESSION['message'] = "Product updated successfully! 1";
+                        } else {
+                            $_SESSION['message'] = "Product updated successfully but Image was not updated! - " . $_SESSION['Imageerror'] . " 2";
+                        }
+                    } else {
+                        $_SESSION['message'] = "Product was not updated! 3";
+                    }
+                } else {
+                    $sql = "UPDATE pos_products SET product_name = '$prodName', price = '$prodPrice', quantity = '$prodQuantity', category = '$prodCategory', ml = '$prodML', Current_ML = '$prodML', CurrentStock = '$prodQuantity' WHERE id = '$prodID'";
+                    $result = mysqli_query($conn, $sql);
+                    if ($result) {
+                        if (UploadImage()) {
+                            $_SESSION['message'] = "Product updated successfully! 1";
+                        } else {
+                            $_SESSION['message'] = "Product updated successfully but Image was not updated! - " . $_SESSION['Imageerror'] . " 2";
+                        }
+                    } else {
+                        $_SESSION['message'] = "Product was not updated! 3";
+                    }
+                }
+            } else {
+                if ($prodQuantity <= $OldprodQuantity){
+                    $sql = "UPDATE pos_products SET product_name = '$prodName', price = '$prodPrice', CurrentStock = '$prodQuantity', category = '$prodCategory', ml = '0', Current_ML = '0' WHERE id = '$prodID'";
+                    $result = mysqli_query($conn, $sql);
+                    if ($result) {
+                        if (UploadImage()) {
+                            $_SESSION['message'] = "Product updated successfully! 1";
+                        } else {
+                            $_SESSION['message'] = "Product updated successfully but Image was not updated! - " . $_SESSION['Imageerror'] . " 2";
+                        }
+                    } else {
+                        $_SESSION['message'] = "Error: Product was not updated! 3";
+                    }
+                } else {
+                    $sql = "UPDATE pos_products SET product_name = '$prodName', price = '$prodPrice', quantity = '$prodQuantity', CurrentStock = '$prodQuantity', category = '$prodCategory', ml = '0', Current_ML = '0' WHERE id = '$prodID'";
+                    $result = mysqli_query($conn, $sql);
+                    if ($result) {
+                        if (UploadImage()) {
+                            $_SESSION['message'] = "Product updated successfully! 1";
+                        } else {
+                            $_SESSION['message'] = "Product updated successfully but Image was not updated! - " . $_SESSION['Imageerror'] . " 2";
+                        }
+                    } else {
+                        $_SESSION['message'] = "Error: Product was not updated! 3";
+                    }
+                }
+            }
+        }
+    } else {
+        $_SESSION['message'] = "Product does not exist! 3";
     }
 }
 $conn->close();
-//header("Location: ./Products.php");
-?>
+header("Location: ./Products.php");

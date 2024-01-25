@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 22, 2024 at 03:37 PM
+-- Generation Time: Jan 25, 2024 at 07:41 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -28,9 +28,6 @@ USE `mls_database`;
 --
 -- Table structure for table `account`
 --
--- Creation: Jan 15, 2024 at 10:40 AM
--- Last update: Jan 22, 2024 at 12:47 PM
---
 
 CREATE TABLE `account` (
   `UUID` char(64) NOT NULL COMMENT 'User Unique ID',
@@ -47,16 +44,12 @@ CREATE TABLE `account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- RELATIONSHIPS FOR TABLE `account`:
---
-
---
 -- Dumping data for table `account`
 --
 
 INSERT INTO `account` (`UUID`, `profile`, `name`, `username`, `password`, `role`, `status`, `date_created`, `last_accessed`, `isLogin`, `LoginTimeout`) VALUES
 ('3f2671b4-ab55-11ee-8123-2c600cc734ef', NULL, 'James Matthew Veloria', 'Jamesthew123', '@Veloria123', 1, 1, '2024-01-05 19:35:59', '2024-01-05 19:35:59', 0, NULL),
-('e2fd4d44-ab44-11ee-8123-2c600cc734ef', NULL, 'Ryan James Capadocia', 'Ryanjames123', '@Capadocia123', 0, 1, '2024-01-05 19:35:59', '2024-01-22 20:40:55', 0, '2024-01-23 20:40:55');
+('e2fd4d44-ab44-11ee-8123-2c600cc734ef', NULL, 'Ryan James Capadocia', 'Ryanjames123', '@Capadocia123', 0, 1, '2024-01-05 19:35:59', '2024-01-25 14:35:00', 1, '2024-01-26 14:35:00');
 
 --
 -- Triggers `account`
@@ -75,8 +68,6 @@ DELIMITER ;
 --
 -- Table structure for table `customer_information`
 --
--- Creation: Jan 18, 2024 at 12:30 PM
---
 
 CREATE TABLE `customer_information` (
   `Cust_ID` bigint(20) NOT NULL,
@@ -85,10 +76,6 @@ CREATE TABLE `customer_information` (
   `Cust_number` varchar(255) NOT NULL,
   `Cust_Address` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- RELATIONSHIPS FOR TABLE `customer_information`:
---
 
 --
 -- Dumping data for table `customer_information`
@@ -106,15 +93,15 @@ INSERT INTO `customer_information` (`Cust_ID`, `Cust_first_name`, `Cust_last_nam
 (9, 'Kayla', 'Castlake', '3549-616-2904', '8430 Fieldstone Court'),
 (10, 'Ryan James', 'Capadocia', '0910-773-7595', 'Phase 1, Block 11, Lot 14, Savanna ville, Malagasang 1-C, Imus, Cavite'),
 (11, 'James', 'Veloria', '0901-123-1231', 'tapat ng sm molino'),
-(12, 'Jeric', 'Dayandante', '0912-123-1112', 'sa may prima nadaan');
+(12, 'Jeric', 'Dayandante', '0912-123-1112', 'sa may prima nadaan'),
+(16, 'Ryan', 'James', '0910-773-7595', 'Phase 1, Block 11, Lot 14, Savanna ville, Malagasang 1-C, Imus, Cavite'),
+(17, 'jose', 'mangungupal', '0994-989-1234', 'kupalan str. brgy tigasin'),
+(18, 'Emilee', 'Heugel', '4451-663-4501', '4 Pankratz Terrace');
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `pos_products`
---
--- Creation: Jan 19, 2024 at 10:38 AM
--- Last update: Jan 22, 2024 at 10:17 AM
 --
 
 CREATE TABLE `pos_products` (
@@ -134,24 +121,22 @@ CREATE TABLE `pos_products` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- RELATIONSHIPS FOR TABLE `pos_products`:
---
-
---
 -- Dumping data for table `pos_products`
 --
 
 INSERT INTO `pos_products` (`id`, `product_name`, `category`, `price`, `quantity`, `ml`, `perML_order`, `Current_ML`, `Total_ML`, `CurrentStock`, `isLowStock`, `image_path`, `Achieved`) VALUES
-(1, 'Laundry Detergent', 'Powder', 9.99, 50, NULL, 125, 0, 0, 22, 0, NULL, 0),
-(2, 'Fabric Softener', 'Liquid', 5.99, 30, 1000, 125, 375, 30000, 30, 0, NULL, 0),
-(3, 'Bleach', 'Liquid', 3.49, 40, 750, 125, 250, 30000, 40, 0, NULL, 0),
-(4, 'Stain Remover', 'Spray', 4.99, 35, NULL, 125, 0, 0, 20, 0, '4.Stain Remover_4.jpg', 0),
+(1, 'Laundry Detergent', 'Powder', 9.99, 20, 0, 125, 0, 0, 20, 0, NULL, 0),
+(2, 'Fabric Softener', 'Liquid', 5.99, 30, 1000, 125, 1000, 30000, 30, 0, NULL, 0),
+(3, 'Bleach', 'Liquid', 3.49, 40, 750, 125, 750, 30000, 40, 0, NULL, 0),
+(4, 'Stain Remover', 'Spray', 4.99, 15, 0, 125, 0, 0, 15, 0, NULL, 0),
 (5, 'Laundry Bags', 'Accessories', 2.99, 100, NULL, 125, 0, 0, 86, 0, NULL, 0),
-(6, 'Dryer Sheets', 'Sheets', 3.99, 45, NULL, 125, 0, 0, 35, 0, NULL, 0),
+(6, 'Dryer Sheets', 'Sheets', 3.99, 45, NULL, 125, 0, 0, 30, 0, NULL, 0),
 (7, 'Washing Machine Cleaner', 'Liquid', 6.49, 20, 500, 125, 125, 10000, 20, 0, NULL, 0),
-(8, 'Clothespins', 'Accessories', 1.99, 75, NULL, 125, 0, 0, 59, 0, NULL, 0),
-(9, 'Lint Roller', 'Roller', 2.49, 60, NULL, 125, 0, 0, 43, 0, NULL, 0),
-(10, 'Laundry Basket', 'Basket', 7.99, 35, NULL, 125, 0, 0, 25, 0, NULL, 1);
+(8, 'Clothespins', 'Accessories', 1.99, 75, NULL, 125, 0, 0, 54, 0, NULL, 0),
+(9, 'Lint Roller', 'Roller', 2.49, 30, 0, 125, 0, 0, 30, 0, NULL, 0),
+(10, 'Laundry Basket', 'Basket', 7.99, 35, NULL, 125, 0, 0, 25, 0, NULL, 0),
+(11, 'Perfume', 'Liquid', 12.5, 50, 125, 125, 125, 0, 50, 0, NULL, 0),
+(12, 'Plastic Bag', 'Accessories', 10, 15, 0, 0, 0, 0, 15, 0, NULL, 0);
 
 --
 -- Triggers `pos_products`
@@ -173,32 +158,11 @@ CREATE TRIGGER `Low_Stock_Trigger` BEFORE UPDATE ON `pos_products` FOR EACH ROW 
 END
 $$
 DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `update_current_ml_and_quantity_trigger` BEFORE UPDATE ON `pos_products` FOR EACH ROW BEGIN
-    IF NEW.category = 'Liquid' AND NEW.Current_ML = 0 THEN
-        IF NEW.CurrentStock > 0 THEN
-            SET NEW.CurrentStock = NEW.CurrentStock - 1;
-            SET NEW.Current_ML = NEW.ml;
-        END IF;
-    END IF;
-END
-$$
-DELIMITER ;
-DELIMITER $$
-CREATE TRIGGER `update_total_ml_trigger` BEFORE UPDATE ON `pos_products` FOR EACH ROW BEGIN
-    IF NEW.category = 'Liquid' AND NEW.CurrentStock <> OLD.CurrentStock THEN
-        SET NEW.Total_ML = NEW.CurrentStock * COALESCE(NEW.ml, OLD.ml);
-    END IF;
-END
-$$
-DELIMITER ;
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `transaction_history`
---
--- Creation: Jan 18, 2024 at 04:21 PM
 --
 
 CREATE TABLE `transaction_history` (
@@ -209,14 +173,6 @@ CREATE TABLE `transaction_history` (
   `Issued_By` varchar(255) NOT NULL,
   `Issued_To` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- RELATIONSHIPS FOR TABLE `transaction_history`:
---   `Issued_By`
---       `account` -> `UUID`
---   `Issued_By`
---       `account` -> `UUID`
---
 
 --
 -- Dumping data for table `transaction_history`
@@ -230,7 +186,10 @@ INSERT INTO `transaction_history` (`TID`, `Items`, `Overall`, `Date_Issued`, `Is
 (7, '2x Dryer Sheets - 3.99 = 7.98, 3x Lint Roller - 2.49 = 7.47, 4x Clothespins - 1.99 = 7.96, 3x Laundry Basket - 7.99 = 23.97', 47.38, '2024-01-19 00:21:34', 'e2fd4d44-ab44-11ee-8123-2c600cc734ef', '092-223-8989'),
 (8, '2x Dryer Sheets - 3.99 = 7.98, 3x Lint Roller - 2.49 = 7.47, 1x Clothespins - 1.99 = 1.99, 1x Laundry Basket - 7.99 = 7.99, 2x Laundry Bags - 2.99 = 5.98, 5x Laundry Bags - 2.99 = 14.95', 46.36, '2024-01-19 00:24:06', 'e2fd4d44-ab44-11ee-8123-2c600cc734ef', '090-123-1231'),
 (9, '3x Laundry Bags - 2.99 = 8.97', 8.97, '2024-01-19 00:30:03', 'e2fd4d44-ab44-11ee-8123-2c600cc734ef', '090-333-1234'),
-(10, '1x Clothespins - 1.99 = 1.99', 1.99, '2024-01-19 00:32:29', 'e2fd4d44-ab44-11ee-8123-2c600cc734ef', '091-123-1112');
+(10, '1x Clothespins - 1.99 = 1.99', 1.99, '2024-01-19 00:32:29', 'e2fd4d44-ab44-11ee-8123-2c600cc734ef', '091-123-1112'),
+(11, '2x Bleach - 3.49 = 6.98', 6.98, '2024-01-23 00:45:43', 'e2fd4d44-ab44-11ee-8123-2c600cc734ef', '0910-773-7595'),
+(12, '1x Fabric Softener - 5.99 = 5.99, 5x Dryer Sheets - 3.99 = 19.95, 5x Clothespins - 1.99 = 9.95', 35.89, '2024-01-23 01:00:56', 'e2fd4d44-ab44-11ee-8123-2c600cc734ef', '0994-989-1234'),
+(13, '6x Bleach - 3.49 = 20.94, 1x Fabric Softener - 5.99 = 5.99', 26.93, '2024-01-23 01:30:09', 'e2fd4d44-ab44-11ee-8123-2c600cc734ef', '4451-663-4501');
 
 --
 -- Indexes for dumped tables
@@ -246,14 +205,13 @@ ALTER TABLE `account`
 -- Indexes for table `customer_information`
 --
 ALTER TABLE `customer_information`
-  ADD PRIMARY KEY (`Cust_ID`),
-  ADD UNIQUE KEY `UNIQUE` (`Cust_number`);
+  ADD PRIMARY KEY (`Cust_ID`);
 
 --
 -- Indexes for table `pos_products`
 --
 ALTER TABLE `pos_products`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`) USING BTREE;
 
 --
 -- Indexes for table `transaction_history`
@@ -270,13 +228,13 @@ ALTER TABLE `transaction_history`
 -- AUTO_INCREMENT for table `customer_information`
 --
 ALTER TABLE `customer_information`
-  MODIFY `Cust_ID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `Cust_ID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `transaction_history`
 --
 ALTER TABLE `transaction_history`
-  MODIFY `TID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `TID` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Constraints for dumped tables

@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // create image
         var image = document.createElement("img");
-        image.classList.add("card-img-top", "p-2");  
+        image.classList.add("card-img-top", "p-2");
         image.src = item["image_path"];
         image.alt = "Image of " + item["product_name"];
         image.style.height = "128px";
@@ -116,7 +116,14 @@ document.addEventListener("DOMContentLoaded", function () {
           price.innerHTML = "&#8369; " + item["price"];
         } else {
           price.innerHTML =
-            "&#8369; " + item["price"] + " per " + item["perML_order"] + "g";
+            "&#8369; " +
+            item["price"] +
+            " per " +
+            item["perML_order"] +
+            "g <br> Stocks: " +
+            item["CurrentStock"] +
+            " out of " +
+            item["quantity"];
         }
         cardbody.appendChild(price);
 
@@ -296,9 +303,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
         async function displaySingleToast(itemlow) {
           var index = notifItems.indexOf(itemlow);
+          document.getElementById("notif-icon").innerHTML = "";
           if (notif[index] === false) {
             return new Promise((resolve) => {
               if (notif[index] === false) {
+                var notiflist = document.getElementById("notif-list");
+                // check if the notification is already displayed
+                if (!notiflist.innerHTML.includes(itemlow)) {
+                  var div = document.createElement("div");
+                  div.classList.add(
+                    "alert",
+                    "alert-danger",
+                    "text-nowrap",
+                    "m-1"
+                  );
+                  div.setAttribute("role", "alert");
+                  div.innerHTML =
+                    "<strong>" +
+                    itemlow +
+                    "</strong>" +
+                    " is running low on stock";
+                  notiflist.appendChild(div);
+                }
+
+                var svg = document.createElement("svg");
+                svg.innerHTML =
+                  '<svg class="bi pe-none text-warning" width="24" height="24" role="img" aria-label="Notification"> <use xlink:href="#notif-active" /> </svg>';
+                spanlist.appendChild(svg);
+                emptyNotif.setAttribute("hidden", "true");
+
                 Swal.mixin({
                   toast: true,
                   position: "top-end",
@@ -675,6 +708,7 @@ document.addEventListener("DOMContentLoaded", function () {
       var customerNameList = [];
       var customerNumberList = [];
       var customerAddressList = [];
+
       jsonData.forEach(function (customer) {
         if (!customerNameList.includes(customer.name)) {
           var option = document.createElement("option");
@@ -709,17 +743,24 @@ document.addEventListener("DOMContentLoaded", function () {
           var customerAddress = document.getElementById("CustomerAddress");
           var ExistingCustomer = document.getElementById("ExistingCustomer");
 
+          var customerFound = false;
+
           jsonData.forEach(function (customer) {
             var name = customer.first_name + " " + customer.last_name;
             if (name.toLowerCase() == customName) {
-              customerNumber.value = customer.phone_number;
+              customerNumber.value = String(customer.phone_number);
               customerAddress.value = customer.address;
               ExistingCustomer.checked = true;
-            } else {
+              customerFound = true;
+            }
+
+            if (customerFound == false) {
               ExistingCustomer.checked = false;
             }
           });
         });
+
+      //if auto-complete is clicked
 
       // for auto-complete Customer Number
       document
@@ -730,13 +771,17 @@ document.addEventListener("DOMContentLoaded", function () {
           var customerAddress = document.getElementById("CustomerAddress");
           var ExistingCustomer = document.getElementById("ExistingCustomer");
 
+          var customerFound = false;
+
           jsonData.forEach(function (customer) {
             if (customer.phone_number == customNumber) {
               customerName.value =
                 customer.first_name + " " + customer.last_name;
               customerAddress.value = customer.address;
               ExistingCustomer.checked = true;
-            } else {
+            }
+
+            if (customerFound == false) {
               ExistingCustomer.checked = false;
             }
           });
@@ -751,13 +796,17 @@ document.addEventListener("DOMContentLoaded", function () {
           var customerNumber = document.getElementById("CustomerNumber");
           var ExistingCustomer = document.getElementById("ExistingCustomer");
 
+          var customerFound = false;
+
           jsonData.forEach(function (customer) {
             if (customer.address.toLowerCase() == customAddress) {
               customerName.value =
                 customer.first_name + " " + customer.last_name;
               customerNumber.value = customer.phone_number;
               ExistingCustomer.checked = true;
-            } else {
+            }
+
+            if (customerFound == false) {
               ExistingCustomer.checked = false;
             }
           });
@@ -797,6 +846,8 @@ document.addEventListener("DOMContentLoaded", function () {
       weight.setAttribute("disabled", "true");
     }
   });
+
+  spanlist.innerHTML = "";
 
   if (
     checkitem !== null &&
@@ -844,9 +895,11 @@ document.addEventListener("DOMContentLoaded", function () {
     var ExistingCustomer = document.getElementById("ExistingCustomer");
     var validNumber = /^\d{4}-\d{3}-\d{4}$/;
 
-    if (customerName !== "" && customerNumber !== "" && customerAddress !== ""
+    if (
+      customerName !== "" &&
+      customerNumber !== "" &&
+      customerAddress !== ""
     ) {
-
       if (validNumber.test(customerNumber)) {
         localStorage.setItem("name", customerName);
         localStorage.setItem("number", customerNumber);
@@ -1184,6 +1237,19 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .catch((error) => {
           console.error("There was an error! | ", error);
+          Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 5000,
+            timerProgressBar: true,
+          }).fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+          });
+
+          //
         });
     }
   });

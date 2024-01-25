@@ -4,7 +4,7 @@ session_start();
 include_once './FetchDatas.php';
 
 // fist check if the user is logged in
-if ($_SESSION['isLogin'] == 1) {
+if ($_SESSION['isLogin'] == 1 && $_SESSION['role'] == 0) {
     getCustomerinfo();
     getItem();
 } else {
@@ -252,22 +252,27 @@ if ($_SESSION['isLogin'] == 1) {
                                                                 <div class="row mb-3">
                                                                     <label for="CustomerName" class="col-sm-2 col-form-label">Name</label>
                                                                     <div class="col-sm-10">
-                                                                        <input type="text" class="form-control" id="CustomerName" autocomplete="on" list="customerNamelists" title="First Name and Last Name" data-bs-toggle="tooltip" data-bs-placement="right">
+                                                                        <input type="text" class="form-control" id="CustomerName" autocomplete="on" list="customerNamelists" title="First Name and Last Name" data-bs-toggle="tooltip" data-bs-placement="right" placeholder="First Name and Last Name" required>
                                                                         <datalist id="customerNamelists"></datalist>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row mb-3">
                                                                     <label for="CustomerNumber" class="col-sm-2 col-form-label">Number</label>
                                                                     <div class="col-sm-10">
-                                                                        <input type="text" class="form-control" id="CustomerNumber" autocomplete="on" list="customerNumberlists" pattern="\d{4}-\d{3}-\d{4}" required title="Format: 09XX-XXX-XXXX" maxlength="13" minlength="13" placeholder="09XX-XXX-XXXX" data-bs-toggle="tooltip" data-bs-placement="right">
+                                                                        <input type="text" class="form-control" id="CustomerNumber" autocomplete="on" list="customerNumberlists" pattern="^[0-9]{4}-[0-9]{3}-[0-9]{4}$" required title="Format: 09XX-XXX-XXXX" placeholder="09XX-XXX-XXXX" data-bs-toggle="tooltip" data-bs-placement="right">
                                                                         <input type="checkbox" id="ExistingCustomer" hidden>
                                                                         <datalist id="customerNumberlists"></datalist>
+                                                                        <script>
+                                                                            //prevent user from typing letters and symbols except for the dash
+                                                                            
+
+                                                                        </script>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row mb-3">
                                                                     <label for="CustomerAddress" class="col-sm-2 col-form-label">address</label>
                                                                     <div class="col-sm-10">
-                                                                        <input type="address" class="form-control" id="CustomerAddress" list="customerAddresslists" autocomplete="on" title="House Number, Street, Barangay, City, Province" data-bs-toggle="tooltip" data-bs-placement="right">
+                                                                        <input type="address" class="form-control" id="CustomerAddress" list="customerAddresslists" autocomplete="on" title="House Number, Street, Barangay, City, Province" data-bs-toggle="tooltip" data-bs-placement="right" placeholder="House Number, Street, Barangay, City, Province" required>
                                                                         <datalist id="customerAddresslists"></datalist>
                                                                     </div>
                                                                 </div>
@@ -300,7 +305,7 @@ if ($_SESSION['isLogin'] == 1) {
                                 </div>
                                 <div class="col-md-12 tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
                                     <div class="container-xxl" style="max-height: 68vh; overflow-y: scroll;">
-                                        <div class="input-group">
+                                        <div class="input-group" hidden>
                                             <div class="input-group-text w-100 my-2 bg-transparent border-0">
                                                 <div class="form-check form-switch">
                                                     <input class="form-check-input" type="checkbox" role="switch" id="Switch" title="Custom Weight" data-bs-toggle="tooltip" data-bs-placement="bottom">
