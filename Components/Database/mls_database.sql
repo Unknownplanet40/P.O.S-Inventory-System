@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 25, 2024 at 08:08 AM
+-- Generation Time: Jan 25, 2024 at 09:30 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -170,7 +170,7 @@ CREATE TABLE `transaction_history` (
   `Items` text DEFAULT NULL,
   `Overall` double NOT NULL DEFAULT 0,
   `Date_Issued` datetime NOT NULL DEFAULT current_timestamp(),
-  `Issued_By` varchar(255) NOT NULL,
+  `Issued_By` char(64) NOT NULL,
   `Issued_To` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -218,7 +218,7 @@ ALTER TABLE `pos_products`
 --
 ALTER TABLE `transaction_history`
   ADD PRIMARY KEY (`TID`),
-  ADD KEY `FOREIGN` (`Issued_By`) USING BTREE;
+  ADD KEY `FOREIGN` (`Issued_By`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -244,7 +244,7 @@ ALTER TABLE `transaction_history`
 -- Constraints for table `transaction_history`
 --
 ALTER TABLE `transaction_history`
-  ADD CONSTRAINT `Issued_By` FOREIGN KEY (`Issued_By`) REFERENCES `account` (`UUID`);
+  ADD CONSTRAINT `FOREIGN` FOREIGN KEY (`Issued_By`) REFERENCES `account` (`UUID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
