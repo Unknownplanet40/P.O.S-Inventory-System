@@ -1,3 +1,11 @@
+<?php
+if (isset($_SESSION['role']) && $_SESSION['role'] == 0) {
+  $Urole = 'Administrator';
+} else if (isset($_SESSION['role']) && $_SESSION['role'] == 1) {
+  $Urole = 'Operator';
+} else {
+  $Urole = 'Undefined';
+} ?>
 <div class="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary" style="width: 280px">
   <a class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
     <!-- <svg class="bi pe-none me-2" width="40" height="32">
@@ -6,14 +14,17 @@
     <img src="../assets/Logo.svg" alt="" srcset="" width="32" class="bi pe-none me-3">
     <span class="fs-5 text-wrap" title="Manlalaba Laundry Station" data-bs-toggle="tooltip" data-bs-placement="right">Manlalaba Laundry Station</span>
   </a>
-  <p class="fs-6 text-muted mb-0 ms-5"><?php
-                                        if (isset($_SESSION['role']) && $_SESSION['role'] == 0) {
-                                          echo 'Administrator';
-                                        } else if (isset($_SESSION['role']) && $_SESSION['role'] == 1) {
-                                          echo 'Operator';
-                                        } else {
-                                          echo 'Undefined';
-                                        } ?></p>
+  <style>
+    .nav-link {
+      transition: all 0.3s ease-in-out;
+    }
+
+    .nav-link:hover {
+      background-color: #e9ecef;
+      border-radius: 0.25rem;
+    }
+  </style>
+  <p class="fs-6 text-muted mb-0 ms-5"><?php echo $Urole; ?></p>
   <hr />
   <ul class="nav nav-pills flex-column mb-auto">
     <li class="nav-item">
@@ -27,7 +38,7 @@
     <li>
       <a <?php echo (basename($_SERVER['PHP_SELF']) == "POS.php") ? 'class="nav-link custom-active shadow border"' : "href='./POS Module/POS.php'"; ?> class="nav-link link-body-emphasis">
         <svg class="bi pe-none me-2" width="16" height="16">
-          <use xlink:href="#speedometer2" />
+          <use xlink:href="#POS" />
         </svg>
         Point Of Sale
       </a>
@@ -35,7 +46,7 @@
     <li>
       <a <?php echo (basename($_SERVER['PHP_SELF']) == "Products.php") ? 'class="nav-link custom-active shadow border"' : "href='./Inventory Module/Products.php'"; ?> class="nav-link link-body-emphasis" style="cursor: hands;">
         <svg class="bi pe-none me-2" width="16" height="16">
-          <use xlink:href="#table" />
+          <use xlink:href="#Inventory" />
         </svg>
         Inventory
       </a>
@@ -43,7 +54,7 @@
     <li>
       <a href="#" class="nav-link link-body-emphasis">
         <svg class="bi pe-none me-2" width="16" height="16">
-          <use xlink:href="#grid" />
+          <use xlink:href="#Customer" />
         </svg>
         Customers
       </a>
@@ -51,7 +62,15 @@
     <li>
       <a href="#" class="nav-link link-body-emphasis">
         <svg class="bi pe-none me-2" width="16" height="16">
-          <use xlink:href="#people-circle" />
+          <use xlink:href="#Transaction" />
+        </svg>
+        Transactions
+      </a>
+    </li>
+    <li>
+      <a href="#" class="nav-link link-body-emphasis">
+        <svg class="bi pe-none me-2" width="16" height="16">
+          <use xlink:href="#Report" />
         </svg>
         Reports
       </a>
@@ -86,13 +105,16 @@
       <strong><?php echo (isset($_SESSION['name'])) ? $_SESSION['name'] : 'User'; ?></strong>
     </a>
     <ul class="dropdown-menu text-small shadow">
-      <li><a class="dropdown-item" href="#">New project...</a></li>
-      <li><a class="dropdown-item" href="#">Settings</a></li>
-      <li><a class="dropdown-item" href="#">Profile</a></li>
+      <li><span class="dropdown-item text-center">Signed in as <b><?php echo $Urole; ?></b></span></li>
       <li>
         <hr class="dropdown-divider" />
       </li>
-      <li><a class="dropdown-item" href="#">Sign out</a></li>
+      <li><a class="dropdown-item">Profile</a></li>
+      <li><a class="dropdown-item">Settings</a></li>
+      <li>
+        <hr class="dropdown-divider" />
+      </li>
+      <li><a class="dropdown-item" href="../Login Module/logoutPage.php">Sign out</a></li>
     </ul>
   </div>
 </div>

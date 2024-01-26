@@ -75,6 +75,10 @@ document.addEventListener("DOMContentLoaded", function () {
           "border",
           "border-warning"
         );
+        if (item["category"] == "Liquid") {
+          card.title =
+            "The stock decreases when the current Product ML reaches 0.";
+        }
         card.id = "itemcard";
         col.appendChild(card);
 
@@ -90,7 +94,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // create card body
         var cardbody = document.createElement("div");
         cardbody.classList.add("card-body");
-        cardbody.title = item["product_name"] + " - " + item["category"];
+        if (item["category"] == "Liquid") {
+          card.title =
+            "The stock decreases when the current Product ML reaches 0.";
+        }
         card.appendChild(cardbody);
 
         // create card title
@@ -124,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
             item["CurrentStock"] +
             " out of " +
             item["quantity"];
+          price.style.cursor = "pointer";
         }
         cardbody.appendChild(price);
 
@@ -303,7 +311,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         async function displaySingleToast(itemlow) {
           var index = notifItems.indexOf(itemlow);
-          document.getElementById("notif-icon").innerHTML = "";
           if (notif[index] === false) {
             return new Promise((resolve) => {
               if (notif[index] === false) {
@@ -325,6 +332,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     " is running low on stock";
                   notiflist.appendChild(div);
                 }
+
+                document.getElementById("notif-icon").innerHTML = "";
 
                 var svg = document.createElement("svg");
                 svg.innerHTML =
@@ -779,6 +788,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 customer.first_name + " " + customer.last_name;
               customerAddress.value = customer.address;
               ExistingCustomer.checked = true;
+              customerFound = true;
             }
 
             if (customerFound == false) {
@@ -804,6 +814,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 customer.first_name + " " + customer.last_name;
               customerNumber.value = customer.phone_number;
               ExistingCustomer.checked = true;
+              customerFound = true;
             }
 
             if (customerFound == false) {
@@ -846,9 +857,6 @@ document.addEventListener("DOMContentLoaded", function () {
       weight.setAttribute("disabled", "true");
     }
   });
-
-  spanlist.innerHTML = "";
-
   if (
     checkitem !== null &&
     checkitem !== undefined &&
@@ -1214,26 +1222,70 @@ document.addEventListener("DOMContentLoaded", function () {
           return response.json();
         })
         .then((data) => {
-          var $title = data["title"];
-          var $text = data["text"];
-          var $icon = data["icon"];
-          Swal.fire({
-            title: $title,
-            text: $text,
-            icon: $icon,
-            allowOutsideClick: false,
-          }).then((result) => {
-            if (result.isConfirmed) {
-              checkitemout = true;
+          if (data["items"] !== "") {
+            var $title = data["text"];
+            var $text = data["title"];
+            var $icon = data["icon"];
+            var $total = data["total"];
+            var $TID = data["TID"];
+            var $itemArray = [];
+            var $item = data["items"];
+            $total = $total.toFixed(2);
+            $itemArray = $item.split(",");
+            var ul = document.createElement("ul");
+            ul.classList.add("list-group", "list-group-flush");
 
-              // remove all items in the receipt
-              localStorage.removeItem("name");
-              localStorage.removeItem("number");
-              localStorage.removeItem("address");
-              localStorage.removeItem("ExistingCustomer");
-              window.location.reload();
-            }
-          });
+            $itemArray.forEach(function (item) {
+              var li = document.createElement("li");
+              li.classList.add("list-group-item");
+              li.innerHTML = item;
+              ul.appendChild(li);
+            });
+
+            var li2 = document.createElement("li");
+            li2.classList.add("list-group-item", "fw-bold");
+            li2.innerHTML = "Total: &#8369; " + $total;
+            ul.appendChild(li2);
+
+            Swal.fire({
+              title: $title,
+              text: $text,
+              icon: $icon,
+              html: ul.outerHTML,
+              allowOutsideClick: false,
+              confirmButtonText: "Confirm",
+              confirmButtonColor: "#ffcd00",
+              cancelButtonColor: "#3085d6",
+              showCancelButton: true,
+              cancelButtonText: "Print Receipt",
+            }).then((result) => {
+              if (result.isConfirmed) {
+                checkitemout = true;
+
+                // remove all items in the receipt
+                localStorage.removeItem("name");
+                localStorage.removeItem("number");
+                localStorage.removeItem("address");
+                localStorage.removeItem("ExistingCustomer");
+                window.location.reload();
+              } else {
+                checkitemout = true;
+                localStorage.removeItem("name");
+                localStorage.removeItem("number");
+                localStorage.removeItem("address");
+                localStorage.removeItem("ExistingCustomer");
+                window.open("../Components/POS Module/Receipt.php?RTID=" + $TID, "_blank");
+                window.location.reload();
+              }
+            });
+          } else {
+            Swal.fire({
+              title: data["title"],
+              text: data["text"],
+              icon: data["icon"],
+              allowOutsideClick: false,
+            });
+          }
         })
         .catch((error) => {
           console.error("There was an error! | ", error);

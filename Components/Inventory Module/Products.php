@@ -2,18 +2,27 @@
 include_once '../Database/config.php';
 session_start();
 
-// Total Items Count
-$OVERALL = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS totalItem FROM pos_products WHERE Achieved = 0"))['totalItem'];
+// fist check if the user is logged in
+if ($_SESSION['isLogin'] == 1 && $_SESSION['role'] == 0) {
+    // Total Items Count
+    $OVERALL = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS totalItem FROM pos_products WHERE Achieved = 0"))['totalItem'];
 
-// Low Stock Items Count
-$LOW = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(isLowStock) AS lowItem FROM pos_products WHERE isLowStock = 1 AND Achieved = 0"))['lowItem'];
+    // Low Stock Items Count
+    $LOW = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(isLowStock) AS lowItem FROM pos_products WHERE isLowStock = 1 AND Achieved = 0"))['lowItem'];
 
-// Achieved Items Count
-$ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem FROM pos_products WHERE Achieved = 1"))['delItem'];
+    // Achieved Items Count
+    $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem FROM pos_products WHERE Achieved = 1"))['delItem'];
 
-
-
-
+    if ($LOW == 0) {
+        // set notifItems to blank in localStorage
+        echo "<script>localStorage.setItem('notifItems', '');</script>";
+        echo "<script>localStorage.setItem('notif', '');</script>";
+    }
+} else {
+    $_SESSION['statusNotif'] = "Not Logged In";
+    $_SESSION['ColorCode'] = "Text-dark";
+    header("Location: ../Login Module/LoginPage.php");
+}
 
 ?>
 
@@ -388,7 +397,7 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                     </div>
                     <?php include_once './Archived_Table.php'; ?>
                     <div class="modal fade" id="Editmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-dialog modal-dialog-centered rounded-1 modal-lg">
                             <form id="editForm" name="editForm" method="POST" enctype="multipart/form-data">
                                 <div class="modal-content rounded-1">
                                     <div class=" modal-header text-bg-warning visually-hidden">
@@ -398,10 +407,7 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                         <div class="card mb-3 border border-0">
                                             <div class="row g-0">
                                                 <div class="col-md-4 p-3">
-                                                    <img src="" class="img-thumbnail mx-auto d-block" alt="Product Image" id="prodImage" name="prodImage" style="max-width: 132px; max-height: 132px;">
-                                                    <div class="input-group mb-3 input-group-sm mx-auto mt-3" style="max-width: 100px;">
-                                                        <input type="file" class="form-control shadow-sm" id="changeImage" name="changeImage" accept="image/png, image/jpeg, image/jpg" style="margin-left: 8px; margin-right: -3px;">
-                                                    </div>
+                                                    <img src="" width="256" class="img-thumbnail mx-auto d-block" alt="Product Image" id="prodImage" name="prodImage">
                                                 </div>
                                                 <div class="col-md-8">
                                                     <div class="card-body">
@@ -412,7 +418,7 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                                         </div>
                                                         <div class="input-group mb-3">
                                                             <span class="input-group-text" style="min-width: 135px;">Category</span>
-                                                            <input type="text" class="form-control rounded-end" id="prodCategory" name="prodCategory" autocomplete="on" list="category" required>
+                                                            <input type="text" class="form-control" id="prodCategory" name="prodCategory" autocomplete="on" list="category" required>
                                                             <datalist id="category">
                                                                 <?php
                                                                 $sql = "SELECT DISTINCT category FROM pos_products WHERE Achieved = 0";
@@ -426,46 +432,43 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
                                                                 }
                                                                 ?>
                                                             </datalist>
-                                                        </div>
-                                                        <div class="input-group mb-3">
-                                                            <span class="input-group-text" style="min-width: 135px;">Price</span>
+                                                            <span class="input-group-text">Price</span>
                                                             <input type="number" class="form-control" placeholder="Product Price" value="" min="0" name="prodPrice" id="prodPrice" step=".01">
                                                         </div>
                                                         <div class="input-group mb-3">
-                                                            <span class="input-group-text" style="min-width: 135px;">Current Stock</span>
-                                                            <input type="number" class="form-control text-end rounded-end" placeholder="Current Stock" value="" min="0" name="prodQuantity" id="prodCurrentStock">
-                                                            <span class="input-group-text user-select-none bg-transparent border border-0" title="Product Quantity" data-bs-toggle="tooltip" data-bs-placement="right"><b id="prodQ">1000</b></span>
+
                                                         </div>
-                                                        <div class="input-group mb-3" id="ml">
+                                                        <div class="input-group mb-3">
+                                                            <span class="input-group-text" style="min-width: 135px;">Quantity</span>
+                                                            <input type="number" class="form-control text-end" placeholder="Current Stock" value="" min="0" name="prodQuantity" id="prodCurrentStock" title="Current Stock" data-bs-toggle="tooltip" data-bs-placement="top">
+                                                            <input type="number" class="form-control text-start" placeholder="Product Quantity" value="" min="0" name="prodOriginalQty" id="prodQ" title="Product Quantity" data-bs-toggle="tooltip" data-bs-placement="top">
+                                                        </div>
+                                                        <div class="input-group mb-3" id="ml" title="if the Quantity is updated the current ML will reset" data-bs-toggle="tooltip" data-bs-placement="right">
                                                             <span class="input-group-text" style="min-width: 135px;">ML</span>
-                                                            <input type="number" class="form-control text-end rounded-end" placeholder="Product ML" value="0" min="0" name="prodML" id="prodML">
-                                                            <span class="input-group-text user-select-none bg-transparent border border-0 visually-hidden" title="Product ML" data-bs-toggle="tooltip" data-bs-placement="right"><b id="prodQML">1000</b></span>
+                                                            <input type="number" class="form-control text-end" placeholder="Product ML" value="0" min="0" name="prodML" id="prodML" title="Current ML" data-bs-toggle="tooltip" data-bs-placement="top">
+                                                            <input type="number" class="form-control text-sert" placeholder="Product ML" value="0" min="0" name="prodOrinalML" id="prodQML" title="Product ML" data-bs-toggle="tooltip" data-bs-placement="top">
                                                         </div>
-                                                        <div class="text-center">
-                                                            <small class="text-muted visually-hidden" id="note"></small>
+                                                        <div class="input-group mb-3" id="mlperorder" title="This is the amount of ML that will be deducted to the product when the order is placed" data-bs-toggle="tooltip" data-bs-placement="right">
+                                                            <span class="input-group-text" style="min-width: 135px;">Per Order (ML)</span>
+                                                            <input type="number" class="form-control" placeholder="Product ML" value="0" min="0" name="perML" id="perML" title="Per ML" data-bs-toggle="tooltip" data-bs-placement="top">
+                                                        </div>
+                                                        <div class="input-group mb-3">
+                                                            <input type="file" class="form-control shadow-sm imagebtn rounded-end" id="changeImage" name="changeImage" accept="image/png, image/jpeg, image/jpg">
+                                                            <style>
+                                                                .imagebtn::file-selector-button {
+                                                                    min-width: 135px !important;
+                                                                }
+                                                            </style>
                                                         </div>
                                                         <script>
                                                             document.getElementById('prodCategory').addEventListener('change', function() {
                                                                 var category = this.value;
                                                                 if (category == "Liquid") {
                                                                     document.getElementById('ml').classList.remove('visually-hidden');
+                                                                    document.getElementById('mlperorder').classList.remove('visually-hidden');
                                                                 } else {
                                                                     document.getElementById('ml').classList.add('visually-hidden');
-                                                                }
-                                                            });
-
-                                                            // show note when stock is changed
-                                                            document.getElementById('prodCurrentStock').addEventListener('change', function() {
-                                                                if (document.getElementById('prodCategory').value == "Liquid") {
-                                                                    if (this.value !== document.getElementById('prodQ').innerHTML) {
-                                                                        document.getElementById('note').classList.remove('visually-hidden');
-                                                                    } else if (this.value < document.getElementById('prodQ').innerHTML) {
-                                                                        document.getElementById('note').classList.remove('visually-hidden');
-                                                                    } else {
-                                                                        document.getElementById('note').classList.add('visually-hidden');
-                                                                    }
-                                                                } else {
-                                                                    document.getElementById('note').classList.add('visually-hidden');
+                                                                    document.getElementById('mlperorder').classList.add('visually-hidden');
                                                                 }
                                                             });
                                                         </script>
@@ -765,19 +768,18 @@ $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem 
 
                                                 document.getElementById('prodPrice').value = '$price';
                                                 document.getElementById('prodCurrentStock').value = '$CurrentStock';
-                                                document.getElementById('prodQ').innerHTML = '$quantity';
+                                                document.getElementById('prodQ').value = '$quantity';
 
                                                 if ('$category' == 'Liquid') {
                                                     document.getElementById('ml').classList.remove('visually-hidden');
-                                                    document.getElementById('prodML').value = '$ml';
-                                                    document.getElementById('prodML').setAttribute('title', 'Current ML is $Current_ML');
-                                                    document.getElementById('prodQML').innerHTML = '$ml';
-                                                    document.getElementById('note').innerHTML = 'Note: Current Product ml <br> will be reset to $ml';
+                                                    document.getElementById('mlperorder').classList.remove('visually-hidden');
+                                                    document.getElementById('prodML').value = '$Current_ML';
+                                                    document.getElementById('prodQML').value = '$ml';
                                                 } else {
                                                     document.getElementById('ml').classList.add('visually-hidden');
+                                                    document.getElementById('mlperorder').classList.add('visually-hidden');
                                                     document.getElementById('prodML').value = 0;
-                                                    document.getElementById('prodML').setAttribute('title', 'Current ML is N/A');
-                                                    document.getElementById('prodQML').innerHTML = 'N/A';
+                                                    document.getElementById('prodQML').value = 0;
                                                 }
                                             });
                                         </script>";
