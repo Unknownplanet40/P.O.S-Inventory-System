@@ -93,7 +93,7 @@ function getCustomerinfo()
 {
     global $conn;
 
-    $sql = "SELECT * FROM customer_information";
+    $sql = "SELECT * FROM customer_information WHERE Archived = 0";
     $result = mysqli_query($conn, $sql);
 
 
