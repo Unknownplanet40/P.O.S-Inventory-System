@@ -60,6 +60,11 @@ $contact = $data['CustomerNumber'];
 $address = $data['CustomerAddress'];
 $Existing = $data['ExistingCustomer'];
 
+if ($CustName == null) {
+    $CustName = "Unknown Customer";
+}
+
+
 $sconn = mysqli_connect("localhost", "administrator", "4OxUI77d6]2(dedq", "mls_database");
 
 foreach ($SelectedItemID as $key => $value) {
@@ -131,13 +136,6 @@ $result = mysqli_query($sconn, $sql);
 if (mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
     $WT = $row['WashType'];
-
-    if ($WT == 2) {
-        $sql = "SELECT CASE WHEN 1 IN (WashDry_Machine_1, WashDry_Machine_2, WashDry_Machine_3, WashDry_Machine_4) THEN 1 ELSE 0 END AS THIERIS FROM machine_availability WHERE ID = 2";
-        $result = mysqli_query($sconn, $sql);
-        $row = mysqli_fetch_assoc($result);
-        $thieris = $row['THIERIS'];
-    }
 }
 
 header('Content-Type: application/json');

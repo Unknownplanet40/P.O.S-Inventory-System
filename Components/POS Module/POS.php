@@ -13,6 +13,7 @@ if ($_SESSION['isLogin'] == 1 && $_SESSION['role'] == 0) {
     header("Location: ../Login Module/LoginPage.php");
 }
 
+
 ?>
 
 <!DOCTYPE html>
@@ -218,18 +219,15 @@ if ($_SESSION['isLogin'] == 1 && $_SESSION['role'] == 0) {
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-3">
-                                                                <label for="CustomerNumber" class="col-sm-2 col-form-label">Number</label>
+                                                                <label for="CustomerNumber" class="col-sm-2 col-form-label">Number<sup class="text-danger">*</sup></label>
                                                                 <div class="col-sm-10">
-                                                                    <input type="text" class="form-control" id="CustomerNumber" autocomplete="on" list="customerNumberlists" pattern="^[0-9]{4}-[0-9]{3}-[0-9]{4}$" required title="Format: 09XX-XXX-XXXX" placeholder="09XX-XXX-XXXX" data-bs-toggle="tooltip" data-bs-placement="right">
+                                                                    <input type="number" class="form-control" id="CustomerNumber" autocomplete="on" list="customerNumberlists" pattern="^[0-9]{11}$" required title="Format: 09XXXXXXXXX" placeholder="09XXXXXXXXX" data-bs-toggle="tooltip" data-bs-placement="right" maxlength="11">
                                                                     <input type="checkbox" id="ExistingCustomer" hidden>
                                                                     <datalist id="customerNumberlists"></datalist>
-                                                                    <script>
-                                                                        //prevent user from typing letters and symbols except for the dash
-                                                                    </script>
                                                                 </div>
                                                             </div>
                                                             <div class="row mb-3">
-                                                                <label for="CustomerAddress" class="col-sm-2 col-form-label">address</label>
+                                                                <label for="CustomerAddress" class="col-sm-2 col-form-label">address<sup class="text-danger">*</sup></label>
                                                                 <div class="col-sm-10">
                                                                     <input type="address" class="form-control" id="CustomerAddress" list="customerAddresslists" autocomplete="on" title="House Number, Street, Barangay, City, Province" data-bs-toggle="tooltip" data-bs-placement="right" placeholder="House Number, Street, Barangay, City, Province" required>
                                                                     <datalist id="customerAddresslists"></datalist>

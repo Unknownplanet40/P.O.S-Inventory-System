@@ -125,5 +125,13 @@ function getCustomerinfo()
         $fp = fopen('../../dump/Customers.json', 'w');
         fwrite($fp, json_encode($output));
         fclose($fp);
+
+        $sql = "SELECT Cust_number FROM customer_information";
+        $result = mysqli_query($conn, $sql);
+        $cust_number = array();
+        while ($row = mysqli_fetch_assoc($result)) {
+            array_push($cust_number, $row['Cust_number']);
+        }
+        echo "<script>var cust_number = " . json_encode($cust_number) . ";</script>";
     }
 }

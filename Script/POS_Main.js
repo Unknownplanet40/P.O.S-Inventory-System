@@ -901,14 +901,9 @@ document.addEventListener("DOMContentLoaded", function () {
     var customerNumber = document.getElementById("CustomerNumber").value;
     var customerAddress = document.getElementById("CustomerAddress").value;
     var ExistingCustomer = document.getElementById("ExistingCustomer");
-    var validNumber = /^\d{4}-\d{3}-\d{4}$/;
 
-    if (
-      customerName !== "" &&
-      customerNumber !== "" &&
-      customerAddress !== ""
-    ) {
-      if (validNumber.test(customerNumber)) {
+    if (customerNumber !== "" && customerAddress !== "") {
+      if (CustomerNumber.value.length == 11) {
         localStorage.setItem("name", customerName);
         localStorage.setItem("number", customerNumber);
         localStorage.setItem("address", customerAddress);
@@ -935,6 +930,35 @@ document.addEventListener("DOMContentLoaded", function () {
         var myModal = document.getElementById("NewCustomer");
         var modal = bootstrap.Modal.getInstance(myModal);
         modal.hide();
+      } else if (jsonData.phone_number.includes(customerNumber) && ExistingCustomer.checked == true) {
+        document.getElementById("CustomerNumber").classList.add("is-invalid");
+        setTimeout(function () {
+          document
+            .getElementById("CustomerNumber")
+            .classList.remove("is-invalid");
+        }, 1500);
+
+        Swal.fire({
+          title: "Error!",
+          text: "Phone number already exist!",
+          icon: "error",
+          confirmButtonText: "Ok",
+        });
+
+        var itemID = document.querySelectorAll('[id^="Item_"]');
+        itemID.forEach(function (item) {
+          item.disabled = true;
+        });
+
+        // Services
+        document.getElementById("BothServ").disabled = true;
+        document.getElementById("WashOnly").disabled = true;
+        document.getElementById("DryOnly").disabled = true;
+        document.getElementById("FoldServ").disabled = true;
+        document.getElementById("PickupServ").disabled = true;
+        document.getElementById("DeliveryServ").disabled = true;
+        Btn_weight.disabled = true;
+
       } else {
         document.getElementById("CustomerNumber").classList.add("is-invalid");
         setTimeout(function () {
@@ -942,6 +966,8 @@ document.addEventListener("DOMContentLoaded", function () {
             .getElementById("CustomerNumber")
             .classList.remove("is-invalid");
         }, 1500);
+
+        console.log("Invalid Number");
 
         var itemID = document.querySelectorAll('[id^="Item_"]');
         itemID.forEach(function (item) {
@@ -958,11 +984,9 @@ document.addEventListener("DOMContentLoaded", function () {
         Btn_weight.disabled = true;
       }
     } else {
-      document.getElementById("CustomerName").classList.add("is-invalid");
       document.getElementById("CustomerNumber").classList.add("is-invalid");
       document.getElementById("CustomerAddress").classList.add("is-invalid");
       setTimeout(function () {
-        document.getElementById("CustomerName").classList.remove("is-invalid");
         document
           .getElementById("CustomerNumber")
           .classList.remove("is-invalid");
@@ -970,7 +994,7 @@ document.addEventListener("DOMContentLoaded", function () {
           .getElementById("CustomerAddress")
           .classList.remove("is-invalid");
       }, 1500);
-
+      
       var itemID = document.querySelectorAll('[id^="Item_"]');
       itemID.forEach(function (item) {
         item.disabled = true;
