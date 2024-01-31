@@ -404,6 +404,7 @@ session_start();
 
                                                             //konami code
                                                             var keys = [];
+                                                            // up up down down left right left right b a
                                                             var konami = '38,38,40,40,37,39,37,39,66,65';
                                                             window.addEventListener("keydown", function(e) {
                                                                 keys.push(e.keyCode);
@@ -494,13 +495,13 @@ session_start();
                                                 <td>
                                                     <div class="btn-group" role="group">
                                                         <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#Details" id="Row<?php echo $row['Cust_ID']; ?>">&#9998; Details</button>
-                                                        <?php if ($_SESSION['role'] == 0) { ?>
-                                                            <button type="button" class="btn btn-sm btn-outline-danger" id="del<?php echo $row['Cust_ID']; ?>">&#10006; Delete</button>
-                                                        <?php } else { ?>
-                                                            <span data-bs-toggle="tooltip" data-bs-placement="top" title="You don't have permission to delete this record.">
-                                                                <button type="button" class="btn btn-sm btn-outline-secondary" id="del<?php echo $row['Cust_ID']; ?>" disabled>&#10006; Delete</button>
-                                                            </span>
-                                                        <?php } ?>
+                                                        <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 0) { ?>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger" id="del<?php echo $row['Cust_ID']; ?>">&#10006; Delete</button>
+                                                    <?php } else { ?>
+                                                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="You don't have permission to delete this record.">
+                                                            <button type="button" class="btn btn-sm btn-outline-secondary" id="del<?php echo $row['Cust_ID']; ?>" disabled>&#10006; Delete</button>
+                                                        </span>
+                                                    <?php } ?>
                                                     </div>
                                                 </td>
                                             </tr>

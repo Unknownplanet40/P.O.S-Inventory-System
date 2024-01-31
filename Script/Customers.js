@@ -10,13 +10,17 @@ $.extend(true, DataTable.defaults, {
   },
   columnDefs: [
     {
+      width: "15%",
+      targets: 2,
+    },
+    {
       width: "30%",
       targets: 3,
     },
     {
-        className: "text-center",
-        width: "10%",
-        targets: 4,
+      className: "text-center",
+      width: "15%",
+      targets: 4,
     },
     {
       target: 0,
@@ -39,9 +43,9 @@ $.extend(true, DataTable.defaults, {
     {
       extend: "pdf",
       className: "btn btn-outline-primary btn-sm",
-        exportOptions: {
-            columns: [1, 2, 3],
-        },
+      exportOptions: {
+        columns: [1, 2, 3],
+      },
       init: function (api, node, config) {
         $(node).hide();
       },
@@ -49,9 +53,9 @@ $.extend(true, DataTable.defaults, {
     {
       extend: "print",
       className: "btn btn-outline-primary btn-sm",
-        exportOptions: {
-            columns: [1, 2, 3],
-        },
+      exportOptions: {
+        columns: [1, 2, 3],
+      },
       init: function (api, node, config) {
         $(node).hide();
       },
