@@ -7,7 +7,6 @@ if ($ACHIEVED == 0) {
     $ACHIEVED = "There are no Archived Customers.";
 } else {
     $ACHIEVED = "There are " . $ACHIEVED . " Archived Customers.";
-
 }
 ?>
 <!DOCTYPE html>
@@ -336,31 +335,7 @@ if ($ACHIEVED == 0) {
     <div class="parent">
         <div class="div1">
             <?php require_once '../SmallSidebar.php'; ?>
-            <?php
-            if (isset($_SESSION['message'])) {
-            ?>
-                <script>
-                    Swal.mixin({
-                        toast: true,
-                        position: 'bottom-end',
-                        showConfirmButton: false,
-                        timer: 3000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
-                        }
-                    }).fire({
-                        icon: 'success',
-                        title: '<?php echo $_SESSION['message']; ?>'
-                    })
-                </script>
-            <?php
-                unset($_SESSION['message']);
-            }
-            ?>
         </div>
-
         <div class="modal fade" id="NewCustomer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <form method="POST" id="newform">
                 <div class="modal-dialog rounded-1" style="background-color: #dee1ec;">
@@ -479,7 +454,7 @@ if ($ACHIEVED == 0) {
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="Add Customer" data-bs-toggle="modal" data-bs-target="#NewCustomer" style="cursor: pointer;">&#10133; Add Customer</a>
                                 </li>
-                                <li class="nav-item" title="T<?php echo $ACHIEVED; ?>" data-bs-toggle="tooltip" data-bs-placement="bottom" style="cursor: pointer;">
+                                <li class="nav-item" title="<?php echo $ACHIEVED; ?>" data-bs-toggle="tooltip" data-bs-placement="bottom" style="cursor: pointer;">
                                     <a class="nav-link active" aria-current="Recover Deleted Data" data-bs-toggle="modal" data-bs-target="#ArchiveCustomer" style="cursor: pointer;">&#128465; Archived</a>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -584,7 +559,8 @@ if ($ACHIEVED == 0) {
                                                                         text: 'Please Enter a Valid Contact Number!',
                                                                     })
                                                                 } else {
-                                                                    Swal.fire({
+                                                                    // with confirmation
+                                                                    /* Swal.fire({
                                                                         title: 'Are you sure?',
                                                                         text: "This will update the customer information!",
                                                                         icon: 'warning',
@@ -598,7 +574,11 @@ if ($ACHIEVED == 0) {
                                                                             form.action = "./UpdateCustomer.php";
                                                                             form.submit();
                                                                         }
-                                                                    })
+                                                                    }) */
+                                                                    // without confirmation
+                                                                    const form = document.getElementById('form');
+                                                                    form.action = "./UpdateCustomer.php";
+                                                                    form.submit();
                                                                 }
                                                             })
 

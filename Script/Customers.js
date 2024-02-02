@@ -1,7 +1,7 @@
 $.extend(true, DataTable.defaults, {
   paging: false,
   scrollCollapse: true,
-  scrollY: "64vh",
+  scrollY: "50vh",
   language: {
     search: "_INPUT_",
     searchPlaceholder: "Search...",

@@ -45,7 +45,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link py-3 border-bottom rounded-0" style="color: #6e3b3b;" aria-current="page" title="Transaction" data-bs-toggle="tooltip" data-bs-placement="right">
+                <a <?php echo (basename($_SERVER['PHP_SELF']) == "Transaction.php") ? 'class="custom-active nav-link py-3 border-bottom rounded-0"' : "href='../../Components/Transaction Module/Transaction.php'"; ?> style="color: #6e3b3b;" class="nav-link py-3 border-bottom rounded-0" laria-current="page" title="Transaction" data-bs-toggle="tooltip" data-bs-placement="right">
                     <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Transaction">
                         <use xlink:href="#Transaction" />
                     </svg>

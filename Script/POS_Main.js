@@ -1201,7 +1201,10 @@ document.addEventListener("DOMContentLoaded", function () {
   // Checkout button
   document.getElementById("checkout").addEventListener("click", function () {
     var ExistingCustomer = document.getElementById("ExistingCustomer");
-
+    var S1 = document.getElementById("WashOnly").checked;
+    var S2 = document.getElementById("DryOnly").checked;
+    var S3 = document.getElementById("BothServ").checked;
+    
     //check if their is Items in the receipt
     var receipt = document.getElementById("receipt");
     if (receipt.childElementCount == 1) {
@@ -1211,122 +1214,131 @@ document.addEventListener("DOMContentLoaded", function () {
         text: "Please add an item to the list",
       });
     } else {
-      var temp = [];
-      SelectedItemID.forEach(function (item) {
-        temp.push(item.replace("item_", ""));
-      });
-      SelectedItemID = temp;
-
-      var SeletedData = {
-        SelectedItemID: SelectedItemID,
-        SelectedItemName: SelectedItemName,
-        SelectedItemPrice: SelectedItemPrice,
-        SelectedItemQuantity: SelectedItemQuantity,
-        CustomerName: document.getElementById("CustomerName").value,
-        CustomerNumber: document.getElementById("CustomerNumber").value,
-        CustomerAddress: document.getElementById("CustomerAddress").value,
-        ExistingCustomer: ExistingCustomer.checked,
-      };
-      console.log(SeletedData);
-
-      var jsonData = JSON.stringify(SeletedData);
-
-      // Send data to PHP using Fetch API
-      fetch("Checkout.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: jsonData,
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          if (data["items"] !== "") {
-            var $title = data["text"];
-            var $text = data["title"];
-            var $icon = data["icon"];
-            var $total = data["total"];
-            var $TID = data["TID"];
-            var $itemArray = [];
-            var $item = data["items"];
-            $total = $total.toFixed(2);
-            $itemArray = $item.split(",");
-            var ul = document.createElement("ul");
-            ul.classList.add("list-group", "list-group-flush");
-
-            $itemArray.forEach(function (item) {
-              var li = document.createElement("li");
-              li.classList.add("list-group-item");
-              li.innerHTML = item;
-              ul.appendChild(li);
-            });
-
-            var li2 = document.createElement("li");
-            li2.classList.add("list-group-item", "fw-bold");
-            li2.innerHTML = "Total: &#8369; " + $total;
-            ul.appendChild(li2);
-
-            Swal.fire({
-              title: $title,
-              text: $text,
-              icon: $icon,
-              html: ul.outerHTML,
-              allowOutsideClick: false,
-              confirmButtonText: "Confirm",
-              confirmButtonColor: "#ffcd00",
-              cancelButtonColor: "#3085d6",
-              showCancelButton: true,
-              cancelButtonText: "Print Receipt",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                checkitemout = true;
-
-                // remove all items in the receipt
-                localStorage.removeItem("name");
-                localStorage.removeItem("number");
-                localStorage.removeItem("address");
-                localStorage.removeItem("ExistingCustomer");
-                window.location.reload();
-              } else {
-                checkitemout = true;
-                localStorage.removeItem("name");
-                localStorage.removeItem("number");
-                localStorage.removeItem("address");
-                localStorage.removeItem("ExistingCustomer");
-                window.open("../Components/POS Module/Receipt.php?RTID=" + $TID, "_blank");
-                window.location.reload();
-              }
-            });
-          } else {
-            Swal.fire({
-              title: data["title"],
-              text: data["text"],
-              icon: data["icon"],
-              allowOutsideClick: false,
-            });
-          }
-        })
-        .catch((error) => {
-          console.error("There was an error! | ", error);
-          Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 5000,
-            timerProgressBar: true,
-          }).fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Something went wrong!",
-          });
-
-          //
+      if (S1 == false && S2 == false && S3 == false) {
+        swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please select a service",
         });
+      } else {
+        var temp = [];
+        SelectedItemID.forEach(function (item) {
+          temp.push(item.replace("item_", ""));
+        });
+        SelectedItemID = temp;
+
+        var SeletedData = {
+          SelectedItemID: SelectedItemID,
+          SelectedItemName: SelectedItemName,
+          SelectedItemPrice: SelectedItemPrice,
+          SelectedItemQuantity: SelectedItemQuantity,
+          CustomerName: document.getElementById("CustomerName").value,
+          CustomerNumber: document.getElementById("CustomerNumber").value,
+          CustomerAddress: document.getElementById("CustomerAddress").value,
+          ExistingCustomer: ExistingCustomer.checked,
+        };
+        console.log(SeletedData);
+
+        var jsonData = JSON.stringify(SeletedData);
+
+        // Send data to PHP using Fetch API
+        fetch("Checkout.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: jsonData,
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            if (data["items"] !== "") {
+              var $title = data["text"];
+              var $text = data["title"];
+              var $icon = data["icon"];
+              var $total = data["total"];
+              var $TID = data["TID"];
+              var $itemArray = [];
+              var $item = data["items"];
+              $total = $total.toFixed(2);
+              $itemArray = $item.split(",");
+              var ul = document.createElement("ul");
+              ul.classList.add("list-group", "list-group-flush");
+
+              $itemArray.forEach(function (item) {
+                var li = document.createElement("li");
+                li.classList.add("list-group-item");
+                li.innerHTML = item;
+                ul.appendChild(li);
+              });
+
+              var li2 = document.createElement("li");
+              li2.classList.add("list-group-item", "fw-bold");
+              li2.innerHTML = "Total: &#8369; " + $total;
+              ul.appendChild(li2);
+
+              Swal.fire({
+                title: $title,
+                text: $text,
+                icon: $icon,
+                html: ul.outerHTML,
+                allowOutsideClick: false,
+                confirmButtonText: "Confirm",
+                confirmButtonColor: "#ffcd00",
+                cancelButtonColor: "#3085d6",
+                showCancelButton: false,
+                cancelButtonText: "Print Receipt",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  checkitemout = true;
+
+                  // remove all items in the receipt
+                  localStorage.removeItem("name");
+                  localStorage.removeItem("number");
+                  localStorage.removeItem("address");
+                  localStorage.removeItem("ExistingCustomer");
+                  window.location.reload();
+                } else {
+                  checkitemout = true;
+                  localStorage.removeItem("name");
+                  localStorage.removeItem("number");
+                  localStorage.removeItem("address");
+                  localStorage.removeItem("ExistingCustomer");
+                  window.open(
+                    "../Components/POS Module/Receipt.php?RTID=" + $TID,
+                    "_blank"
+                  );
+                  window.location.reload();
+                }
+              });
+            } else {
+              Swal.fire({
+                title: data["title"],
+                text: data["text"],
+                icon: data["icon"],
+                allowOutsideClick: false,
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("There was an error! | ", error);
+            Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 5000,
+              timerProgressBar: true,
+            }).fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Something went wrong!",
+            });
+          });
+      }
     }
   });
 

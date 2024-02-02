@@ -52,7 +52,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 0) {
       </a>
     </li>
     <li>
-      <a href="#" class="nav-link link-body-emphasis">
+      <a <?php echo (basename($_SERVER['PHP_SELF']) == "Customers.php") ? 'class="nav-link custom-active shadow border"' : "href='./Customer Module/Customers.php'"; ?> class="nav-link link-body-emphasis" style="cursor: hands;">
         <svg class="bi pe-none me-2" width="16" height="16">
           <use xlink:href="#Customer" />
         </svg>

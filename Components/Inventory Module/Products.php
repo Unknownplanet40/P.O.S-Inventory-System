@@ -85,6 +85,16 @@ if ($_SESSION['isLogin'] == 1 && $_SESSION['role'] == 0) {
             font-weight: 600 !important;
         }
 
+        .nav-link {
+            color: var(--txtColor) !important;
+            border-radius: 0.25rem;
+        }
+
+        .nav-link:hover {
+            color: #ffcd00 !important;
+            background-color: #a8342d !important;
+        }
+
         .swal2-timer-progress-bar {
             background-color: #ffcd00 !important;
         }
