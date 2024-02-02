@@ -1,8 +1,14 @@
 <?php
 include_once '../Database/config.php';
 session_start();
+$ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(Cust_ID) AS delItem FROM customer_information WHERE Archived = 1"))['delItem'];
 
+if ($ACHIEVED == 0) {
+    $ACHIEVED = "There are no Archived Customers.";
+} else {
+    $ACHIEVED = "There are " . $ACHIEVED . " Archived Customers.";
 
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
@@ -54,6 +60,16 @@ session_start();
         background-color: #ffcd00 !important;
         color: #000 !important;
         font-weight: 600 !important;
+    }
+
+    .nav-link {
+        color: var(--txtColor) !important;
+        border-radius: 0.25rem;
+    }
+
+    .nav-link:hover {
+        color: #ffcd00 !important;
+        background-color: #a8342d !important;
     }
 
     .custom-brown {
@@ -115,6 +131,14 @@ session_start();
 
     .div2 {
         grid-area: 1 / 2 / 2 / 3;
+    }
+
+    .div2 {
+        background-image: url('../../assets/BGCustomer.svg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+
     }
 
     [type="search"][aria-controls="example"] {
@@ -238,6 +262,77 @@ session_start();
 </style>
 
 <body>
+
+    <?php
+    if (isset($_SESSION['message'])) {
+        if (strpos($_SESSION['message'], '1') !== false) {
+            // remove the last number from the string
+            $_SESSION['message'] = substr($_SESSION['message'], 0, -1);
+    ?>
+            <script>
+                Swal.mixin({
+                    toast: true,
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                }).fire({
+                    icon: 'success',
+                    title: '<?php echo $_SESSION['message']; ?>'
+                })
+            </script>
+        <?php
+        } else if (strpos($_SESSION['message'], '2') !== false) {
+            // remove the last number from the string
+            $_SESSION['message'] = substr($_SESSION['message'], 0, -1);
+        ?>
+            <script>
+                Swal.mixin({
+                    toast: true,
+                    position: 'bottom-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                }).fire({
+                    icon: 'warning',
+                    title: '<?php echo $_SESSION['message']; ?>'
+                })
+            </script>
+        <?php
+        } else if (strpos($_SESSION['message'], '3') !== false) {
+            // remove the last number from the string
+            $_SESSION['message'] = substr($_SESSION['message'], 0, -1);
+        ?>
+            <script>
+                Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                }).fire({
+                    icon: 'error',
+                    title: '<?php echo $_SESSION['message']; ?>'
+                })
+            </script>
+    <?php
+        }
+        unset($_SESSION['message']);
+    }
+    ?>
+
     <div class="parent">
         <div class="div1">
             <?php require_once '../SmallSidebar.php'; ?>
@@ -265,9 +360,112 @@ session_start();
             }
             ?>
         </div>
+
+        <div class="modal fade" id="NewCustomer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <form method="POST" id="newform">
+                <div class="modal-dialog rounded-1" style="background-color: #dee1ec;">
+                    <div class=" modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Add New Customer</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="Firstnametxt" name="Firstnametxt" placeholder="First Name">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" id="Lastnametxt" name="Lastnametxt" placeholder="Last Name">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <input type="number" class="form-control" id="Contacttxt" name="Contacttxt" placeholder="Contact Number" maxlength="11">
+                            </div>
+                            <div class="mb-3">
+                                <textarea class="form-control" placeholder="Address" id="Addresstxt" name="Addresstxt" style="height: auto; min-height: 100px;"></textarea>
+                            </div>
+                            <div class="alert alert-danger text-center" role="alert" id="danger" hidden>
+                                Pukingina ano nanaman to!
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-warning btn-sm">Procced</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <script>
+                var numberlist = [];
+
+                <?php
+                $sql = "SELECT Cust_number FROM customer_information";
+                $result = mysqli_query($conn, $sql);
+
+
+                if (mysqli_num_rows($result) > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                ?>
+                        numberlist.push("<?php echo $row['Cust_number']; ?>");
+
+                <?php
+                    }
+                }
+                ?>
+
+
+
+                document.getElementById("newform").addEventListener("submit", function(e) {
+                    e.preventDefault();
+
+                    var firstname = document.getElementById("Firstnametxt").value;
+                    var lastname = document.getElementById("Lastnametxt").value;
+                    var contact = document.getElementById("Contacttxt").value;
+                    var address = document.getElementById("Addresstxt").value;
+
+                    setTimeout(function() {
+                        document.getElementById("danger").hidden = true;
+                    }, 2500);
+
+                    if (contact == "" || address == "") {
+                        document.getElementById("danger").hidden = false;
+                        document.getElementById("danger").innerHTML = "Please Fill Up Some Fields!";
+                        document.getElementById("Contacttxt").classList.add("is-invalid");
+                        document.getElementById("Addresstxt").classList.add("is-invalid");
+
+                        setTimeout(function() {
+                            document.getElementById("Contacttxt").classList.remove("is-invalid");
+                            document.getElementById("Addresstxt").classList.remove("is-invalid");
+                        }, 1000);
+                    } else if (contact.length < 11 || contact.length > 11) {
+                        document.getElementById("danger").hidden = false;
+                        document.getElementById("danger").innerHTML = "Please Enter a Valid Contact Number!";
+                        document.getElementById("Contacttxt").classList.add("is-invalid");
+
+                        setTimeout(function() {
+                            document.getElementById("Contacttxt").classList.remove("is-invalid");
+                        }, 1000);
+                    } else if (numberlist.includes(contact)) {
+                        document.getElementById("danger").hidden = false;
+                        document.getElementById("danger").innerHTML = "Contact Number Already Exists!";
+                        document.getElementById("Contacttxt").classList.add("is-invalid");
+
+                        setTimeout(function() {
+                            document.getElementById("Contacttxt").classList.remove("is-invalid");
+                        }, 1000);
+                    } else {
+                        var form = document.getElementById("newform");
+                        form.action = "./AddCustomer.php";
+                        form.submit();
+                    }
+
+                })
+            </script>
+        </div>
+
         <div class="div2">
-            <div class="position-fixed fillup d-flex justify-content-center align-items-center
-            " id="spinner">
+            <div class="position-fixed fillup d-flex justify-content-center align-items-center" id="spinner">
                 <span class="loader"></span>
             </div>
             <main class="container-xxl d-none" id="main">
@@ -279,10 +477,10 @@ session_start();
                         <div class="collapse navbar-collapse" id="navbarNavDropdown">
                             <ul class="navbar-nav">
                                 <li class="nav-item">
-                                    <a class="nav-link active" aria-current="Add Customer" data-bs-toggle="modal" data-bs-target="#NewCustomerModal" style="cursor: pointer;">&#10133; Add Customer</a>
+                                    <a class="nav-link active" aria-current="Add Customer" data-bs-toggle="modal" data-bs-target="#NewCustomer" style="cursor: pointer;">&#10133; Add Customer</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link active" aria-current="Recover Deleted Data" data-bs-toggle="modal" data-bs-target="#NewCustomerModal" style="cursor: pointer;">&#128465; Archived</a>
+                                <li class="nav-item" title="T<?php echo $ACHIEVED; ?>" data-bs-toggle="tooltip" data-bs-placement="bottom" style="cursor: pointer;">
+                                    <a class="nav-link active" aria-current="Recover Deleted Data" data-bs-toggle="modal" data-bs-target="#ArchiveCustomer" style="cursor: pointer;">&#128465; Archived</a>
                                 </li>
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle active" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -317,6 +515,7 @@ session_start();
                         </div>
                     </div>
                 </nav>
+                <?php include_once './Archived_Customers.php'; ?>
                 <div class="modal fade" id="Details" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-xl">
                         <div class="modal-content bg-transparent border-0">
@@ -331,16 +530,17 @@ session_start();
                                                 <div class="card">
                                                     <div class="card-body">
                                                         <form method="POST" id="form">
+                                                            <input type="hidden" id="id" name="id">
                                                             <div class="form-floating mb-3">
-                                                                <input type="text" class="form-control" id="name" placeholder="Customer Name" disabled>
+                                                                <input type="text" class="form-control" id="name" name="name" placeholder="Customer Name" disabled>
                                                                 <label for="name">Customer Name</label>
                                                             </div>
                                                             <div class="form-floating mb-3">
-                                                                <input type="number" class="form-control" id="Contact" placeholder="Customer Contact" disabled>
+                                                                <input type="number" class="form-control" id="Contact" name="contact" placeholder="Customer Contact" disabled>
                                                                 <label for="Contact">Customer Contact<sup class="text-danger">*</sup></label>
                                                             </div>
                                                             <div class="form-floating mb-3">
-                                                                <textarea class="form-control" placeholder="Customer Comments" id="address" disabled style="height: auto; min-height: 100px;"></textarea>
+                                                                <textarea class="form-control" placeholder="Customer Comments" id="address" name="address" disabled style="height: auto; min-height: 100px;"></textarea>
                                                                 <label for="address">Customer Address<sup class="text-danger">*</sup></label>
                                                             </div>
                                                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -453,6 +653,7 @@ session_start();
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <small class="text-muted">*This will reset every start of the month.</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -468,100 +669,103 @@ session_start();
                 <div class="container-xxl py-3">
                     <div class="row">
                         <div class="col-12">
-                            <table id="example" class="table table-striped table-hover table-sm table-responsive" style="width:100%;">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Customer Name</th>
-                                        <th>Customer Contact</th>
-                                        <th>Customer Address</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
+                            <div class="p-1 rounded shadow-sm mb-4 bg-body border border-1">
+                                <table id="example" class="table table-striped table-hover table-sm table-responsive" style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Customer Name</th>
+                                            <th>Customer Contact</th>
+                                            <th>Customer Address</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
 
-                                    $sql = "SELECT * FROM customer_information WHERE Archived = 0";
-                                    $result = mysqli_query($conn, $sql);
+                                        $sql = "SELECT * FROM customer_information WHERE Archived = 0";
+                                        $result = mysqli_query($conn, $sql);
 
-                                    if (mysqli_num_rows($result) > 0) {
-                                        while ($row = mysqli_fetch_assoc($result)) {
-                                    ?>
-                                            <tr style="cursor: pointer;">
-                                                <td><?php echo $row['Cust_ID']; ?></td>
-                                                <td><?php echo $row['Cust_first_name']; ?> <?php echo $row['Cust_last_name']; ?></td>
-                                                <td><?php echo $row['Cust_number']; ?></td>
-                                                <td><?php echo $row['Cust_Address']; ?></td>
-                                                <td>
-                                                    <div class="btn-group" role="group">
-                                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#Details" id="Row<?php echo $row['Cust_ID']; ?>">&#9998; Details</button>
-                                                        <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 0) { ?>
-                                                        <button type="button" class="btn btn-sm btn-outline-danger" id="del<?php echo $row['Cust_ID']; ?>">&#10006; Delete</button>
-                                                    <?php } else { ?>
-                                                        <span data-bs-toggle="tooltip" data-bs-placement="top" title="You don't have permission to delete this record.">
-                                                            <button type="button" class="btn btn-sm btn-outline-secondary" id="del<?php echo $row['Cust_ID']; ?>" disabled>&#10006; Delete</button>
-                                                        </span>
-                                                    <?php } ?>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <script>
-                                                document.getElementById("Row<?php echo $row['Cust_ID']; ?>").addEventListener("click", function() {
-                                                    var dateStr = "<?php echo $row['Date']; ?>";
-                                                    var date = new Date(dateStr);
+                                        if (mysqli_num_rows($result) > 0) {
+                                            while ($row = mysqli_fetch_assoc($result)) {
+                                        ?>
+                                                <tr style="cursor: pointer;">
+                                                    <td><?php echo $row['Cust_ID']; ?></td>
+                                                    <td><?php echo $row['Cust_first_name']; ?> <?php echo $row['Cust_last_name']; ?></td>
+                                                    <td><?php echo $row['Cust_number']; ?></td>
+                                                    <td><?php echo $row['Cust_Address']; ?></td>
+                                                    <td>
+                                                        <div class="btn-group" role="group">
+                                                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#Details" id="Row<?php echo $row['Cust_ID']; ?>">&#9998; Details</button>
+                                                            <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 0) { ?>
+                                                                <button type="button" class="btn btn-sm btn-outline-danger" id="del<?php echo $row['Cust_ID']; ?>">&#10006; Remove</button>
+                                                            <?php } else { ?>
+                                                                <span data-bs-toggle="tooltip" data-bs-placement="top" title="You don't have permission to delete this record.">
+                                                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="del<?php echo $row['Cust_ID']; ?>" disabled>&#10006; Remove</button>
+                                                                </span>
+                                                            <?php } ?>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <script>
+                                                    document.getElementById("Row<?php echo $row['Cust_ID']; ?>").addEventListener("click", function() {
+                                                        var dateStr = "<?php echo $row['Date']; ?>";
+                                                        var date = new Date(dateStr);
 
-                                                    // Array of day names
-                                                    var daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                                                        // Array of day names
+                                                        var daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-                                                    // Format the date components
-                                                    var month = date.toLocaleString('en-US', {
-                                                        month: 'long'
-                                                    });
-                                                    var day = date.getDate();
-                                                    var year = date.getFullYear();
-                                                    var hour = date.getHours();
-                                                    var minute = date.getMinutes();
-                                                    var second = date.getSeconds();
-                                                    var ampm = hour >= 12 ? 'PM' : 'AM';
+                                                        // Format the date components
+                                                        var month = date.toLocaleString('en-US', {
+                                                            month: 'long'
+                                                        });
+                                                        var day = date.getDate();
+                                                        var year = date.getFullYear();
+                                                        var hour = date.getHours();
+                                                        var minute = date.getMinutes();
+                                                        var second = date.getSeconds();
+                                                        var ampm = hour >= 12 ? 'PM' : 'AM';
 
-                                                    // Format the complete date string
-                                                    var formattedDate = month + ' ' + day + ', ' + year + ' ' + daysOfWeek[date.getDay()] + ' at ' +
-                                                        hour % 12 + ':' + (minute < 10 ? '0' : '') + minute + ':' + (second < 10 ? '0' : '') + second + ' ' + ampm;
+                                                        // Format the complete date string
+                                                        var formattedDate = month + ' ' + day + ', ' + year + ' ' + daysOfWeek[date.getDay()] + ' at ' +
+                                                            hour % 12 + ':' + (minute < 10 ? '0' : '') + minute + ':' + (second < 10 ? '0' : '') + second + ' ' + ampm;
 
-                                                    console.log(formattedDate);
+                                                        console.log(formattedDate);
 
-                                                    document.getElementById("date").innerHTML = "Last Updated: " + formattedDate;
-                                                    document.getElementById("name").value = "<?php echo $row['Cust_first_name']; ?> <?php echo $row['Cust_last_name']; ?>";
-                                                    document.getElementById("Contact").value = "<?php echo $row['Cust_number']; ?>";
-                                                    document.getElementById("address").value = "<?php echo $row['Cust_Address']; ?>";
-                                                    document.getElementById("Week").innerHTML = "<?php echo $row['Week']; ?>";
-                                                    document.getElementById("Month").innerHTML = "<?php echo $row['Month']; ?>";
-                                                })
-
-                                                document.getElementById("del<?php echo $row['Cust_ID']; ?>").addEventListener("click", function() {
-                                                    var id = "<?php echo $row['Cust_ID']; ?>";
-
-                                                    Swal.fire({
-                                                        title: 'Are you sure?',
-                                                        text: "You won't be able to revert this!",
-                                                        icon: 'warning',
-                                                        showCancelButton: true,
-                                                        confirmButtonColor: '#3085d6',
-                                                        cancelButtonColor: '#d33',
-                                                        confirmButtonText: 'Yes, delete it!'
-                                                    }).then((result) => {
-                                                        if (result.isConfirmed) {
-                                                            window.location.href = "./DelCustomer.php?id=" + id;
-                                                        }
+                                                        document.getElementById("date").innerHTML = "Last Updated: " + formattedDate;
+                                                        document.getElementById("name").value = "<?php echo $row['Cust_first_name']; ?> <?php echo $row['Cust_last_name']; ?>";
+                                                        document.getElementById("Contact").value = "<?php echo $row['Cust_number']; ?>";
+                                                        document.getElementById("address").value = "<?php echo $row['Cust_Address']; ?>";
+                                                        document.getElementById("Week").innerHTML = "<?php echo $row['Week']; ?>";
+                                                        document.getElementById("Month").innerHTML = "<?php echo $row['Month']; ?>";
+                                                        document.getElementById("id").value = "<?php echo $row['Cust_ID']; ?>";
                                                     })
-                                                })
-                                            </script>
-                                    <?php
+
+                                                    document.getElementById("del<?php echo $row['Cust_ID']; ?>").addEventListener("click", function() {
+                                                        var id = "<?php echo $row['Cust_ID']; ?>";
+
+                                                        Swal.fire({
+                                                            title: 'Are you sure?',
+                                                            text: "You won't be able to revert this!",
+                                                            icon: 'warning',
+                                                            showCancelButton: true,
+                                                            confirmButtonColor: '#3085d6',
+                                                            cancelButtonColor: '#d33',
+                                                            confirmButtonText: 'Yes, delete it!'
+                                                        }).then((result) => {
+                                                            if (result.isConfirmed) {
+                                                                window.location.href = "./DelCustomer.php?id=" + id;
+                                                            }
+                                                        })
+                                                    })
+                                                </script>
+                                        <?php
+                                            }
                                         }
-                                    }
-                                    ?>
-                                </tbody>
-                            </table>
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

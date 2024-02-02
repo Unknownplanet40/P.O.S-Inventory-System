@@ -11,6 +11,10 @@ $.extend(true, DataTable.defaults, {
   columnDefs: [
     {
       width: "15%",
+      targets: 1,
+    },
+    {
+      width: "15%",
       targets: 2,
     },
     {

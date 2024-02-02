@@ -10,12 +10,12 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     $result = mysqli_query($conn, $sql);
 
     if ($result) {
-        $_SESSION['message'] = "Record has been Removed!";
+        $_SESSION['message'] = "Record has been Removed! 1";
     } else {
-        $_SESSION['message'] = "Something went wrong!" + mysqli_error($conn);
+        $_SESSION['message'] = "Something went wrong!" + mysqli_error($conn) + " 3";
     }
 } else {
-    $_SESSION['message'] = "Record has not been deleted!";
+    $_SESSION['message'] = "Record has not been deleted! 2";
 }
 header("location: ./Customers.php");
 
