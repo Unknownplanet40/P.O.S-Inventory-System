@@ -3,12 +3,15 @@ include_once '../Database/config.php';
 session_start();
 
 // fist check if the user is logged in
-if ($_SESSION['isLogin'] == 1 && $_SESSION['role'] == 0) {
+if ($_SESSION['isLogin'] == 1) {
     // Total Items Count
     $OVERALL = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS totalItem FROM pos_products WHERE Achieved = 0"))['totalItem'];
 
     // Low Stock Items Count
     $LOW = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(isLowStock) AS lowItem FROM pos_products WHERE isLowStock = 1 AND Achieved = 0"))['lowItem'];
+
+    // Out of Stock Items Count
+    $OUT = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(CurrentStock) AS lowItem FROM pos_products WHERE isLowStock = 1 AND Achieved = 0 AND CurrentStock = 0"))['lowItem'];
 
     // Achieved Items Count
     $ACHIEVED = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(id) AS delItem FROM pos_products WHERE Achieved = 1"))['delItem'];
@@ -370,7 +373,7 @@ if ($_SESSION['isLogin'] == 1 && $_SESSION['role'] == 0) {
             <main>
                 <div class="container-xxl mb-2">
                     <div class="row row-cols-1 row-cols-md-3 g-4 p-4">
-                        <div class="col-md-5">
+                        <div class="col-md-4">
                             <div class="card border border-warning rounded-1 shadow">
                                 <div class="card-body bgimage">
                                     <h5 class="card-title">Total Items</h5>
@@ -378,11 +381,19 @@ if ($_SESSION['isLogin'] == 1 && $_SESSION['role'] == 0) {
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-3">
                             <div class="card border border-warning rounded-1 shadow">
                                 <div class="card-body bgimage">
                                     <h5 class="card-title">Low Items Stock</h5>
                                     <h5 class="card-title text-center fs-1 lowstock"><?php echo $LOW; ?></h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border border-warning rounded-1 shadow">
+                                <div class="card-body bgimage">
+                                    <h5 class="card-title">Out of Stock</h5>
+                                    <h5 class="card-title text-center fs-1 lowstock"><?php echo $OUT; ?></h5>
                                 </div>
                             </div>
                         </div>
@@ -709,12 +720,17 @@ if ($_SESSION['isLogin'] == 1 && $_SESSION['role'] == 0) {
                                         $image = "../../assets/Custom_Image/" . $row['image_path'];
                                     }
 
-                                    if ($LowStock == 1) {
-                                        $LowStock = "Low Stock";
+                                    if ($row['CurrentStock'] == 0) {
                                         $indicator = "<span class='text-danger'>&#9864;</span>";
+                                        $LowStock = "<span class='text-danger'>Out of Stock</span>";
                                     } else {
-                                        $LowStock = "In Stock";
-                                        $indicator = "<span class='text-success'>&#9864;</span>";
+                                        if ($LowStock == 1) {
+                                            $LowStock = "Low Stock";
+                                            $indicator = "<span class='text-danger'>&#9864;</span>";
+                                        } else {
+                                            $LowStock = "In Stock";
+                                            $indicator = "<span class='text-success'>&#9864;</span>";
+                                        }
                                     }
 
                                     if ($category == "Liquid") {
@@ -765,9 +781,6 @@ if ($_SESSION['isLogin'] == 1 && $_SESSION['role'] == 0) {
                                                 }
                                             })
                                         });
-
-
-
                                             document.getElementById('$edit').addEventListener('click', function() {
                                                 document.getElementById('prodID').value = '$id';
                                                 document.getElementById('prodName').value = '$product_name';

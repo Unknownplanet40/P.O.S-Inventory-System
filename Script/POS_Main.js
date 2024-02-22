@@ -930,7 +930,10 @@ document.addEventListener("DOMContentLoaded", function () {
         var myModal = document.getElementById("NewCustomer");
         var modal = bootstrap.Modal.getInstance(myModal);
         modal.hide();
-      } else if (jsonData.phone_number.includes(customerNumber) && ExistingCustomer.checked == true) {
+      } else if (
+        jsonData.phone_number.includes(customerNumber) &&
+        ExistingCustomer.checked == true
+      ) {
         document.getElementById("CustomerNumber").classList.add("is-invalid");
         setTimeout(function () {
           document
@@ -958,7 +961,6 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("PickupServ").disabled = true;
         document.getElementById("DeliveryServ").disabled = true;
         Btn_weight.disabled = true;
-
       } else {
         document.getElementById("CustomerNumber").classList.add("is-invalid");
         setTimeout(function () {
@@ -994,7 +996,7 @@ document.addEventListener("DOMContentLoaded", function () {
           .getElementById("CustomerAddress")
           .classList.remove("is-invalid");
       }, 1500);
-      
+
       var itemID = document.querySelectorAll('[id^="Item_"]');
       itemID.forEach(function (item) {
         item.disabled = true;
@@ -1204,7 +1206,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var S1 = document.getElementById("WashOnly").checked;
     var S2 = document.getElementById("DryOnly").checked;
     var S3 = document.getElementById("BothServ").checked;
-    
+
     //check if their is Items in the receipt
     var receipt = document.getElementById("receipt");
     if (receipt.childElementCount == 1) {

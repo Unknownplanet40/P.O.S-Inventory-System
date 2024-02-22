@@ -24,7 +24,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 0) {
       border-radius: 0.25rem;
     }
   </style>
-  <p class="fs-6 text-muted mb-0 ms-5"><?php echo $Urole; ?></p>
+  <p class="fs-6 text-warning mb-0 ms-5"><?php echo $Urole; ?></p>
   <hr />
   <ul class="nav nav-pills flex-column mb-auto">
     <li class="nav-item">
@@ -60,7 +60,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 0) {
       </a>
     </li>
     <li>
-      <a href="#" class="nav-link link-body-emphasis">
+      <a <?php echo (basename($_SERVER['PHP_SELF']) == "Transaction.php") ? 'class="nav-link custom-active shadow border"' : "href='./Transaction Module/Transaction.php'"; ?> class="nav-link link-body-emphasis" style="cursor: hands;">
         <svg class="bi pe-none me-2" width="16" height="16">
           <use xlink:href="#Transaction" />
         </svg>
@@ -110,6 +110,9 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 0) {
         <hr class="dropdown-divider" />
       </li>
       <li><a class="dropdown-item">Profile</a></li>
+      <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 0) { ?>
+      <li><a class="dropdown-item" href="../Components/Account Module/Accounts.php">Account</a></li>
+      <?php } ?>
       <li><a class="dropdown-item">Settings</a></li>
       <li>
         <hr class="dropdown-divider" />
@@ -119,9 +122,3 @@ if (isset($_SESSION['role']) && $_SESSION['role'] == 0) {
   </div>
 </div>
 <div style="height: 100vh;"></div>
-
-<script>
-  document.getElementById('Pos').addEventListener('click', function() {
-    window.location.href = '../Components/POS%20Module/POS.php';
-  });
-</script>

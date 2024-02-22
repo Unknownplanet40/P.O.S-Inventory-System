@@ -16,13 +16,15 @@
         </a>
         <hr />
         <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
-            <li class="nav-item">
-                <a <?php echo (basename($_SERVER['PHP_SELF']) == "Dashboard.php") ? 'class="custom-active nav-link py-3 border-bottom rounded-0"' : "href='../Dashboard.php'"; ?> style="color: #6e3b3b;" class="nav-link py-3 border-bottom rounded-0" aria-current="page" title="Dashboard" data-bs-toggle="tooltip" data-bs-placement="right">
-                    <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Dashboard">
-                        <use xlink:href="#home" />
-                    </svg>
-                </a>
-            </li>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 0) { ?>
+                <li class="nav-item">
+                    <a <?php echo (basename($_SERVER['PHP_SELF']) == "Dashboard.php") ? 'class="custom-active nav-link py-3 border-bottom rounded-0"' : "href='../Dashboard.php'"; ?> style="color: #6e3b3b;" class="nav-link py-3 border-bottom rounded-0" aria-current="page" title="Dashboard" data-bs-toggle="tooltip" data-bs-placement="right">
+                        <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Dashboard">
+                            <use xlink:href="#home" />
+                        </svg>
+                    </a>
+                </li>
+            <?php } ?>
             <li class="nav-item">
                 <a <?php echo (basename($_SERVER['PHP_SELF']) == "POS.php") ? 'class="custom-active nav-link py-3 border-bottom rounded-0"' : "href='../../Components/POS Module/POS.php'"; ?> style="color: #6e3b3b;" class="nav-link py-3 border-bottom rounded-0" laria-current="page" title="Point of Sale" data-bs-toggle="tooltip" data-bs-placement="right">
                     <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Point of Sale">
@@ -37,13 +39,15 @@
                     </svg>
                 </a>
             </li>
-            <li class="nav-item">
-                <a <?php echo (basename($_SERVER['PHP_SELF']) == "Customers.php") ? 'class="custom-active nav-link py-3 border-bottom rounded-0"' : "href='../../Components/Customer Module/Customers.php'"; ?> style="color: #6e3b3b;" class="nav-link py-3 border-bottom rounded-0" laria-current="page" title="Customers Details" data-bs-toggle="tooltip" data-bs-placement="right">
-                    <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Customers Details">
-                        <use xlink:href="#Customer" />
-                    </svg>
-                </a>
-            </li>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 0) { ?>
+                <li class="nav-item">
+                    <a <?php echo (basename($_SERVER['PHP_SELF']) == "Customers.php") ? 'class="custom-active nav-link py-3 border-bottom rounded-0"' : "href='../../Components/Customer Module/Customers.php'"; ?> style="color: #6e3b3b;" class="nav-link py-3 border-bottom rounded-0" laria-current="page" title="Customers Details" data-bs-toggle="tooltip" data-bs-placement="right">
+                        <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Customers Details">
+                            <use xlink:href="#Customer" />
+                        </svg>
+                    </a>
+                </li>
+            <?php } ?>
             <li class="nav-item">
                 <a <?php echo (basename($_SERVER['PHP_SELF']) == "Transaction.php") ? 'class="custom-active nav-link py-3 border-bottom rounded-0"' : "href='../../Components/Transaction Module/Transaction.php'"; ?> style="color: #6e3b3b;" class="nav-link py-3 border-bottom rounded-0" laria-current="page" title="Transaction" data-bs-toggle="tooltip" data-bs-placement="right">
                     <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Transaction">
@@ -51,6 +55,7 @@
                     </svg>
                 </a>
             </li>
+            <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 0) { ?>
             <li class="nav-item">
                 <a href="#" class="nav-link py-3 border-bottom rounded-0" style="color: #6e3b3b;" aria-current="page" title="Report" data-bs-toggle="tooltip" data-bs-placement="right">
                     <svg class="bi pe-none" width="24" height="24" role="img" aria-label="Report">
@@ -58,6 +63,7 @@
                     </svg>
                 </a>
             </li>
+            <?php } ?>
         </ul>
         <div class="dropdown border-top position-absolute bottom-0 start-0" title="More Option " data-bs-toggle="tooltip" data-bs-placement="right">
             <a class="d-flex align-items-center justify-content-center p-3 link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -79,6 +85,9 @@
                     <hr class="dropdown-divider" />
                 </li>
                 <li><a class="dropdown-item" style="cursor: pointer;">Profile</a></li>
+                <?php if (isset($_SESSION['role']) && $_SESSION['role'] == 0) { ?>
+                    <li><a class="dropdown-item" href="../Account Module/Accounts.php">Account</a></li>
+                <?php } ?>
                 <li><a class="dropdown-item" style="cursor: pointer;">Settings</a></li>
                 <li>
                     <hr class="dropdown-divider" />

@@ -529,12 +529,12 @@ if ($ACHIEVED == 0) {
                                                             document.getElementById("flexSwitchCheckDefault").addEventListener("click", function() {
                                                                 if (document.getElementById("flexSwitchCheckDefault").checked == true) {
                                                                     document.getElementById("name").disabled = false;
-                                                                    document.getElementById("Contact").disabled = false;
+                                                                    //document.getElementById("Contact").disabled = false;
                                                                     document.getElementById("address").disabled = false;
                                                                     document.getElementById("sub").disabled = false;
                                                                 } else {
                                                                     document.getElementById("name").disabled = true;
-                                                                    document.getElementById("Contact").disabled = true;
+                                                                    //document.getElementById("Contact").disabled = true;
                                                                     document.getElementById("address").disabled = true;
                                                                     document.getElementById("sub").disabled = true;
                                                                 }

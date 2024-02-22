@@ -104,7 +104,19 @@ if ($result) {
                     echo "<script>console.log('Failed to execute query: " . mysqli_error($conn) . "');</script>";
                 }
             } else if ($_SESSION['role'] == 1) {
-                echo "Staff";
+                $sql = "UPDATE account SET last_accessed = NOW(), isLogin = 1 WHERE UUID = '" . $_SESSION['UUID'] . "';";
+                $result = mysqli_query($conn, $sql);
+
+                $_SESSION['isLogin'] = 1;
+                $_SESSION['lastUpdated'] = date("Y-m-d H:i:s");
+                $_SESSION['currentlyLoggedIn'] = true;
+                $_SESSION['currentlyLoggedInAs'] = $_SESSION['UUID'];
+
+                if ($result) {
+                    header("Location: ./POS Module/POS.php");
+                } else {
+                    echo "<script>console.log('Failed to execute query: " . mysqli_error($conn) . "');</script>";
+                }
             } else {
                 $_SESSION['statusNotif'] = "Your account have a invalid privilege.";
                 $_SESSION['ColorCode'] = "Text-danger";

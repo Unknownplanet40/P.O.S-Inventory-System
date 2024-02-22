@@ -4,7 +4,7 @@ session_start();
 include_once './FetchDatas.php';
 
 // fist check if the user is logged in
-if ($_SESSION['isLogin'] == 1 && $_SESSION['role'] == 0) {
+if ($_SESSION['isLogin'] == 1) {
     getCustomerinfo();
     getItem();
 } else {

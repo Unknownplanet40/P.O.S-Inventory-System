@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $fname = $name[0];
     $lname = $name[1];
 
-    $sql = "UPDATE `customer_information` SET `Cust_first_name`='$fname',`Cust_last_name`='$lname',`Cust_number`='$contact',`Cust_Address`='$address' WHERE `Cust_ID`='$id'";
+    $sql = "UPDATE `customer_information` SET `Cust_first_name`='$fname',`Cust_last_name`='$lname',`Cust_Address`='$address' WHERE `Cust_ID`='$id'";
     $result = mysqli_query($conn, $sql);
 
     if ($result) {
